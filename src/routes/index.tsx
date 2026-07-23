@@ -1,49 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
-import { m } from '@/paraglide/messages.js';
 import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
-import { Blog } from '@/blocks/blog';
-import { CTA } from '@/blocks/cta';
-import { FAQ } from '@/blocks/faq';
-import { Features } from '@/blocks/features';
-import { Footer } from '@/blocks/footer';
-import { Header } from '@/blocks/header';
-import { Hero } from '@/blocks/hero';
-import { Pricing } from '@/blocks/pricing';
-import { SupportWidget } from '@/blocks/support-widget';
-import { getBlogPostsFn } from '@/content/posts/server';
+import { Game73Host } from '@/components/game-73-host';
 
-/**
- * Default landing page — demo content. Rewrite this file (and the blocks in
- * src/blocks/) for your project. The primitives in src/components/ stay.
- * See /quick-start or /clone-website to automate the rewrite.
- */
 function HomePage() {
-  const { posts } = Route.useLoaderData();
-
-  return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
-      <Header />
-      <main>
-        <Hero />
-        <Features />
-        <Pricing />
-        <FAQ />
-        <Blog posts={posts} />
-        <CTA />
-      </main>
-      <Footer />
-      <SupportWidget />
-    </div>
-  );
+  return <Game73Host />;
 }
 
 export const Route = createFileRoute('/')({
-  loader: async () => {
+  loader: () => {
     const locale = getLocale();
-    const posts = await getBlogPostsFn({ data: { locale, limit: 3 } });
-    return { locale, posts };
+    return { locale };
   },
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';
@@ -52,9 +20,26 @@ export const Route = createFileRoute('/')({
     return {
       meta: [
         {
-          name: 'description',
-          content: m['landing.hero.subheadline']({}, { locale: locale as any }),
+          title: '73-9 Game: Can you beat the 2015-16 Warriors?',
         },
+        {
+          name: 'description',
+          content:
+            'You have $100 million to put together a squad to try to beat the best regular-season team ever — the 2015-16 Warriors.',
+        },
+        { property: 'og:type', content: 'website' },
+        {
+          property: 'og:title',
+          content: '73-9 Game: Can you beat the 2015-16 Warriors?',
+        },
+        {
+          property: 'og:description',
+          content:
+            'You have $100 million to put together a squad to try to beat the best regular-season team ever — the 2015-16 Warriors.',
+        },
+        { property: 'og:image', content: '/73-9-game/og-73-9.png' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: '/73-9-game/og-73-9.png' },
       ],
       links: [
         { rel: 'canonical', href: urlFor(locale) },

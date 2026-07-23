@@ -3,12 +3,21 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Font families — loaded via @fontsource imports (Inter, Libre Baskerville)
-   and a Google Fonts <link> (Noto Serif SC) in src/routes/__root.tsx.
-   These variables were previously injected by next/font. */
+/* Font families — shell uses Inter; the 73-9 game iframe loads Oswald + JetBrains Mono. */
 :root {
   --font-sans: 'Inter Variable', 'Inter', sans-serif;
   --font-serif-display: 'Libre Baskerville', serif;
+  /* 73-9 game palette (from hoopsmatic.com/73-9-game :root) */
+  --game-gold: #ffd700;
+  --game-orange: #ff6b35;
+  --game-green: #34d97a;
+  --game-amber: #ffd24a;
+  --game-red: #ff6666;
+  --game-ink: #c8c8e0;
+  --game-dim: #8888aa;
+  --game-panel: #12122a;
+  --game-panel2: #0c0c1e;
+  --game-line: #2a2a52;
 }
 
 @theme inline {
@@ -61,20 +70,21 @@
 
 @layer base {
   :root {
-    --background: oklch(0.977 0.004 75);
-    --foreground: oklch(0.275 0.007 60);
-    --card: oklch(0.988 0.003 75);
-    --card-foreground: oklch(0.275 0.007 60);
-    --popover: oklch(0.988 0.003 75);
-    --popover-foreground: oklch(0.275 0.007 60);
-    --primary: oklch(0.22 0.005 60);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.948 0.006 75);
-    --secondary-foreground: oklch(0.275 0.007 60);
-    --muted: oklch(0.948 0.006 75);
-    --muted-foreground: oklch(0.5 0.005 60);
-    --accent: oklch(0.948 0.006 75);
-    --accent-foreground: oklch(0.275 0.007 60);
+    /* Dark court theme aligned with 73-9 game (#0a0a1a / #c8c8e0 / #ff6b35) */
+    --background: oklch(0.14 0.03 275);
+    --foreground: oklch(0.84 0.02 280);
+    --card: oklch(0.18 0.035 275);
+    --card-foreground: oklch(0.84 0.02 280);
+    --popover: oklch(0.18 0.035 275);
+    --popover-foreground: oklch(0.84 0.02 280);
+    --primary: oklch(0.68 0.18 45);
+    --primary-foreground: oklch(0.18 0.03 50);
+    --secondary: oklch(0.22 0.04 275);
+    --secondary-foreground: oklch(0.84 0.02 280);
+    --muted: oklch(0.22 0.04 275);
+    --muted-foreground: oklch(0.62 0.04 280);
+    --accent: oklch(0.85 0.16 95);
+    --accent-foreground: oklch(0.18 0.03 50);
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(0.577 0.245 27.325);
     --border: oklch(0.908 0.005 75);

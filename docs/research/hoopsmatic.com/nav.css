@@ -1,0 +1,176 @@
+#hm-nav {
+  background: #fff !important;
+  border-bottom: 1px solid #e2e5e9 !important;
+  padding: 0 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  font-family:
+    'DM Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+#hm-nav * {
+  line-height: 1.2 !important;
+}
+#hm-nav .hm-nav-brand {
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  color: #1a1a2e !important;
+  padding: 10px 0 !important;
+  margin-right: 24px !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+#hm-nav .hm-nav-brand svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+#hm-nav .hm-nav-link {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #5a6070 !important;
+  text-decoration: none !important;
+  padding: 9px 12px !important;
+  border-bottom: 2px solid transparent !important;
+  transition:
+    color 0.15s,
+    border-color 0.15s !important;
+  white-space: nowrap !important;
+  background: none !important;
+}
+#hm-nav .hm-nav-link:hover {
+  color: #1a1a2e !important;
+}
+#hm-nav .hm-nav-link.hm-nav-active {
+  color: #3b82f6 !important;
+  border-bottom-color: #3b82f6 !important;
+  font-weight: 600 !important;
+}
+#hm-nav-burger {
+  display: flex !important;
+  align-items: center !important;
+  background: none !important;
+  border: 0 !important;
+  color: #5a6070 !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  margin-left: auto !important;
+  border-radius: 6px !important;
+}
+#hm-nav-burger:hover {
+  background: #f3f4f6 !important;
+  color: #1a1a2e !important;
+}
+#hm-burger-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  background: #fff;
+  border: 1px solid #e2e5e9;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 0.4rem 0;
+  min-width: 220px;
+  z-index: 10000;
+  flex-direction: column;
+}
+#hm-burger-menu.hm-burger-open {
+  display: flex !important;
+}
+#hm-burger-menu .hm-burger-link {
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  color: #1a1a2e !important;
+  text-decoration: none !important;
+  padding: 0.55rem 1rem !important;
+  white-space: nowrap !important;
+  background: none !important;
+  border-left: 3px solid transparent !important;
+}
+#hm-burger-menu .hm-burger-link:hover {
+  background: #f8f9fa !important;
+}
+#hm-burger-menu .hm-burger-link.hm-burger-active {
+  color: #3b82f6 !important;
+  border-left-color: #3b82f6 !important;
+  background: #eff6ff !important;
+}
+#hm-burger-menu .hm-burger-mobile-only {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  #hm-nav {
+    padding: 0 8px 0 8px !important;
+    flex-wrap: nowrap !important;
+    position: relative !important;
+    overflow: visible !important;
+    gap: 0 !important;
+  }
+  #hm-nav .hm-nav-brand {
+    font-size: 12.5px !important;
+    margin-right: 6px !important;
+    padding: 10px 0 !important;
+    flex-shrink: 0 !important;
+  }
+  #hm-nav .hm-nav-brand svg {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 4px !important;
+  }
+  #hm-nav .hm-nav-link {
+    font-size: 10px !important;
+    padding: 8px 4px !important;
+    letter-spacing: -0.01em !important;
+    flex-shrink: 0 !important;
+  }
+  #hm-nav .hm-nav-secondary {
+    display: none !important;
+  }
+  #hm-nav-burger {
+    display: flex !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    padding: 6px 8px !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  #hm-burger-menu .hm-burger-mobile-only {
+    display: flex !important;
+  }
+  #hm-burger-menu hr.hm-burger-mobile-only {
+    display: block !important;
+  }
+  #hm-burger-menu {
+    right: 8px !important;
+  }
+}
+@media (max-width: 480px) {
+  /* Very narrow viewport: hide all but first 4 priority links to leave room for burger */
+  #hm-nav .hm-nav-priority:nth-of-type(n + 6) {
+    display: none !important;
+  }
+  #hm-nav .hm-nav-link {
+    font-size: 9.5px !important;
+    padding: 8px 3px !important;
+  }
+}
