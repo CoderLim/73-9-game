@@ -10,6 +10,9 @@ const STATIC_PATHS = [
   '/blog',
   '/privacy-policy',
   '/terms-of-service',
+  '/cookies',
+  '/about',
+  '/contact',
 ];
 
 type Entry = {

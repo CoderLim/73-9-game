@@ -9,6 +9,7 @@
 <meta name="description" content="You have $100 million to put together a squad to try to beat the best regular-season team ever.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="73-9 Game">
+<meta property="og:url" content="https://73-9.org">
 <meta property="og:title" content="73-9 Game: Can you beat the 2015-16 Warriors?">
 <meta property="og:description" content="You have $100 million to put together a squad to try to beat the best regular-season team ever.">
 <meta property="og:image" content="/73-9-game/og-73-9.png">
@@ -18,7 +19,7 @@
 <meta name="twitter:title" content="73-9 Game: Can you beat the 2015-16 Warriors?">
 <meta name="twitter:description" content="You have $100 million to put together a squad to try to beat the best regular-season team ever.">
 <meta name="twitter:image" content="/73-9-game/og-73-9.png">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="/73-9-game/vendor/pako.min.js"></script>
 <style>
@@ -418,8 +419,6 @@ body{background:linear-gradient(160deg,#1a1a3e 0%,#0a0a1a 55%,#050510 100%);back
 
   <!-- RESULTS -->
   <div id="results" class="hidden"></div>
-
-  <div class="app-footer">73-9 Game — build a five that beats the 2015-16 Warriors.</div>
 
 </div>
 
@@ -865,7 +864,12 @@ const BUILD      = "v96 · removed 14-15 Warriors from the wheel, fixed perfect-
 // HTML (it reads the ?sq= payload client-side). Until the share route serves
 // this file, shared links will 404 — change this one line back to the GitHub Pages
 // URL if you need to test the click-through before the share route is live.
-const SHARE_BASE_URL = (typeof location!=="undefined"?location.origin:"")+"/73-9-game";
+const SHARE_BASE_URL = (function(){
+  if(typeof location==="undefined")return "https://73-9.org";
+  var h=location.hostname;
+  if(h==="localhost"||h==="127.0.0.1")return location.origin+"/73-9-game";
+  return "https://73-9.org";
+})();
 // Leaderboard API (the Cloudflare Worker). Leave "" to keep the leaderboard hidden.
 // Set to the deployed Worker URL once it's live, e.g.
 // "https://hoopsmatic-73-9-leaderboard.<your-subdomain>.workers.dev"
@@ -3148,7 +3152,7 @@ function buildShareCardCanvas(d){
   });
   // footer
   ctx.textAlign='center';ctx.fillStyle='#aeaed4';ctx.font='700 24px Oswald, sans-serif';
-  _ls(ctx,'2px');ctx.fillText('SPIN YOUR OWN FIVE — 73-9 GAME',W/2,H-72);_ls(ctx,'0px');
+  _ls(ctx,'2px');ctx.fillText('SPIN YOUR OWN FIVE AT 73-9.ORG',W/2,H-72);_ls(ctx,'0px');
   return cv;
 }
 function _dataURLtoBlob(d){

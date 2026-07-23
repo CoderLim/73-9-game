@@ -35,9 +35,12 @@ const getAnalyticsConfigs = createServerFn().handler(async () => {
   const { getAllConfigs } = await import('@/modules/config/service');
   const configs = await getAllConfigs();
   return {
-    gaId: configs.google_analytics_id?.trim() || '',
-    plausibleDomain: configs.plausible_domain?.trim() || '',
-    plausibleSrc: configs.plausible_src?.trim() || '',
+    // GA4. Admin DB value overrides this default.
+    gaId: configs.google_analytics_id?.trim() || 'G-EHY4BWDLQ9',
+    // PageView (Plausible-compatible). Admin DB values override these defaults.
+    plausibleDomain: configs.plausible_domain?.trim() || '73-9.org',
+    plausibleSrc:
+      configs.plausible_src?.trim() || 'https://app.pageview.app/js/script.js',
     adsenseCode: configs.adsense_code?.trim() || '',
     crispWebsiteId:
       configs.crisp_enabled === 'true'
@@ -74,8 +77,14 @@ export const Route = createRootRoute({
         { name: 'description', content: envConfigs.app_description },
       ],
       links: [
-        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-        { rel: 'apple-touch-icon', href: '/favicon.svg' },
+        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
+        {
+          rel: 'icon',
+          href: '/favicon.png',
+          type: 'image/png',
+          sizes: '32x32',
+        },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         ...locales.map((loc) => ({
           rel: 'alternate',
           hrefLang: loc,

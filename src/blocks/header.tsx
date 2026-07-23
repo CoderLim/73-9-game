@@ -1,12 +1,15 @@
 import { m } from '@/paraglide/messages.js';
-import { SiteHeader } from '@/components/site-header';
+import { GamePageHeader } from '@/components/game-page-header';
 
 export function Header() {
-  const navLinks = [
-    { href: '/#features', label: m['landing.nav.features']() },
-    { href: '/pricing', label: m['landing.nav.pricing']() },
-    { href: '/blog', label: m['landing.nav.blog']() },
-  ];
-
-  return <SiteHeader navLinks={navLinks} />;
+  return (
+    <GamePageHeader
+      brand={m['game.brand']()}
+      navLinks={[
+        { href: '#play', label: m['game.nav.play']() },
+        { href: '#about', label: m['game.nav.about']() },
+        { href: '#highlights', label: m['game.nav.highlights']() },
+      ]}
+    />
+  );
 }
