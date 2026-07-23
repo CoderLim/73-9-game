@@ -2,7 +2,7 @@
 
 **Can you beat the 2015-16 Warriors?**
 
-[73-9 Game](https://73-9.org) — no account required.
+[73-9 Game](https://73-9.org) — Can you beat the 2015-16 Warriors?
 
 ---
 
