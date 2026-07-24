@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { GameApp } from '@/game/GameApp';
 
 import { cn } from '@/lib/utils';
+import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 
 /**
- * 73-9 game host — chrome aligned with 82-0.com mode cards:
- * glass panel, white/soft border, orange accent ring, Fira/Barlow type inside.
+ * 73-9 game host — glass frame over the arena photo (image lives inside the card
+ * so transparency is visible regardless of backdrop-filter stacking quirks).
  */
 export function MainGame({ className }: { className?: string }) {
   const [ready, setReady] = useState(false);
@@ -16,22 +17,28 @@ export function MainGame({ className }: { className?: string }) {
   return (
     <section
       id="play"
-      className={cn('relative w-full overflow-hidden', className)}
+      className={cn('relative w-full', className)}
       aria-label="73-9 Game"
     >
       <div className="relative mx-auto max-w-[920px] px-3 sm:px-5">
         <div
           className={cn(
-            'overflow-hidden rounded-xl border border-white/25',
-            'bg-[#0c101c]/50 shadow-[0_8px_40px_rgba(0,0,0,0.4)]',
-            'ring-1 ring-[#fd6a00]/20 backdrop-blur-md'
+            'relative overflow-hidden rounded-xl border border-white/35',
+            'shadow-[0_8px_32px_rgba(0,0,0,0.35)] ring-1 ring-[#fd6a00]/30'
           )}
         >
-          <div className="min-h-[420px] w-full sm:min-h-[460px]">
+          <ArenaCourtBackdrop
+            className="absolute inset-0"
+            imageClassName="scale-110"
+          >
+            <div className="absolute inset-0 bg-[#05050a]/35 backdrop-blur-[2px]" />
+          </ArenaCourtBackdrop>
+
+          <div className="relative z-[1] min-h-[420px] w-full sm:min-h-[460px]">
             {ready ? (
               <GameApp />
             ) : (
-              <div className="game-73-root flex min-h-[420px] items-center justify-center sm:min-h-[460px]">
+              <div className="game-73-root flex min-h-[420px] items-center justify-center bg-transparent sm:min-h-[460px]">
                 <div className="wrap w-full text-center">
                   <img
                     className="logo-mark"

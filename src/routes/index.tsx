@@ -6,6 +6,7 @@ import { Footer } from '@/blocks/footer';
 import { GameHighlightsSection } from '@/blocks/game-highlights';
 import { GameSeo } from '@/blocks/game-seo';
 import { Header } from '@/blocks/header';
+import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
 
 function HomePage() {
@@ -13,32 +14,13 @@ function HomePage() {
     <div className="flex min-h-dvh flex-col font-sans text-[#c8c8e0]">
       {/* First viewport: arena backdrop + game card (fills 100dvh) */}
       <div className="relative flex min-h-dvh flex-col">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 overflow-hidden"
+        <ArenaCourtBackdrop
+          className="absolute inset-0"
+          imageClassName="scale-105"
+          fetchPriority="high"
         >
-          <picture>
-            <source
-              media="(max-width: 767px)"
-              type="image/webp"
-              srcSet="/images/arena-court-mobile.webp"
-            />
-            <source
-              media="(max-width: 767px)"
-              srcSet="/images/arena-court-mobile.jpg"
-            />
-            <source type="image/webp" srcSet="/images/arena-court.webp" />
-            <img
-              src="/images/arena-court.jpg"
-              alt="Basketball arena court at night"
-              decoding="async"
-              fetchPriority="high"
-              className="h-full w-full scale-105 object-cover object-[center_40%]"
-            />
-          </picture>
-          <div className="absolute inset-0 bg-[#05050a]/25" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#05050a]/50 via-transparent to-[#05050a]/92" />
-        </div>
+        </ArenaCourtBackdrop>
 
         <Header />
         {/* Spacer for fixed header (73px desktop / ~52px mobile) */}

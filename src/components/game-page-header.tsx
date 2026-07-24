@@ -82,56 +82,58 @@ export function GamePageHeader({
         className
       )}
     >
-      <div className="mx-auto flex h-[calc(52px+env(safe-area-inset-top))] w-full max-w-6xl items-center justify-between gap-3 px-4 pt-[env(safe-area-inset-top)] md:h-[73px] md:gap-4 md:px-6">
-        <Link
-          href="/"
-          className="flex min-w-0 shrink-0 items-center gap-2.5"
-          onClick={closeMobile}
-        >
-          <img
-            src="/logo.png"
-            alt={brand}
-            width={36}
-            height={36}
-            className="size-8 object-contain md:size-9"
-          />
-          <span className="truncate font-sans text-base font-semibold tracking-wide text-white uppercase">
-            {brand}
-          </span>
-        </Link>
+      <div className="flex h-[calc(52px+env(safe-area-inset-top))] w-full items-center gap-3 px-4 pt-[env(safe-area-inset-top)] md:h-[73px] md:gap-6 md:px-5">
+        <div className="flex min-w-0 flex-1 items-center gap-6 md:gap-10">
+          <Link
+            href="/"
+            className="flex min-w-0 shrink-0 items-center gap-2.5"
+            onClick={closeMobile}
+          >
+            <img
+              src="/logo.png"
+              alt={brand}
+              width={36}
+              height={36}
+              className="size-8 object-contain md:size-9"
+            />
+            <span className="truncate font-sans text-base font-semibold tracking-wide text-white uppercase">
+              {brand}
+            </span>
+          </Link>
 
-        {/* Desktop nav — only from md up so five links never fight the brand */}
-        <nav className="hidden flex-1 items-center gap-1 md:flex md:gap-2">
-          {navLinks.map((link) => {
-            const itemClass = cn(
-              'relative px-2.5 py-1.5 font-sans text-[15px] tracking-wide text-white/90 uppercase transition-colors hover:text-white md:text-base',
-              link.active && 'text-white'
-            );
-            const children = (
-              <>
-                {link.label}
-                {link.active ? (
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-2.5 -bottom-0.5 h-0.5 rounded-full bg-[#ff6b00]"
-                  />
-                ) : null}
-              </>
-            );
-            if (link.href.includes('#')) {
-              return (
-                <a key={link.href} href={link.href} className={itemClass}>
-                  {children}
-                </a>
+          {/* Desktop nav — grouped with brand on the left like 82-0.com */}
+          <nav className="hidden min-w-0 items-center gap-1 md:flex md:gap-2">
+            {navLinks.map((link) => {
+              const itemClass = cn(
+                'relative px-2.5 py-1.5 font-sans text-[15px] tracking-wide text-white/90 uppercase transition-colors hover:text-white md:text-base',
+                link.active && 'text-white'
               );
-            }
-            return (
-              <Link key={link.href} href={link.href} className={itemClass}>
-                {children}
-              </Link>
-            );
-          })}
-        </nav>
+              const children = (
+                <>
+                  {link.label}
+                  {link.active ? (
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-2.5 -bottom-0.5 h-0.5 rounded-full bg-[#ff6b00]"
+                    />
+                  ) : null}
+                </>
+              );
+              if (link.href.includes('#')) {
+                return (
+                  <a key={link.href} href={link.href} className={itemClass}>
+                    {children}
+                  </a>
+                );
+              }
+              return (
+                <Link key={link.href} href={link.href} className={itemClass}>
+                  {children}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {auth ? (
