@@ -7,6 +7,10 @@ import {
   ResultsPanel,
 } from '@/game/screens';
 
+import { useSession } from '@/core/auth/client';
+import { apiGet, apiPost } from '@/lib/api-client';
+import { m } from '@/paraglide/messages.js';
+
 import '@/game/game-73.css';
 
 /**
@@ -21,12 +25,46 @@ import '@/game/game-73.css';
  */
 function GameAppImpl() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const { data: session, isPending } = useSession();
 
   useEffect(() => {
+    if (isPending) return;
     const root = rootRef.current;
     if (!root) return;
-    return mountGame73(root, { search: window.location.search });
-  }, []);
+
+    const callback = encodeURIComponent(
+      window.location.pathname + window.location.search
+    );
+    const signInHref = `/sign-in?callbackUrl=${callback}`;
+
+    return mountGame73(root, {
+      search: window.location.search,
+      auth: {
+        isAuthenticated: Boolean(session?.user),
+        signInHref,
+        guestTip: m['game.auth.guest_tip'](),
+        signInToSaveLabel: m['game.auth.sign_in_to_save'](),
+        saveFailedText: m['game.auth.save_failed'](),
+      },
+      fetchLeaderboard: async () => {
+        try {
+          return await apiGet('/api/game/leaderboard');
+        } catch {
+          return null;
+        }
+      },
+      submitResult: async (payload) => {
+        try {
+          const data = await apiPost<{
+            board: import('./runtime/mount-game').GameLeaderboardBoard;
+          }>('/api/game/results', payload);
+          return { board: data.board };
+        } catch {
+          return null;
+        }
+      },
+    });
+  }, [isPending, session?.user?.id]);
 
   return (
     <div className="game-73-root" ref={rootRef}>
