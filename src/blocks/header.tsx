@@ -1,9 +1,18 @@
+import { useEffect, useState } from 'react';
+
 import { signOut, useSession } from '@/core/auth/client';
 import { m } from '@/paraglide/messages.js';
 import { GamePageHeader } from '@/components/game-page-header';
 
 export function Header() {
   const { data: session, isPending } = useSession();
+  const [signInHref, setSignInHref] = useState('/sign-in?callbackUrl=/');
+
+  useEffect(() => {
+    setSignInHref(
+      `/sign-in?callbackUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`
+    );
+  }, []);
 
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
 
@@ -21,10 +30,10 @@ export function Header() {
       ]}
       auth={{
         status: authStatus,
-        signInHref: '/sign-in?callbackUrl=/',
+        signInHref,
         signInLabel: m['game.auth.sign_in'](),
         signOutLabel: m['game.auth.sign_out'](),
-        userName: session?.user?.name ?? session?.user?.email,
+        userName: session?.user?.name,
         userImage: session?.user?.image,
         onSignOut: handleSignOut,
       }}
