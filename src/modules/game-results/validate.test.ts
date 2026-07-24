@@ -21,12 +21,41 @@ function run() {
     assert.equal(ok.value.isPerfect, true);
   }
 
-  const bad = sanitizeSubmitInput({
+  const badWinPct = sanitizeSubmitInput({
     winPct: -1,
-    record: 'x',
+    record: '58–24',
     isPerfect: false,
   });
-  assert.equal(bad.ok, false);
+  assert.equal(badWinPct.ok, false);
+  if (!badWinPct.ok) {
+    assert.equal(badWinPct.error, 'Invalid winPct');
+  }
+
+  const badRecord = sanitizeSubmitInput({
+    winPct: 50,
+    record: '   ',
+    isPerfect: false,
+  });
+  assert.equal(badRecord.ok, false);
+  if (!badRecord.ok) {
+    assert.equal(badRecord.error, 'Invalid record');
+  }
+
+  const badBody = sanitizeSubmitInput(null);
+  assert.equal(badBody.ok, false);
+  if (!badBody.ok) {
+    assert.equal(badBody.error, 'Invalid body');
+  }
+
+  const stringFalsePerfect = sanitizeSubmitInput({
+    winPct: 50,
+    record: '58–24',
+    isPerfect: 'false',
+  });
+  assert.ok(stringFalsePerfect.ok);
+  if (stringFalsePerfect.ok) {
+    assert.equal(stringFalsePerfect.value.isPerfect, false);
+  }
 
   const day = windowStartUtc('day', new Date('2026-07-24T15:00:00.000Z'));
   assert.equal(day!.toISOString(), '2026-07-24T00:00:00.000Z');

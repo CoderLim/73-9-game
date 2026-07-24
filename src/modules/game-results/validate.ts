@@ -29,7 +29,7 @@ export function sanitizeSubmitInput(
   if (!record || record.length > RECORD_MAX) {
     return { ok: false, error: 'Invalid record' };
   }
-  const isPerfect = Boolean(b.isPerfect);
+  const isPerfect = b.isPerfect === true;
   let lineupJson = '[]';
   const lineup = b.lineup ?? b.lineupJson;
   if (lineup !== undefined) {
