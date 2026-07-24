@@ -30,7 +30,7 @@ function HomePage() {
             <source type="image/webp" srcSet="/images/arena-court.webp" />
             <img
               src="/images/arena-court.jpg"
-              alt=""
+              alt="Basketball arena court at night"
               decoding="async"
               fetchPriority="high"
               className="h-full w-full scale-105 object-cover object-[center_40%]"
@@ -75,7 +75,7 @@ export const Route = createFileRoute('/')({
         {
           name: 'description',
           content:
-            'You have $100 million to put together a squad to try to beat the best regular-season team ever — the 2015-16 Warriors. Play free at 73-9.org.',
+            '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record. Play free at 73-9.org.',
         },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: '73-9 Game' },
@@ -86,7 +86,7 @@ export const Route = createFileRoute('/')({
         {
           property: 'og:description',
           content:
-            'You have $100 million to put together a squad to try to beat the best regular-season team ever — the 2015-16 Warriors.',
+            '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record.',
         },
         { property: 'og:url', content: 'https://73-9.org' },
         {

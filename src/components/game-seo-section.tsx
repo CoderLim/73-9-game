@@ -52,9 +52,9 @@ export function GameSeoSection({
         <p className="font-[Barlow_Condensed,sans-serif] text-[11px] tracking-[0.28em] text-[#fd6a00] uppercase sm:text-xs">
           {eyebrow}
         </p>
-        <h2 className="mt-3 font-[Barlow_Condensed,sans-serif] text-[1.75rem] leading-tight font-bold tracking-wide text-[#eaeaff] uppercase sm:text-4xl">
+        <h1 className="mt-3 font-[Barlow_Condensed,sans-serif] text-[1.75rem] leading-tight font-bold tracking-wide text-[#eaeaff] uppercase sm:text-4xl">
           {title}
-        </h2>
+        </h1>
         <p className="mt-5 max-w-2xl font-sans text-[13px] leading-[1.85] text-[#a0a0c0] sm:text-sm sm:leading-[1.9]">
           {intro}
         </p>

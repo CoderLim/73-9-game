@@ -36,11 +36,11 @@ export function MainGame({ className }: { className?: string }) {
                   <img
                     className="logo-mark"
                     src="/logo.png"
-                    alt=""
+                    alt="73-9"
                     width={72}
                     height={72}
                   />
-                  <h1 className="logo-main">73-9</h1>
+                  <p className="logo-main">73-9</p>
                   <div className="subtitle">Challenge the 73–9 Warriors</div>
                   <div className="mt-8 text-sm text-[#90a1b9]">Loading…</div>
                 </div>

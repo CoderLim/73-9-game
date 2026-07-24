@@ -90,7 +90,7 @@ export function GamePageHeader({
         >
           <img
             src="/logo.png"
-            alt=""
+            alt={brand}
             width={36}
             height={36}
             className="size-8 object-contain md:size-9"

@@ -5,12 +5,12 @@ export function IntroScreen() {
       <img
         className="logo-mark"
         src="/logo.png"
-        alt=""
+        alt="73-9"
         width={72}
         height={72}
         decoding="async"
       />
-      <h1 className="logo-main">73-9</h1>
+      <p className="logo-main">73-9</p>
       <div className="subtitle">Draft five players. Outdo 73–9.</div>
       <div className="budget-hero">
         Your budget
