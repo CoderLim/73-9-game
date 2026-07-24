@@ -208,8 +208,8 @@ export function mountGame73(root, opts = {}) {
       const rec = playerIndex[name];
       return rec && rec.cp != null ? rec.cp | 0 : 2;
     }
-    const games = playerIndex[name];
-    if (!games) return 2;
+    const games = legacyGameList(name);
+    if (!games.length) return 2;
     const ct = [0, 0, 0, 0, 0];
     games.forEach((g) => {
       const p = getPlayerPos(g);
@@ -747,6 +747,18 @@ export function mountGame73(root, opts = {}) {
     playerNames = [];
   /** True when data.bin is season-aggregate v2 ({v:2,d[name]={c,cp,s}}). */
   let DATA_V2 = false;
+  function isSeasonAggregateData(raw) {
+    if (!raw || !raw.d) return false;
+    if (raw.v === 2) return true;
+    const keys = Object.keys(raw.d);
+    if (!keys.length) return false;
+    const rec = raw.d[keys[0]];
+    return !!(rec && !Array.isArray(rec) && rec.s && typeof rec.s === 'object');
+  }
+  function legacyGameList(name) {
+    const rec = playerIndex[name];
+    return Array.isArray(rec) ? rec : [];
+  }
   let bioData = [],
     bioByName = {};
   let ACC_DATA = {}; // season accolades: { "Player Name": { "<endYear>": [codes...] } }
@@ -1058,12 +1070,12 @@ export function mountGame73(root, opts = {}) {
       const row = seasonRow(name, sy);
       if (!row) out = [];
       else {
-        const tms = row[3] && row[3].length ? row[3] : [0];
+        const tms = Array.isArray(row[3]) && row[3].length ? row[3] : [0];
         // One synthetic box score per team worn that season (franchise checks + sim template).
         out = tms.map((tm) => synthGameFromRow(row, sy, tm));
       }
     } else {
-      out = (playerIndex[name] || []).filter(
+      out = legacyGameList(name).filter(
         (g) => g[G.SY] === sy && isPlayableGame(g)
       );
     }
@@ -1088,7 +1100,7 @@ export function mountGame73(root, opts = {}) {
           gs = seasonGames(name, anySy);
         }
       } else {
-        gs = (playerIndex[name] || []).filter(isPlayableGame); // fallback to any era
+        gs = legacyGameList(name).filter(isPlayableGame); // fallback to any era
       }
     }
     if (!gs.length) return null;
@@ -5548,7 +5560,7 @@ export function mountGame73(root, opts = {}) {
         reject(new Error('no indexedDB'));
         return;
       }
-      const req = indexedDB.open('h99cache-v3', 1);
+      const req = indexedDB.open('h99cache-v4', 1);
       req.onupgradeneeded = () => {
         try {
           req.result.createObjectStore('files');
@@ -5627,7 +5639,14 @@ export function mountGame73(root, opts = {}) {
       const dataVer = await dataVerPromise;
       if (dataVer) {
         const cached = await idbGet('data.bin');
-        if (cached && cached.ver === dataVer && cached.raw) {
+        if (
+          cached &&
+          cached.ver === dataVer &&
+          cached.raw &&
+          // Drop caches that don't match aggregate/legacy shape expectations
+          (cached.raw.v === 2 ||
+            Array.isArray(cached.raw.d?.[Object.keys(cached.raw.d || {})[0]]))
+        ) {
           label.textContent = 'Loading cached data...';
           fill.style.width = '90%';
           raw = cached.raw;
@@ -5709,8 +5728,10 @@ export function mountGame73(root, opts = {}) {
       TEAMS = raw.t;
       POS = raw.p;
       playerIndex = raw.d;
-      DATA_V2 = raw.v === 2;
       playerNames = Object.keys(playerIndex).sort();
+      // Prefer explicit v:2; also detect by shape so a missing/stripped `v` still works
+      // (Safari: iterating a v2 player record throws "{} is not iterable").
+      DATA_V2 = isSeasonAggregateData(raw);
 
       label.textContent = 'Loading bio data...';
       fill.style.width = '95%';
@@ -5721,8 +5742,9 @@ export function mountGame73(root, opts = {}) {
           bioData = bioRaw.filter((r) => {
             const rec = playerIndex[r[0]];
             if (!rec) return false;
-            if (DATA_V2) return (rec.c | 0) >= 20;
-            return rec.length >= 20;
+            if (DATA_V2 || (!Array.isArray(rec) && rec.s))
+              return (rec.c | 0) >= 20;
+            return Array.isArray(rec) && rec.length >= 20;
           });
           bioData.forEach((r, i) => {
             bioByName[r[0]] = i;
@@ -5752,8 +5774,7 @@ export function mountGame73(root, opts = {}) {
         if (DATA_V2) {
           gp = seasonGp(name, sy);
         } else {
-          const games = playerIndex[name] || [];
-          for (const g of games) {
+          for (const g of legacyGameList(name)) {
             if (g[G.SY] === sy && isPlayableGame(g)) {
               gp++;
               if (gp >= 1) break;
@@ -5865,8 +5886,7 @@ export function mountGame73(root, opts = {}) {
             WAR2016.add(name);
           }
         } else {
-          const games = playerIndex[name] || [];
-          for (const gm of games) {
+          for (const gm of legacyGameList(name)) {
             if (
               gm[G.SY] === 2016 &&
               isPlayableGame(gm) &&

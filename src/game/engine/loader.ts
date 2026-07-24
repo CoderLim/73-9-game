@@ -79,6 +79,15 @@ const NBA_FRANCHISES: Array<{
   },
 ];
 
+function isSeasonAggregateData(raw: GameData): boolean {
+  if (!raw?.d) return false;
+  if (raw.v === 2) return true;
+  const keys = Object.keys(raw.d);
+  if (!keys.length) return false;
+  const rec = raw.d[keys[0]];
+  return !!(rec && !Array.isArray(rec) && 's' in rec);
+}
+
 export function isPlayableGame(g: GameTuple): boolean {
   return PLAYABLE_GAME_TYPES.has(g[G.TY]);
 }
@@ -119,7 +128,7 @@ function idbOpen(): Promise<IDBDatabase> {
       reject(new Error('no indexedDB'));
       return;
     }
-    const req = indexedDB.open('h99cache-v3', 1);
+    const req = indexedDB.open('h99cache-v4', 1);
     req.onupgradeneeded = () => {
       try {
         req.result.createObjectStore('files');
@@ -326,7 +335,7 @@ export async function loadGameData(
     const bioResp = await bioPromise;
     if (bioResp.ok) {
       const bioRaw = (await bioResp.json()) as BioRow[];
-      const dataV2 = raw.v === 2;
+      const dataV2 = isSeasonAggregateData(raw);
       bioData = bioRaw.filter((r) => {
         const rec = playerIndex[r[0] as string];
         if (!rec) return false;
@@ -361,7 +370,7 @@ export async function loadGameData(
     if (!Object.prototype.hasOwnProperty.call(bioByName, name)) continue;
     let gp = 0;
     const rec = playerIndex[name];
-    if (raw.v === 2 && rec && !Array.isArray(rec)) {
+    if (isSeasonAggregateData(raw) && rec && !Array.isArray(rec)) {
       const row = rec.s[String(sy)] || rec.s[sy as unknown as string];
       gp = row ? row[0] | 0 : 0;
     } else if (Array.isArray(rec)) {
@@ -425,7 +434,7 @@ export async function loadGameData(
   for (const name of playerNames) {
     const rec = playerIndex[name];
     if (!rec) continue;
-    if (raw.v === 2 && !Array.isArray(rec)) {
+    if (isSeasonAggregateData(raw) && !Array.isArray(rec)) {
       const row = rec.s['2016'];
       if (!row) continue;
       for (const tm of row[3] || []) {
