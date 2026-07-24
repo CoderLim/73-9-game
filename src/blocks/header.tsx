@@ -6,7 +6,7 @@ export function Header() {
     <GamePageHeader
       brand={m['game.brand']()}
       navLinks={[
-        { href: '#play', label: m['game.nav.play']() },
+        { href: '#play', label: m['game.nav.play'](), active: true },
         { href: '#about', label: m['game.nav.about']() },
         { href: '#highlights', label: m['game.nav.highlights']() },
       ]}

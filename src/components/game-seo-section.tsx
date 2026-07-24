@@ -31,28 +31,28 @@ export function GameSeoSection({
     <section
       id="about"
       className={cn(
-        'w-full bg-[linear-gradient(180deg,#0a0a1a_0%,#050510_100%)] py-14 sm:py-16',
+        'w-full bg-[#05050a]/85 py-14 backdrop-blur-sm sm:py-16',
         className
       )}
     >
       <div className="mx-auto max-w-[720px] px-4 sm:px-6">
-        <p className="font-[Oswald,sans-serif] text-[11px] tracking-[0.28em] text-[#ff6b35] uppercase sm:text-xs">
+        <p className="font-[Barlow_Condensed,sans-serif] text-[11px] tracking-[0.28em] text-[#ff6b35] uppercase sm:text-xs">
           {eyebrow}
         </p>
-        <h2 className="mt-3 font-[Oswald,sans-serif] text-[1.75rem] leading-tight font-bold tracking-wide text-[#eaeaff] uppercase sm:text-4xl">
+        <h2 className="mt-3 font-[Barlow_Condensed,sans-serif] text-[1.75rem] leading-tight font-bold tracking-wide text-[#eaeaff] uppercase sm:text-4xl">
           {title}
         </h2>
-        <p className="mt-5 max-w-2xl font-[JetBrains_Mono,ui-monospace,monospace] text-[13px] leading-[1.85] text-[#a0a0c0] sm:text-sm sm:leading-[1.9]">
+        <p className="mt-5 max-w-2xl font-sans text-[13px] leading-[1.85] text-[#a0a0c0] sm:text-sm sm:leading-[1.9]">
           {intro}
         </p>
 
         <div className="mt-11 space-y-10 sm:mt-14 sm:space-y-12">
           {blocks.map((block) => (
             <article key={block.heading}>
-              <h3 className="font-[Oswald,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase sm:text-xl">
+              <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase sm:text-xl">
                 {block.heading}
               </h3>
-              <div className="mt-3.5 space-y-3.5 font-[JetBrains_Mono,ui-monospace,monospace] text-[13px] leading-[1.85] text-[#9494b8] sm:mt-4 sm:space-y-4 sm:text-sm sm:leading-[1.9]">
+              <div className="mt-3.5 space-y-3.5 font-sans text-[13px] leading-[1.85] text-[#9494b8] sm:mt-4 sm:space-y-4 sm:text-sm sm:leading-[1.9]">
                 {block.paragraphs.map((p) => (
                   <p key={p.slice(0, 48)}>{p}</p>
                 ))}
@@ -62,7 +62,7 @@ export function GameSeoSection({
         </div>
 
         <div className="mt-12 sm:mt-16">
-          <h3 className="font-[Oswald,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase sm:text-xl">
+          <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase sm:text-xl">
             {faqTitle}
           </h3>
           <div className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
@@ -71,7 +71,7 @@ export function GameSeoSection({
                 key={faq.question}
                 className="group rounded-xl border border-[#2a2a52] bg-[#0c0c1e]/80 px-4 py-3.5 open:border-[#ff6b35]/45"
               >
-                <summary className="cursor-pointer list-none font-[Oswald,sans-serif] text-[13px] tracking-wide text-[#d4d4f0] uppercase marker:content-none sm:text-sm [&::-webkit-details-marker]:hidden">
+                <summary className="cursor-pointer list-none font-[Barlow_Condensed,sans-serif] text-[13px] tracking-wide text-[#d4d4f0] uppercase marker:content-none sm:text-sm [&::-webkit-details-marker]:hidden">
                   <span className="flex items-center justify-between gap-3">
                     {faq.question}
                     <span className="shrink-0 text-base text-[#ff6b35] transition group-open:rotate-45">
@@ -79,7 +79,7 @@ export function GameSeoSection({
                     </span>
                   </span>
                 </summary>
-                <p className="mt-3 font-[JetBrains_Mono,ui-monospace,monospace] text-[13px] leading-[1.85] text-[#9494b8] sm:text-sm">
+                <p className="mt-3 font-sans text-[13px] leading-[1.85] text-[#9494b8] sm:text-sm">
                   {faq.answer}
                 </p>
               </details>

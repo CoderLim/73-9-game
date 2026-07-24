@@ -3,21 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Font families — shell uses Inter; the 73-9 game iframe loads Oswald + JetBrains Mono. */
+/* Fonts aligned with 82-0.com: Fira Sans + Barlow Condensed + Geist Mono. */
 :root {
-  --font-sans: 'Inter Variable', 'Inter', sans-serif;
+  --font-sans: 'Fira Sans', 'Inter Variable', 'Inter', sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Fira Sans', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
   --font-serif-display: 'Libre Baskerville', serif;
-  /* 73-9 game palette (from hoopsmatic.com/73-9-game :root) */
-  --game-gold: #ffd700;
-  --game-orange: #ff6b35;
-  --game-green: #34d97a;
-  --game-amber: #ffd24a;
-  --game-red: #ff6666;
-  --game-ink: #c8c8e0;
-  --game-dim: #8888aa;
-  --game-panel: #12122a;
-  --game-panel2: #0c0c1e;
-  --game-line: #2a2a52;
+  /* 73-9 / 82-0 aligned palette */
+  --game-gold: #ffce54;
+  --game-orange: #fd6a00;
+  --game-green: #05df72;
+  --game-amber: #f99c00;
+  --game-red: #ff6568;
+  --game-ink: #ffffff;
+  --game-dim: #90a1b9;
+  --game-panel: #1a1f2e;
+  --game-panel2: #0c101c;
+  --game-line: #2d3548;
 }
 
 @theme inline {
@@ -60,6 +62,8 @@
   --font-sans:
     var(--font-sans), -apple-system, 'system-ui', 'Segoe UI', Helvetica, Arial,
     sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-condensed: var(--font-condensed), 'Arial Narrow', sans-serif;
   /* CJK serif glyphs use locally-installed fonts — a Chinese serif webfont
      ships 300+ @font-face subsets (~100KB render-blocking CSS on every page)
      and is not worth it for headings. */
@@ -70,7 +74,7 @@
 
 @layer base {
   :root {
-    /* Dark court theme aligned with 73-9 game (#0a0a1a / #c8c8e0 / #ff6b35) */
+    /* Dark court theme aligned with 82-0 (#0c101c / #bdc6d8 / #fd6a00) */
     --background: oklch(0.14 0.03 275);
     --foreground: oklch(0.84 0.02 280);
     --card: oklch(0.18 0.035 275);

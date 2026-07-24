@@ -24,7 +24,7 @@ export function GamePageFooter({
   return (
     <footer
       className={cn(
-        'w-full border-t border-[#2a2a52] bg-[#050510] py-12',
+        'w-full border-t border-[#1c283e] bg-[#050510]/95 py-12 backdrop-blur-sm',
         className
       )}
     >
@@ -39,7 +39,7 @@ export function GamePageFooter({
               className="size-12 shrink-0 object-contain"
             />
             <p
-              className="font-[Oswald,sans-serif] text-2xl font-bold tracking-[0.18em] text-transparent uppercase"
+              className="font-[Barlow_Condensed,sans-serif] text-2xl font-bold tracking-[0.18em] text-transparent uppercase"
               style={{
                 backgroundImage:
                   'linear-gradient(135deg, #ff6b35 0%, #ffd700 50%, #ff6b35 100%)',
@@ -50,10 +50,10 @@ export function GamePageFooter({
               {brand}
             </p>
           </div>
-          <p className="mt-3 max-w-md font-[JetBrains_Mono,ui-monospace,monospace] text-sm text-[#8888aa]">
+          <p className="mt-3 max-w-md font-sans text-sm text-[#8888aa]">
             {tagline}
           </p>
-          <p className="mt-4 font-[JetBrains_Mono,ui-monospace,monospace] text-sm text-[#5c5c82]">
+          <p className="mt-4 font-sans text-sm text-[#5c5c82]">
             Support:{' '}
             <a
               href={`mailto:${supportEmail}`}
@@ -65,7 +65,7 @@ export function GamePageFooter({
           {links && links.length > 0 ? (
             <nav
               aria-label="Footer"
-              className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-[JetBrains_Mono,ui-monospace,monospace] text-sm"
+              className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-sans text-sm"
             >
               {links.map((link) => (
                 <Link
@@ -80,9 +80,7 @@ export function GamePageFooter({
           ) : null}
         </div>
         <div className="flex flex-col items-start gap-4 sm:items-end">
-          <p className="font-[JetBrains_Mono,ui-monospace,monospace] text-xs text-[#5c5c82]">
-            {copyright}
-          </p>
+          <p className="font-sans text-xs text-[#5c5c82]">{copyright}</p>
         </div>
       </div>
     </footer>

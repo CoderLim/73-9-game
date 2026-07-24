@@ -10,16 +10,41 @@ import { MainGame } from '@/components/main-game';
 
 function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#0a0a1a] text-[#c8c8e0]">
-      <Header />
-      <main className="flex-1">
-        <div className="pt-5 pb-8 sm:pt-7 sm:pb-12">
-          <MainGame />
-        </div>
-        <GameSeo />
-        <GameHighlightsSection />
-      </main>
-      <Footer />
+    <div className="relative flex min-h-screen flex-col font-sans text-[#c8c8e0]">
+      {/* Arena backdrop — absolute inside relative root (not fixed -z-10 under opaque bg) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <picture>
+          <source
+            media="(max-width: 767px)"
+            srcSet="/images/arena-court-mobile.jpg"
+          />
+          <img
+            src="/images/arena-court.jpg"
+            alt=""
+            className="h-full min-h-screen w-full scale-105 object-cover object-[center_30%]"
+          />
+        </picture>
+        <div className="absolute inset-0 bg-[#05050a]/25" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#05050a]/50 via-transparent to-[#05050a]/92" />
+      </div>
+
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <Header />
+        {/* Spacer for fixed header (73px desktop / ~52px mobile) */}
+        <div className="h-[calc(52px+env(safe-area-inset-top))] md:h-[73px]" />
+
+        <main className="relative flex-1">
+          <div className="pt-4 pb-10 sm:pt-6 sm:pb-14">
+            <MainGame />
+          </div>
+          <GameSeo />
+          <GameHighlightsSection />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
@@ -73,10 +98,6 @@ export const Route = createFileRoute('/')({
           href: urlFor(loc),
         })),
         { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap',
-        },
       ],
     };
   },
