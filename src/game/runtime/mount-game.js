@@ -15,6 +15,19 @@ export function mountGame73(root, opts = {}) {
       : typeof location !== 'undefined'
         ? location.search
         : '';
+  const auth = (opts && opts.auth) || {
+    isAuthenticated: false,
+    signInHref: '/sign-in?callbackUrl=/',
+    guestTip: '',
+    signInToSaveLabel: '',
+    saveFailedText: 'Could not save this run.',
+  };
+  const fetchLeaderboard =
+    opts && typeof opts.fetchLeaderboard === 'function'
+      ? opts.fetchLeaderboard
+      : null;
+  const submitResultFn =
+    opts && typeof opts.submitResult === 'function' ? opts.submitResult : null;
   const DATA_BASE = '/73-9-game/';
   const asset = (name) => DATA_BASE + name;
 
@@ -752,12 +765,6 @@ export function mountGame73(root, opts = {}) {
     if (h === 'localhost' || h === '127.0.0.1') return location.origin;
     return 'https://73-9.org';
   })();
-  // Leaderboard API (the Cloudflare Worker). Leave "" to keep the leaderboard hidden.
-  // Set to the deployed Worker URL once it's live, e.g.
-  // "https://hoopsmatic-73-9-leaderboard.<your-subdomain>.workers.dev"
-  const LB_API =
-    'https://hoopsmatic-73-9-leaderboard.thejorgesierra.workers.dev';
-
   // URL-safe base64 of a small JSON payload (unicode-safe for accented names).
   function _b64urlEncode(o) {
     return btoa(unescape(encodeURIComponent(JSON.stringify(o))))
@@ -1299,7 +1306,7 @@ export function mountGame73(root, opts = {}) {
     // Anti-cherry-pick: if a series is live, the series/casual choice happens HERE,
     // before a single team is drawn. Choosing after seeing your five (the old flow)
     // let you draft unlimited squads and attach only your best one to the series.
-    if (!window.__CHALLENGE__ && !window.__CASUAL_GAME__ && LB_API) {
+    if (false) {
       const act =
         _knownFeuds()
           .filter((x) => !x.done && x.opp)
@@ -3749,14 +3756,24 @@ export function mountGame73(root, opts = {}) {
   }
 
   /* ============================================================
-   LEADERBOARD (optional) — posts the result to the Cloudflare Worker, shows the
-   best win% for today / this week / all-time, and lets the user name a new best.
-   Fails silently and never blocks the results screen if LB_API is unset or down.
+   LEADERBOARD — first-party board via GameApp opts (fetchLeaderboard / submitResult).
    ============================================================ */
-  function _lbBase() {
-    return LB_API.replace(/\/+$/, '');
+  function mountGuestTip(parent) {
+    if (auth.isAuthenticated || !auth.guestTip) return;
+    const tip = document.createElement('div');
+    tip.className = 'auth-guest-tip';
+    const text = document.createElement('span');
+    text.textContent = auth.guestTip + ' ';
+    tip.appendChild(text);
+    const link = document.createElement('a');
+    link.className = 'auth-save-link';
+    link.textContent = auth.signInToSaveLabel || 'Sign in';
+    const href = auth.signInHref || '/sign-in';
+    link.href = href.startsWith('/sign-in') ? href : '/sign-in';
+    tip.appendChild(link);
+    parent.insertBefore(tip, parent.firstChild);
   }
-  // Stable per-device identity + display name (for the perfect-squads board).
+  // Stable per-device identity + display name (friend challenges / local prefs).
   function playerId() {
     try {
       let id = localStorage.getItem('h99_id');
@@ -3825,63 +3842,6 @@ export function mountGame73(root, opts = {}) {
       '</span>'
     );
   }
-  function lbFmtPerfect(e) {
-    if (!e) return '<span class="lb-empty">\u2014</span>';
-    const h = e.handle
-      ? ' <a class="lb-handle" href="https://x.com/' +
-        encodeURIComponent(e.handle) +
-        '" target="_blank" rel="noopener">@' +
-        escapeHtmlS(e.handle) +
-        '</a>'
-      : '';
-    return (
-      '<span class="lb-c-pct"><b>' +
-      (e.n || 0) +
-      '</b></span>' +
-      '<span class="lb-c-name">' +
-      escapeHtmlS(e.name || 'anon') +
-      h +
-      '</span>'
-    );
-  }
-  // Personal, not a leaderboard — badges.top10Daily/top100Weekly/top1000Alltime
-  // are now plain numbers (this player's own counts), not lists of other people.
-  function lbRenderBadges(panel, badges) {
-    if (!panel) return;
-    if (!badges) {
-      panel.remove();
-      return;
-    } // older Worker without badges → hide this panel
-    const row = (label, n) =>
-      '<div class="lb-row"><span class="lb-per">' +
-      label +
-      '</span><span class="lb-mark"><b>' +
-      (n || 0) +
-      '</b></span></div>';
-    panel.innerHTML =
-      '<div class="lb-hdr">Your badges</div>' +
-      '<div class="lb-rows">' +
-      row('Top 10 daily finishes', badges.top10Daily) +
-      row('Top 100 weekly finishes', badges.top100Weekly) +
-      row('Top 1,000 all-time finishes', badges.top1000Alltime) +
-      '</div>';
-  }
-  function lbShowRank(panel, rank) {
-    const parts = [];
-    const label = { day: 'Today', week: 'This week', alltime: 'All-time' };
-    for (const w of ['day', 'week', 'alltime']) {
-      const r = rank && rank[w];
-      if (!r) continue;
-      // Rank is exact at any population size now (histogram-based on the
-      // Worker side), so there's no "estimated/unknown" case to handle here.
-      parts.push(label[w] + ': <b>#' + r.rank + '</b> of ' + r.of);
-    }
-    if (!parts.length) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'lb-rank';
-    wrap.innerHTML = 'Where you rank \u2014 ' + parts.join(' \u00b7 ');
-    panel.appendChild(wrap);
-  }
   function lbBoardSection(label, list, fmt, rowClass) {
     const rows =
       list && list.length
@@ -3913,373 +3873,47 @@ export function mountGame73(root, opts = {}) {
       lbBoardSection('This week', board.week, lbFmt, 'lb-row-4') +
       lbBoardSection('All-time', board.alltime, lbFmt, 'lb-row-4');
   }
-  function lbRenderPerfect(panel, perfect) {
-    if (!panel) return;
-    if (!perfect) {
-      panel.remove();
-      return;
-    } // older Worker without the perfect board → hide this panel
-    panel.innerHTML =
-      '<div class="lb-hdr">Most best-possible squads</div>' +
-      lbBoardSection('Today', perfect.day, lbFmtPerfect, 'lb-row-3') +
-      lbBoardSection('This week', perfect.week, lbFmtPerfect, 'lb-row-3') +
-      lbBoardSection('All-time', perfect.alltime, lbFmtPerfect, 'lb-row-3');
-  }
-  let _lbBoard = null,
-    _lbFetched = false; // session cache so we read the board once, not per play
-  // A record only goes on the board WITH a name. If the player hasn't named
-  // themselves yet, the mark is held locally and this form claims it on save.
-  // Always-available, separate from the top-3 claim gate: lets anyone opt into
-  // the leaderboard on their own terms, and retroactively attaches their name
-  // to EVERY anonymous play already on file for this device (both boards), not
-  // just whichever single game happened to trigger a top-3 prompt. Solves both
-  // "not sure where to sign up" and "I played for hours, why aren't I listed."
-  function lbShowSetNameLink() {
-    const row = document.getElementById('lbSetNameRow');
-    if (!row) return;
-    // Fixed 2026-07-16: this used to hide entirely once ANY name existed
-    // locally. But a name set via the win board's own top-3 claim-gate never
-    // touches the perfect board's stored name for this device — only this
-    // link's save() does both. Someone who named themselves that way, then
-    // racked up best-possibles without ever hitting perfect-board top-3
-    // themselves, had no way left to attach their name there. Keep the link
-    // available either way, just with different wording once a name exists.
-    const existing = playerName();
-    const linkText = existing
-      ? 'Best-possible count missing from the leaderboard? Re-sync your name \u2192'
-      : 'Played anonymously so far? Set your name to appear on the leaderboard \u2192';
-    row.innerHTML =
-      '<div class="lb-setname-link"><a href="javascript:void(0)" id="lbSetNameBtn">' +
-      linkText +
-      '</a></div>';
-    document.getElementById('lbSetNameBtn').onclick = () => {
-      row.innerHTML =
-        '<div class="lb-claim"><div class="lb-claim-msg">' +
-        (existing
-          ? 'Confirm your name to re-sync both leaderboards:'
-          : 'Set your name \u2014 this claims every result you\u2019ve already played today, not just this one:') +
-        '</div>' +
-        '<div class="lb-claim-row"><input class="lb-input" id="lbSetNameInput" maxlength="16" placeholder="Your name" autocomplete="off" value="' +
-        escapeHtmlS(existing) +
-        '"><button class="btn lb-save" id="lbSetNameSave">Save</button></div>' +
-        '<div class="lb-claim-note" id="lbSetNameNote"></div></div>';
-      const input = document.getElementById('lbSetNameInput'),
-        note = document.getElementById('lbSetNameNote');
-      const save = async () => {
-        const name = input.value.trim();
-        if (!name) {
-          note.textContent = 'Type a name first.';
-          return;
-        }
-        note.textContent = 'Claiming\u2026';
-        try {
-          const [r1, r2] = await Promise.all([
-            fetch(_lbBase() + '/claim', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                claimAllForId: true,
-                id: playerId(),
-                name,
-              }),
-            }),
-            fetch(_lbBase() + '/perfect', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ id: playerId(), name, renameOnly: true }),
-            }),
-          ]);
-          const d1 = await r1.json(),
-            d2 = await r2.json();
-          if (d1.error && d1.error !== 'play not found') {
-            note.textContent = 'Could not claim: ' + d1.error;
-            return;
-          }
-          setPlayerName(name);
-          _lbSavedName = name;
-          if (d1.board) {
-            _lbApplyWin(d1.board);
-            const p = document.getElementById('lbPanel');
-            if (p) lbRenderBoard(p, _lbBoard);
-          }
-          if (d2 && d2.perfect) {
-            _lbBoard.perfect = d2.perfect;
-            const pp = document.getElementById('lbPerfectPanel');
-            if (pp) lbRenderPerfect(pp, d2.perfect);
-          }
-          row.innerHTML =
-            '<div class="lb-claim-msg">' +
-            (d1.claimed
-              ? 'Claimed ' +
-                d1.claimed +
-                ' result' +
-                (d1.claimed === 1 ? '' : 's') +
-                ' as ' +
-                escapeHtmlS(name) +
-                '.'
-              : 'You\u2019re set as ' + escapeHtmlS(name) + '.') +
-            '</div>';
-        } catch (e) {
-          note.textContent = 'Network error \u2014 try again.';
-        }
-      };
-      document.getElementById('lbSetNameSave').onclick = save;
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') save();
-      });
-      input.focus();
-    };
-  }
-  function lbShowClaimGate(panel, onSave, rank) {
-    let msg = 'Nice result! Add your name to get credit for it:';
-    if (rank) {
-      const label = { day: 'today', week: 'this week', alltime: 'all-time' };
-      let best = null;
-      for (const w of ['day', 'week', 'alltime']) {
-        if (rank[w] && (!best || rank[w].rank < best.r))
-          best = { r: rank[w].rank, of: rank[w].of, w };
-      }
-      if (best)
-        msg =
-          'You\u2019re <b>#' +
-          best.r +
-          ' of ' +
-          best.of +
-          '</b> ' +
-          label[best.w] +
-          '! Add your name to get credit for it:';
-    }
-    const wrap = document.createElement('div');
-    wrap.className = 'lb-claim';
-    wrap.innerHTML =
-      '<div class="lb-claim-msg">' +
-      msg +
-      '</div>' +
-      '<div class="lb-claim-row"><input class="lb-input" maxlength="16" placeholder="Your name" autocomplete="off"><button class="btn lb-save">Claim it</button></div>' +
-      '<div class="lb-claim-row"><input class="lb-input lb-handle-input" maxlength="30" placeholder="Twitter/IG handle (optional)" autocomplete="off" value="' +
-      escapeHtmlS(playerHandle()) +
-      '"></div>' +
-      '<div class="lb-claim-note"></div>';
-    panel.appendChild(wrap);
-    const input = wrap.querySelector('.lb-input'),
-      handleInput = wrap.querySelector('.lb-handle-input'),
-      note = wrap.querySelector('.lb-claim-note');
-    const save = async () => {
-      const name = input.value.trim();
-      if (!name) {
-        note.textContent = 'Type a name first.';
-        return;
-      }
-      const handle = handleInput.value.trim().replace(/^@+/, '');
-      setPlayerName(name);
-      _lbSavedName = name;
-      setPlayerHandle(handle);
-      note.textContent = 'Claiming\u2026';
-      const result = await onSave(name, handle);
-      if (result === true) wrap.remove();
-      else
-        note.textContent =
-          typeof result === 'string'
-            ? result
-            : 'Something went wrong \u2014 try again.';
-    };
-    wrap.querySelector('.lb-save').onclick = save;
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') save();
-    });
-    handleInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') save();
-    });
-  }
-  function _lbApplyWin(w) {
-    if (!_lbBoard) _lbBoard = {};
-    _lbBoard.day = w.day;
-    _lbBoard.week = w.week;
-    _lbBoard.alltime = w.alltime;
-  }
-  async function lbInit(pct, record, isPerfect) {
-    if (!LB_API) return;
+  async function lbInit(pct, record, isPerfect, lineup, sharePayload) {
     const panel = document.getElementById('lbPanel');
-    const perfPanel = document.getElementById('lbPerfectPanel');
-    const badgesPanel = document.getElementById('lbBadgesPanel');
-    if (!panel && !perfPanel) return;
-    const unavailable = () => {
-      if (panel)
-        panel.innerHTML =
-          '<div class="lb-hdr">Best win % vs the 2015-16 Warriors</div><div class="lb-rows lb-loading">leaderboard unavailable right now</div>';
-      if (perfPanel) perfPanel.remove();
-      if (badgesPanel) badgesPanel.remove();
-    };
-    // Fetch the board ONCE per session (cached). Cheap, and keeps us inside the free tier.
-    if (!_lbFetched) {
-      if (panel)
-        panel.innerHTML =
-          '<div class="lb-hdr">Best win % vs the 2015-16 Warriors</div><div class="lb-rows lb-loading">loading…</div>';
-      try {
-        const r = await fetch(
-          _lbBase() + '/board?id=' + encodeURIComponent(playerId())
-        );
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        _lbBoard = await r.json();
-        _lbFetched = true;
-      } catch (e) {
-        console.warn('[ROULETTE] leaderboard /board fetch failed:', e);
-        unavailable();
-        return;
+    if (!panel) return;
+    panel.replaceChildren();
+    const hdr = document.createElement('div');
+    hdr.className = 'lb-hdr';
+    hdr.textContent = 'Best win % vs the 2015-16 Warriors';
+    const loading = document.createElement('div');
+    loading.className = 'lb-rows lb-loading';
+    loading.textContent = 'loading\u2026';
+    panel.append(hdr, loading);
+
+    let board = null;
+    if (auth.isAuthenticated && submitResultFn) {
+      const res = await submitResultFn({
+        winPct: Number(Number(pct).toFixed(2)),
+        record,
+        isPerfect: !!isPerfect,
+        lineup: lineup || [],
+        sharePayload: sharePayload || null,
+      });
+      if (res && res.board) board = res.board;
+      else {
+        const fail = document.createElement('div');
+        fail.className = 'auth-save-failed';
+        fail.textContent = auth.saveFailedText;
+        panel.parentNode && panel.parentNode.insertBefore(fail, panel);
       }
     }
-    if (!_lbBoard) {
-      unavailable();
+    if (!board && fetchLeaderboard) {
+      try {
+        board = await fetchLeaderboard();
+      } catch (e) {
+        board = null;
+      }
+    }
+    if (!board) {
+      loading.textContent = 'leaderboard unavailable right now';
       return;
     }
-    if (panel) lbRenderBoard(panel, _lbBoard);
-    lbRenderPerfect(perfPanel, _lbBoard.perfect);
-    if (perfPanel && _lbBoard.perfectRank)
-      lbShowRank(perfPanel, _lbBoard.perfectRank);
-    lbRenderBadges(badgesPanel, _lbBoard.badges);
-    // Both boards now record EVERY game, named or not — an anonymous score still
-    // counts toward rank/percentile, it just never becomes the visible #1 (the
-    // Worker filters unnamed entries out of that specific display) and never
-    // shows a name. Unnamed players are prompted to claim credit whenever this
-    // result lands in the top 3 of ANY window — a much lower bar than literal
-    // #1, so real good results actually get attributed, without nagging every
-    // single game regardless of how it went.
-    if (panel) {
-      const submitPlay = async (nmVal) => {
-        try {
-          const r = await fetch(_lbBase() + '/claim', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              pct: Number(pct.toFixed(2)),
-              record: record,
-              name: nmVal || '',
-              handle: playerHandle() || '',
-              id: playerId(),
-            }),
-          });
-          return await r.json();
-        } catch (e) {
-          console.warn('[ROULETTE] leaderboard /claim failed:', e);
-          return null;
-        }
-      };
-      const claimName = async (ts, typedName, typedHandle) => {
-        try {
-          const r = await fetch(_lbBase() + '/claim', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              claimTs: ts,
-              name: typedName,
-              handle: typedHandle || '',
-              id: playerId(),
-            }),
-          });
-          return await r.json();
-        } catch (e) {
-          console.warn('[ROULETTE] leaderboard /claim (name) failed:', e);
-          return null;
-        }
-      };
-      const applyResult = (d) => {
-        if (!d || !d.board) return false;
-        _lbApplyWin(d.board);
-        lbRenderBoard(panel, _lbBoard);
-        if (d.rank) lbShowRank(panel, d.rank);
-        return !d.error;
-      };
-      // Distinguish WHY a claim failed instead of blaming it on the name by
-      // default — a network hiccup or a stale/expired play look nothing like a
-      // rejected name, and telling someone their clean name "may be
-      // inappropriate" when the real cause was unrelated is actively misleading.
-      const claimNameWithReason = async (ts, typedName, typedHandle) => {
-        const d = await claimName(ts, typedName, typedHandle);
-        if (!d) return 'Network error \u2014 try again.';
-        if (d.error === 'play not found')
-          return 'That result expired before it could be claimed \u2014 your rank was still saved, just without a name.';
-        if (d.error === 'inappropriate')
-          return 'That name isn\u2019t allowed \u2014 try another.';
-        if (d.error === 'invalid characters')
-          return 'That name has characters we can\u2019t use \u2014 try letters and numbers.';
-        if (d.error === 'invalid handle')
-          return 'That handle has characters we can\u2019t use \u2014 letters, numbers, periods, underscores only.';
-        if (d.error === 'empty') return 'Type a name first.';
-        if (d.error) return 'Could not claim: ' + d.error;
-        return applyResult(d);
-      };
-      const nm = playerName();
-      const d = await submitPlay(nm || '');
-      const ok = applyResult(d);
-      if (ok && !nm && d && d.rank && d.ts) {
-        const isTop3 = (w) => d.rank[w] && d.rank[w].rank <= 3;
-        if (isTop3('day') || isTop3('week') || isTop3('alltime')) {
-          // Claiming afterward attaches a name to THIS SAME play (by its ts) —
-          // it must not resubmit pct/record, which would count as a second game.
-          lbShowClaimGate(
-            panel,
-            (typedName, typedHandle) =>
-              claimNameWithReason(d.ts, typedName, typedHandle),
-            d.rank
-          );
-        }
-      }
-    }
-    // Perfect-squads board: same treatment — every best-possible squad is tallied
-    // regardless of naming, only the visible top-10 and personal credit need one.
-    if (isPerfect && perfPanel) {
-      try {
-        const nm = playerName();
-        const r = await fetch(_lbBase() + '/perfect', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: playerId(),
-            name: nm || '',
-            handle: playerHandle() || '',
-          }),
-        });
-        const d = await r.json();
-        if (d && d.perfect) {
-          _lbBoard.perfect = d.perfect;
-          lbRenderPerfect(perfPanel, d.perfect);
-          // lbRenderPerfect replaces the panel outright, wiping the rank line
-          // /board already added above — re-add it from this fresher data
-          // (reflects standings right after this achievement) rather than
-          // leaving the panel without one.
-          if (d.rank) lbShowRank(perfPanel, d.rank);
-          if (!nm && d.rank) {
-            const isTop3 = (w) => d.rank[w] && d.rank[w].rank <= 3;
-            if (isTop3('day') || isTop3('week') || isTop3('alltime')) {
-              lbShowClaimGate(
-                perfPanel,
-                async (typedName, typedHandle) => {
-                  const r2 = await fetch(_lbBase() + '/perfect', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      id: playerId(),
-                      name: typedName,
-                      handle: typedHandle || '',
-                    }),
-                  });
-                  const d2 = await r2.json();
-                  if (d2 && d2.perfect) {
-                    _lbBoard.perfect = d2.perfect;
-                    lbRenderPerfect(perfPanel, d2.perfect);
-                    return !d2.error;
-                  }
-                  return false;
-                },
-                d.rank
-              );
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('[ROULETTE] leaderboard /perfect failed:', e);
-      }
-    }
+    lbRenderBoard(panel, board);
   }
   // Personal tally of best-possible-squad games, kept on the device (works on the
   // live site; localStorage is only off-limits inside Claude artifacts).
@@ -4519,12 +4153,7 @@ export function mountGame73(root, opts = {}) {
       }
 
       // leaderboards last: this is community/reference info, not the result itself
-      if (LB_API)
-        html +=
-          '<div id="lbPanel" class="war-panel lb-panel"></div>' +
-          '<div id="lbPerfectPanel" class="war-panel lb-panel"></div>' +
-          '<div id="lbBadgesPanel" class="war-panel lb-panel"></div>' +
-          '<div id="lbSetNameRow"></div>';
+      html += '<div id="lbPanel" class="war-panel lb-panel"></div>';
 
       // snapshot what we just rendered so the share card draws from a stable copy
       shareCardData = {
@@ -4557,17 +4186,31 @@ export function mountGame73(root, opts = {}) {
         BUILD.split(' \u00b7 ')[0] +
         '</div>';
       el.innerHTML = html;
+      try {
+        mountGuestTip(el);
+      } catch (e) {}
       window.__LAST_WP__ = winPctStr;
       if (window.__CHALLENGE__) {
         try {
           renderChallengePanel(winPctStr);
         } catch (e) {}
       }
+      const lineupSnap = roster.filter(Boolean).map((p) => ({
+        pos: typeof p.slot === 'number' ? p.slot : p.pos,
+        name: p.name,
+        abbr: p.abbr,
+        sy: p.sy,
+        cost: p.cost,
+        rating: p.rating,
+      }));
       try {
-        lbInit(war.winPct * 100, yours.w + '\u2013' + yours.l, samePicks);
-      } catch (e) {}
-      try {
-        lbShowSetNameLink();
+        lbInit(
+          war.winPct * 100,
+          yours.w + '\u2013' + yours.l,
+          samePicks,
+          lineupSnap,
+          shareCardData
+        );
       } catch (e) {}
       if (samePicks) {
         try {
@@ -5088,14 +4731,7 @@ export function mountGame73(root, opts = {}) {
   // Best-effort put of my squad into the feud's pending slot (used when creating
   // a challenge, before the opponent even exists on the Worker). Fire-and-forget.
   function syncFeudSubmit(id, name, names, squad) {
-    if (!LB_API || !id || !name) return;
-    try {
-      fetch(_lbBase() + '/feud/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, name, names, squad }),
-      }).catch(() => {});
-    } catch (e) {}
+    // External feud worker removed.
   }
   // ---- career feud record (self-reported once per decided series) ----
   function _reportedFeuds() {
@@ -5118,24 +4754,7 @@ export function mountGame73(root, opts = {}) {
     } catch (e) {}
   }
   async function reportCareerResult(feudId, result) {
-    if (!LB_API || !feudId) return null;
-    if (_reportedFeuds().includes(feudId)) return null; // already counted this series
-    _markFeudReported(feudId);
-    try {
-      const r = await fetch(_lbBase() + '/career', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: playerId(),
-          name: playerName(),
-          result: result,
-        }),
-      });
-      const d = await r.json();
-      return d && d.career ? d.career : null;
-    } catch (e) {
-      return null;
-    }
+    return null;
   }
   function badgeHTML(b) {
     if (!b || !b.tier || b.tier === 'Rookie') return '';
@@ -5267,52 +4886,7 @@ export function mountGame73(root, opts = {}) {
     startGame();
   }
   async function checkFeudInbox(excludeId) {
-    if (!LB_API) return;
-    const known = _knownFeuds().filter((f) => !f.done && f.id !== excludeId);
-    if (!known.length) return;
-    try {
-      const ids = known.map((f) => f.id).join(',');
-      const r = await fetch(_lbBase() + '/feud?ids=' + encodeURIComponent(ids));
-      if (!r.ok) return;
-      const d = await r.json();
-      const feuds = (d && d.feuds) || {};
-      const updates = [],
-        merged = _knownFeuds();
-      for (const f of known) {
-        const live = feuds[f.id];
-        if (!live) continue;
-        // pending is now a per-player map. It's the opponent's move only if MY
-        // squad is the one sitting in it; it's my move if theirs is (or if the
-        // round just resolved and nobody has drafted the next one yet).
-        const pnames = Object.keys(live.pending || {});
-        const mineIn = !!(f.myName && pnames.includes(f.myName));
-        const theirsIn = pnames.some((n) => !f.myName || n !== f.myName);
-        const scoreChanged =
-          JSON.stringify(f.score || {}) !== JSON.stringify(live.score || {});
-        const justFinished = !!(live.done && !f.done);
-        if (theirsIn || scoreChanged || justFinished) {
-          updates.push({
-            opp: f.opp,
-            live,
-            canPlay: !live.done && !mineIn,
-            waitingOnThem: !live.done && mineIn && !theirsIn,
-          });
-          window.__FEUD_CONTINUE__[f.id] = live;
-          const idx = merged.findIndex((x) => x.id === f.id);
-          if (idx >= 0)
-            merged[idx] = Object.assign({}, merged[idx], {
-              score: live.score,
-              done: !!live.done,
-            });
-        }
-      }
-      if (updates.length) {
-        _saveKnownFeuds(merged);
-        showFeudInboxBanner(updates);
-      }
-    } catch (e) {
-      console.warn('[ROULETTE] feud inbox check failed:', e);
-    }
+    return;
   }
   function dismissFeudLine(id) {
     _saveKnownFeuds(_knownFeuds().filter((x) => x.id !== id));
@@ -5452,118 +5026,7 @@ export function mountGame73(root, opts = {}) {
     const chN = ch.nm || 'Challenger';
     const feudId = (ch.f && ch.f.id) || genId();
     let me = myFeudName(ch);
-    if (!LB_API) return { mode: 'offline' };
-    // Identity guard: check the authoritative score BEFORE submitting. A series
-    // has exactly two participants; if the live score already names two and I'm
-    // not one of them, one of them IS me under my earlier name (rename mid-series,
-    // cleared localStorage, second device). Adopt it instead of injecting a third.
-    try {
-      const r0 = await fetch(
-        _lbBase() + '/feud?ids=' + encodeURIComponent(feudId)
-      );
-      if (r0.ok) {
-        const d0 = await r0.json();
-        const live0 = (d0 && d0.feuds && d0.feuds[feudId]) || null;
-        if (live0 && live0.score) {
-          const parts = Object.keys(live0.score);
-          if (parts.length >= 2 && !parts.includes(me)) {
-            const adopted = parts.find((k) => k !== chN);
-            if (adopted) {
-              me = adopted;
-              setFeudMyName(feudId, adopted);
-            }
-          }
-        }
-      }
-    } catch (e) {
-      /* pre-check is best-effort; submit still safe without it */
-    }
-    const five = roster.filter(Boolean);
-    const squad = {
-      name: me,
-      wp: friendWarPctStr,
-      rec: shareCardData ? shareCardData.w + '-' + shareCardData.l : '',
-      st: lineupStrength(roster),
-      p: five.map((p) => ({ nm: p.name, ab: p.abbr, sy: p.sy })),
-    };
-    let sub = null;
-    try {
-      const r = await fetch(_lbBase() + '/feud/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: feudId, name: me, names: [me, chN], squad }),
-      });
-      sub = await r.json();
-    } catch (e) {
-      console.warn('[ROULETTE] feud submit failed:', e);
-      return { mode: 'offline' };
-    }
-    if (!sub || !sub.feud) return { mode: 'error' };
-    const liveF = {
-      id: feudId,
-      s: sub.feud.score || {},
-      done: !!sub.feud.done,
-      winner: sub.feud.winner || null,
-    };
-    trackFeudLocally(liveF, chN, me);
-    if (!sub.ready) {
-      window.__CH_FEUD__ = liveF;
-      return { mode: 'waiting', me, chName: chN, f: liveF };
-    }
-    // Opponent's squad is in too — this client simulates and commits the round.
-    const opp = sub.opponentSquad;
-    const recon = reconstructLineup(opp.p);
-    const oppStrength = recon
-      ? lineupStrength(recon)
-      : typeof opp.st === 'number'
-        ? opp.st
-        : null;
-    if (oppStrength == null) return { mode: 'error' };
-    const g = playSeriesGame(roster, oppStrength);
-    const seeded = {
-      id: feudId,
-      n: 0,
-      s: Object.assign({}, sub.feud.score || {}),
-      done: false,
-      winner: null,
-    };
-    if (!(me in seeded.s)) seeded.s[me] = 0;
-    if (!(opp.name in seeded.s)) seeded.s[opp.name] = 0;
-    const f = advanceFeud(seeded, g.youWin ? me : opp.name);
-    try {
-      const r = await fetch(_lbBase() + '/feud/resolve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: feudId,
-          expectN: sub.feud.n || 0,
-          names: [me, opp.name],
-          score: f.s,
-          done: f.done,
-          winner: f.winner,
-          consumed: [me, opp.name],
-        }),
-      });
-      const d = await r.json();
-      if (d && d.error === 'stale' && d.feud) {
-        // Someone else committed this round a split second before us. Show the
-        // authoritative state instead of our uncommitted simulation.
-        const raced = {
-          id: feudId,
-          s: d.feud.score || {},
-          done: !!d.feud.done,
-          winner: d.feud.winner || null,
-        };
-        trackFeudLocally(raced, opp.name, me);
-        window.__CH_FEUD__ = raced;
-        return { mode: 'raced', me, chName: opp.name, f: raced };
-      }
-    } catch (e) {
-      console.warn('[ROULETTE] feud resolve failed:', e);
-    }
-    trackFeudLocally(f, opp.name, me);
-    window.__CH_FEUD__ = f;
-    return { mode: 'resolved', me, chName: opp.name, g, f };
+    return { mode: 'offline' };
   }
   // Renders asynchronously into #chPanel (placed synchronously by showResults),
   // since the round needs a Worker round-trip to submit and possibly resolve.

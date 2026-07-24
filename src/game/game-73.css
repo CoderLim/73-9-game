@@ -725,6 +725,24 @@
 .lb-panel {
   margin-top: 14px;
 }
+.auth-guest-tip {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #90a1b9;
+  text-align: center;
+}
+.auth-guest-tip .auth-save-link {
+  color: #fd6a00;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.auth-save-failed {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #f0a060;
+  text-align: center;
+}
 .lb-hdr {
   font-family: 'Barlow Condensed', sans-serif;
   text-transform: uppercase;
