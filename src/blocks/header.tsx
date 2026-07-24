@@ -21,7 +21,7 @@ export function Header() {
       ]}
       auth={{
         status: authStatus,
-        signInHref: '/sign-in',
+        signInHref: '/sign-in?callbackUrl=/',
         signInLabel: m['game.auth.sign_in'](),
         signOutLabel: m['game.auth.sign_out'](),
         userName: session?.user?.name ?? session?.user?.email,
