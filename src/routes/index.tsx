@@ -10,41 +10,50 @@ import { MainGame } from '@/components/main-game';
 
 function HomePage() {
   return (
-    <div className="relative flex min-h-screen flex-col font-sans text-[#c8c8e0]">
-      {/* Arena backdrop — absolute inside relative root (not fixed -z-10 under opaque bg) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <picture>
-          <source
-            media="(max-width: 767px)"
-            srcSet="/images/arena-court-mobile.jpg"
-          />
-          <img
-            src="/images/arena-court.jpg"
-            alt=""
-            className="h-full min-h-screen w-full scale-105 object-cover object-[center_30%]"
-          />
-        </picture>
-        <div className="absolute inset-0 bg-[#05050a]/25" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#05050a]/50 via-transparent to-[#05050a]/92" />
-      </div>
+    <div className="flex min-h-dvh flex-col font-sans text-[#c8c8e0]">
+      {/* First viewport: arena backdrop + game card (fills 100dvh) */}
+      <div className="relative flex min-h-dvh flex-col">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <picture>
+            <source
+              media="(max-width: 767px)"
+              type="image/webp"
+              srcSet="/images/arena-court-mobile.webp"
+            />
+            <source
+              media="(max-width: 767px)"
+              srcSet="/images/arena-court-mobile.jpg"
+            />
+            <source type="image/webp" srcSet="/images/arena-court.webp" />
+            <img
+              src="/images/arena-court.jpg"
+              alt=""
+              decoding="async"
+              fetchPriority="high"
+              className="h-full w-full scale-105 object-cover object-[center_40%]"
+            />
+          </picture>
+          <div className="absolute inset-0 bg-[#05050a]/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#05050a]/50 via-transparent to-[#05050a]/92" />
+        </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         {/* Spacer for fixed header (73px desktop / ~52px mobile) */}
-        <div className="h-[calc(52px+env(safe-area-inset-top))] md:h-[73px]" />
+        <div className="relative z-10 h-[calc(52px+env(safe-area-inset-top))] shrink-0 md:h-[73px]" />
 
-        <main className="relative flex-1">
-          <div className="pt-4 pb-10 sm:pt-6 sm:pb-14">
-            <MainGame />
-          </div>
-          <GameSeo />
-          <GameHighlightsSection />
-        </main>
-        <Footer />
+        <div className="relative z-10 flex flex-1 flex-col justify-center py-4 sm:py-6">
+          <MainGame />
+        </div>
       </div>
+
+      <main className="relative">
+        <GameSeo />
+        <GameHighlightsSection />
+      </main>
+      <Footer />
     </div>
   );
 }

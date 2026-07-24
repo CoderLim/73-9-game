@@ -68,7 +68,7 @@ export function GamePageHeader({
               height={36}
               className="size-8 object-contain md:size-9"
             />
-            <span className="font-sans text-base font-semibold tracking-tight text-white">
+            <span className="font-sans text-base font-semibold tracking-wide text-white uppercase">
               {brand}
             </span>
           </Link>
@@ -79,7 +79,7 @@ export function GamePageHeader({
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative px-2.5 py-1.5 font-sans text-[15px] text-white/90 transition-colors hover:text-white md:text-base',
+                  'relative px-2.5 py-1.5 font-sans text-[15px] tracking-wide text-white/90 uppercase transition-colors hover:text-white md:text-base',
                   link.active && 'text-white'
                 )}
               >
@@ -103,7 +103,7 @@ export function GamePageHeader({
               ) : auth.status === 'guest' ? (
                 <Link
                   href={auth.signInHref}
-                  className="rounded-md px-2.5 py-1.5 font-sans text-sm text-white/90 transition-colors hover:text-white md:text-[15px]"
+                  className="rounded-md px-2.5 py-1.5 font-sans text-sm tracking-wide text-white/90 uppercase transition-colors hover:text-white md:text-[15px]"
                 >
                   {auth.signInLabel}
                 </Link>
@@ -115,7 +115,7 @@ export function GamePageHeader({
                   <button
                     type="button"
                     onClick={auth.onSignOut}
-                    className="rounded-md border border-white/20 px-2.5 py-1 font-sans text-xs text-white/80 transition-colors hover:border-white/40 hover:text-white md:text-sm"
+                    className="rounded-md border border-white/20 px-2.5 py-1 font-sans text-xs tracking-wide text-white/80 uppercase transition-colors hover:border-white/40 hover:text-white md:text-sm"
                   >
                     {auth.signOutLabel}
                   </button>
@@ -131,7 +131,7 @@ export function GamePageHeader({
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'rounded-md px-2 py-1.5 font-sans text-xs text-white/80',
+                  'rounded-md px-2 py-1.5 font-sans text-xs tracking-wide text-white/80 uppercase',
                   link.active && 'text-[#ff6b00]'
                 )}
               >

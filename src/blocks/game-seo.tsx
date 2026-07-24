@@ -7,6 +7,26 @@ export function GameSeo() {
       eyebrow={m['game.seo.eyebrow']()}
       title={m['game.seo.title']()}
       intro={m['game.seo.intro']()}
+      howTitle={m['game.seo.how.kicker']()}
+      howSubtitle={m['game.seo.how.title']()}
+      steps={[
+        {
+          title: m['game.seo.how.step1.title'](),
+          body: m['game.seo.how.step1.body'](),
+        },
+        {
+          title: m['game.seo.how.step2.title'](),
+          body: m['game.seo.how.step2.body'](),
+        },
+        {
+          title: m['game.seo.how.step3.title'](),
+          body: m['game.seo.how.step3.body'](),
+        },
+        {
+          title: m['game.seo.how.step4.title'](),
+          body: m['game.seo.how.step4.body'](),
+        },
+      ]}
       blocks={[
         {
           heading: m['game.seo.what.heading'](),

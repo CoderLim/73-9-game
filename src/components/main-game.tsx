@@ -27,18 +27,18 @@ export function MainGame({ className }: { className?: string }) {
             'ring-1 ring-[#fd6a00]/20 backdrop-blur-[2px]'
           )}
         >
-          <div className="min-h-[760px] w-full sm:min-h-[820px]">
+          <div className="min-h-[420px] w-full sm:min-h-[460px]">
             {ready ? (
               <GameApp />
             ) : (
-              <div className="game-73-root flex min-h-[760px] items-center justify-center sm:min-h-[820px]">
+              <div className="game-73-root flex min-h-[420px] items-center justify-center sm:min-h-[460px]">
                 <div className="wrap w-full text-center">
                   <img
                     className="logo-mark"
                     src="/logo.png"
                     alt=""
-                    width={88}
-                    height={88}
+                    width={72}
+                    height={72}
                   />
                   <h1 className="logo-main">73-9</h1>
                   <div className="subtitle">Beat the 2015-16 Warriors</div>
