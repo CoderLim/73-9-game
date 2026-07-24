@@ -74,24 +74,35 @@ export function GamePageHeader({
           </Link>
 
           <nav className="hidden items-center gap-1 sm:flex md:gap-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  'relative px-2.5 py-1.5 font-sans text-[15px] tracking-wide text-white/90 uppercase transition-colors hover:text-white md:text-base',
-                  link.active && 'text-white'
-                )}
-              >
-                {link.label}
-                {link.active ? (
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-2.5 -bottom-0.5 h-0.5 rounded-full bg-[#ff6b00]"
-                  />
-                ) : null}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const className = cn(
+                'relative px-2.5 py-1.5 font-sans text-[15px] tracking-wide text-white/90 uppercase transition-colors hover:text-white md:text-base',
+                link.active && 'text-white'
+              );
+              const children = (
+                <>
+                  {link.label}
+                  {link.active ? (
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-2.5 -bottom-0.5 h-0.5 rounded-full bg-[#ff6b00]"
+                    />
+                  ) : null}
+                </>
+              );
+              if (link.href.includes('#')) {
+                return (
+                  <a key={link.href} href={link.href} className={className}>
+                    {children}
+                  </a>
+                );
+              }
+              return (
+                <Link key={link.href} href={link.href} className={className}>
+                  {children}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -126,18 +137,24 @@ export function GamePageHeader({
 
           {/* Mobile: compact nav */}
           <nav className="flex items-center gap-1 sm:hidden">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  'rounded-md px-2 py-1.5 font-sans text-xs tracking-wide text-white/80 uppercase',
-                  link.active && 'text-[#ff6b00]'
-                )}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const className = cn(
+                'rounded-md px-2 py-1.5 font-sans text-xs tracking-wide text-white/80 uppercase',
+                link.active && 'text-[#ff6b00]'
+              );
+              if (link.href.includes('#')) {
+                return (
+                  <a key={link.href} href={link.href} className={className}>
+                    {link.label}
+                  </a>
+                );
+              }
+              return (
+                <Link key={link.href} href={link.href} className={className}>
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </div>

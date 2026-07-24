@@ -24,7 +24,7 @@ export function GamePageFooter({
   return (
     <footer
       className={cn(
-        'w-full border-t border-[#1c283e] bg-[#050510]/95 py-12 backdrop-blur-sm',
+        'w-full border-t border-[#1c283e] bg-[#05050a] py-12',
         className
       )}
     >

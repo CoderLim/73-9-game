@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { signOut, useSession } from '@/core/auth/client';
+import { usePathname } from '@/core/i18n/navigation';
 import { m } from '@/paraglide/messages.js';
 import { GamePageHeader } from '@/components/game-page-header';
 
 export function Header() {
+  const pathname = usePathname();
   const { data: session, isPending } = useSession();
   const [signInHref, setSignInHref] = useState('/sign-in?callbackUrl=/');
 
@@ -15,6 +17,8 @@ export function Header() {
   }, []);
 
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
+  const onHome = pathname === '/';
+  const onLeaderboard = pathname === '/leaderboard';
 
   async function handleSignOut() {
     await signOut();
@@ -24,9 +28,14 @@ export function Header() {
     <GamePageHeader
       brand={m['game.brand']()}
       navLinks={[
-        { href: '#play', label: m['game.nav.play'](), active: true },
-        { href: '#about', label: m['game.nav.about']() },
-        { href: '#highlights', label: m['game.nav.highlights']() },
+        { href: '/', label: m['game.nav.play'](), active: onHome },
+        {
+          href: '/leaderboard',
+          label: m['game.nav.leaderboard'](),
+          active: onLeaderboard,
+        },
+        { href: '/#about', label: m['game.nav.about']() },
+        { href: '/#highlights', label: m['game.nav.highlights']() },
       ]}
       auth={{
         status: authStatus,
