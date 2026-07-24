@@ -19,6 +19,7 @@ export function Header() {
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
   const onHome = pathname === '/';
   const onLeaderboard = pathname === '/leaderboard';
+  const onBlog = pathname === '/blog' || pathname.startsWith('/blog/');
 
   async function handleSignOut() {
     await signOut();
@@ -33,6 +34,11 @@ export function Header() {
           href: '/leaderboard',
           label: m['game.nav.leaderboard'](),
           active: onLeaderboard,
+        },
+        {
+          href: '/blog',
+          label: m['game.nav.blog'](),
+          active: onBlog,
         },
         { href: '/#about', label: m['game.nav.about']() },
         { href: '/#highlights', label: m['game.nav.highlights']() },
