@@ -1,10 +1,36 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { getAuth } from '@/core/auth';
-import { submitResult } from '@/modules/game-results/service';
+import { listMyResults, submitResult } from '@/modules/game-results/service';
 import { sanitizeSubmitInput } from '@/modules/game-results/validate';
 import { enforceMinIntervalRateLimit } from '@/lib/rate-limit';
-import { respData, respErr } from '@/lib/resp';
+import { respData, respErr, respPage } from '@/lib/resp';
+
+async function GET({ request }: { request: Request }) {
+  try {
+    const auth = getAuth();
+    const session = await auth.api.getSession({ headers: request.headers });
+    if (!session?.user) return respErr('Unauthorized');
+
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(
+      1,
+      parseInt(searchParams.get('page') || '1', 10) || 1
+    );
+    const pageSize = Math.min(
+      50,
+      Math.max(1, parseInt(searchParams.get('pageSize') || '20', 10) || 20)
+    );
+
+    const { items, total } = await listMyResults(session.user.id, {
+      page,
+      pageSize,
+    });
+    return respPage(items, total);
+  } catch (error: any) {
+    return respErr(error.message || 'Internal error');
+  }
+}
 
 async function POST({ request }: { request: Request }) {
   try {
@@ -34,5 +60,5 @@ async function POST({ request }: { request: Request }) {
 }
 
 export const Route = createFileRoute('/api/game/results')({
-  server: { handlers: { POST } },
+  server: { handlers: { GET, POST } },
 });

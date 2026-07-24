@@ -1,8 +1,37 @@
-import type { SubmitResultInput } from './types';
+import type { HistoryLineupPlayer, SubmitResultInput } from './types';
 
 const RECORD_MAX = 32;
 const LINEUP_JSON_MAX = 8_000;
 const SHARE_JSON_MAX = 4_000;
+
+export function parseLineupJson(raw: string): HistoryLineupPlayer[] {
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((item) => {
+      if (!item || typeof item !== 'object') return {};
+      const o = item as Record<string, unknown>;
+      const player: HistoryLineupPlayer = {};
+      if (typeof o.pos === 'string' || typeof o.pos === 'number') {
+        player.pos = o.pos;
+      }
+      if (typeof o.name === 'string') player.name = o.name;
+      if (typeof o.abbr === 'string') player.abbr = o.abbr;
+      if (typeof o.sy === 'string' || typeof o.sy === 'number') {
+        player.sy = o.sy;
+      }
+      if (typeof o.cost === 'number' && Number.isFinite(o.cost)) {
+        player.cost = o.cost;
+      }
+      if (typeof o.rating === 'number' && Number.isFinite(o.rating)) {
+        player.rating = o.rating;
+      }
+      return player;
+    });
+  } catch {
+    return [];
+  }
+}
 
 export function encodeWinPct(winPct: number): number {
   return Math.round(Number(winPct) * 100);

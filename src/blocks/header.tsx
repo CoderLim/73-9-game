@@ -19,6 +19,7 @@ export function Header() {
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
   const onHome = pathname === '/';
   const onLeaderboard = pathname === '/leaderboard';
+  const onHistory = pathname === '/history';
   const onHowToPlay = pathname === '/how-to-play';
   const onHowItWorks = pathname === '/how-it-works';
   const onBlog = pathname === '/blog' || pathname.startsWith('/blog/');
@@ -36,6 +37,11 @@ export function Header() {
           href: '/leaderboard',
           label: m['game.nav.leaderboard'](),
           active: onLeaderboard,
+        },
+        {
+          href: '/history',
+          label: m['game.nav.history'](),
+          active: onHistory,
         },
         {
           href: '/how-to-play',

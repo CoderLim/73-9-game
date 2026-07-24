@@ -1,15 +1,16 @@
-import { desc, eq, gte } from 'drizzle-orm';
+import { count, desc, eq, gte } from 'drizzle-orm';
 
 import { db } from '@/core/db';
 import { gameResult, user } from '@/config/db/schema';
 import { getUuid } from '@/lib/hash';
 
 import type {
+  HistoryEntry,
   LeaderboardBoard,
   LeaderboardEntry,
   SubmitResultInput,
 } from './types';
-import { decodeWinPct } from './validate';
+import { decodeWinPct, parseLineupJson } from './validate';
 import { windowStartUtc } from './windows';
 
 const TOP_N = 10;
@@ -49,6 +50,57 @@ export async function getLeaderboard(
     topEntries(windowStartUtc('alltime', now)),
   ]);
   return { day, week, alltime };
+}
+
+function toIso(value: Date | number | string): string {
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'number') return new Date(value).toISOString();
+  const d = new Date(value);
+  return Number.isNaN(d.getTime())
+    ? new Date(0).toISOString()
+    : d.toISOString();
+}
+
+export async function listMyResults(
+  userId: string,
+  opts: { page: number; pageSize: number }
+): Promise<{ items: HistoryEntry[]; total: number }> {
+  const page = Math.max(1, opts.page);
+  const pageSize = Math.min(50, Math.max(1, opts.pageSize));
+  const offset = (page - 1) * pageSize;
+  const where = eq(gameResult.userId, userId);
+
+  const [totalRow] = await db()
+    .select({ count: count() })
+    .from(gameResult)
+    .where(where);
+
+  const rows = await db()
+    .select({
+      id: gameResult.id,
+      winPctX100: gameResult.winPctX100,
+      record: gameResult.record,
+      isPerfect: gameResult.isPerfect,
+      lineupJson: gameResult.lineupJson,
+      createdAt: gameResult.createdAt,
+    })
+    .from(gameResult)
+    .where(where)
+    .orderBy(desc(gameResult.createdAt))
+    .limit(pageSize)
+    .offset(offset);
+
+  return {
+    total: totalRow?.count ?? 0,
+    items: rows.map((r) => ({
+      id: r.id,
+      pct: decodeWinPct(r.winPctX100),
+      record: r.record,
+      isPerfect: Boolean(r.isPerfect),
+      createdAt: toIso(r.createdAt),
+      lineup: parseLineupJson(r.lineupJson ?? '[]'),
+    })),
+  };
 }
 
 export async function submitResult(input: SubmitResultInput): Promise<{

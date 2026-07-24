@@ -1,11 +1,29 @@
 import assert from 'node:assert/strict';
 
-import { decodeWinPct, encodeWinPct, sanitizeSubmitInput } from './validate';
+import {
+  decodeWinPct,
+  encodeWinPct,
+  parseLineupJson,
+  sanitizeSubmitInput,
+} from './validate';
 import { windowStartUtc } from './windows';
 
 function run() {
   assert.equal(encodeWinPct(12.34), 1234);
   assert.equal(decodeWinPct(1234), 12.34);
+
+  const lineup = parseLineupJson(
+    JSON.stringify([
+      { pos: 'PG', name: 'A', abbr: 'GSW', sy: 2016, cost: 10, rating: 90 },
+      { junk: true },
+    ])
+  );
+  assert.equal(lineup.length, 2);
+  assert.equal(lineup[0]?.name, 'A');
+  assert.equal(lineup[0]?.abbr, 'GSW');
+  assert.deepEqual(lineup[1], {});
+  assert.deepEqual(parseLineupJson('not-json'), []);
+  assert.deepEqual(parseLineupJson('{}'), []);
 
   const ok = sanitizeSubmitInput({
     winPct: 12.345,
