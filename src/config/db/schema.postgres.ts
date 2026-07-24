@@ -635,3 +635,28 @@ export type InviteCode = typeof inviteCode.$inferSelect;
 export type NewInviteCode = typeof inviteCode.$inferInsert;
 export type UserInvite = typeof userInvite.$inferSelect;
 export type NewUserInvite = typeof userInvite.$inferInsert;
+
+export const gameResult = table(
+  'game_result',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    /** Win % × 100 (e.g. 1234 → 12.34%). */
+    winPctX100: integer('win_pct_x100').notNull(),
+    record: text('record').notNull(),
+    isPerfect: boolean('is_perfect').notNull().default(false),
+    lineupJson: text('lineup_json').notNull().default('[]'),
+    sharePayload: text('share_payload'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (t) => [
+    index('idx_game_result_user').on(t.userId),
+    index('idx_game_result_created').on(t.createdAt),
+    index('idx_game_result_pct_created').on(t.winPctX100, t.createdAt),
+  ]
+);
+
+export type GameResult = typeof gameResult.$inferSelect;
+export type NewGameResult = typeof gameResult.$inferInsert;
