@@ -79,6 +79,8 @@ export default defineConfig({
           pattern: '/api/:path(.*)?',
           localized: [
             ['en', '/api/:path(.*)?'],
+            ['ja', '/api/:path(.*)?'],
+            ['ko', '/api/:path(.*)?'],
             ['zh', '/api/:path(.*)?'],
           ],
         },
@@ -86,14 +88,18 @@ export default defineConfig({
         {
           pattern: '/',
           localized: [
+            ['ja', '/ja'],
+            ['ko', '/ko'],
             ['zh', '/zh'],
             ['en', '/'],
           ],
         },
-        // "as-needed" prefix: zh under /zh, en (default) unprefixed.
+        // "as-needed" prefix: ja/ko/zh under /{locale}, en (default) unprefixed.
         {
           pattern: '/:path(.*)?',
           localized: [
+            ['ja', '/ja/:path(.*)?'],
+            ['ko', '/ko/:path(.*)?'],
             ['zh', '/zh/:path(.*)?'],
             ['en', '/:path(.*)?'],
           ],

@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { cn } from '@/lib/utils';
+import { LocaleSelector } from '@/components/locale-selector';
 
 export interface GameNavLink {
   href: string;
@@ -31,11 +32,13 @@ export function GamePageHeader({
   brand,
   navLinks,
   auth,
+  languageLabel = 'Language',
   className,
 }: {
   brand: string;
   navLinks: GameNavLink[];
   auth?: GamePageHeaderAuth;
+  languageLabel?: string;
   className?: string;
 }) {
   const [scrolled, setScrolled] = useState(false);
@@ -168,6 +171,8 @@ export function GamePageHeader({
             </div>
           ) : null}
 
+          <LocaleSelector className="hidden text-white/80 hover:bg-white/10 hover:text-white md:inline-flex" />
+
           <button
             type="button"
             className="inline-flex size-10 items-center justify-center rounded-md text-white/90 transition-colors hover:bg-white/10 hover:text-white md:hidden"
@@ -237,6 +242,12 @@ export function GamePageHeader({
               </button>
             </div>
           ) : null}
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
+            <span className="font-sans text-sm text-white/60">
+              {languageLabel}
+            </span>
+            <LocaleSelector className="text-white/80 hover:bg-white/10 hover:text-white" />
+          </div>
         </div>
       ) : null}
     </header>

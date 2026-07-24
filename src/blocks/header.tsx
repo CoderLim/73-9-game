@@ -31,6 +31,7 @@ export function Header() {
   return (
     <GamePageHeader
       brand={m['game.brand']()}
+      languageLabel={m['game.nav.language']()}
       navLinks={[
         { href: '/', label: m['game.nav.play'](), active: onHome },
         {
