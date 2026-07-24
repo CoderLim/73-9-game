@@ -42,7 +42,7 @@ export function GamePageFooter({
               className="font-[Barlow_Condensed,sans-serif] text-2xl font-bold tracking-[0.18em] text-transparent uppercase"
               style={{
                 backgroundImage:
-                  'linear-gradient(135deg, #ff6b35 0%, #ffd700 50%, #ff6b35 100%)',
+                  'linear-gradient(135deg, #fd6a00 0%, #ffce54 50%, #fd6a00 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
               }}

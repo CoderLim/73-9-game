@@ -25,7 +25,7 @@ export function GameHighlights({
       )}
     >
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="font-[Barlow_Condensed,sans-serif] text-xs tracking-[0.25em] text-[#ff6b35] uppercase">
+        <p className="font-[Barlow_Condensed,sans-serif] text-xs tracking-[0.25em] text-[#fd6a00] uppercase">
           {eyebrow}
         </p>
         <h2 className="mt-3 font-[Barlow_Condensed,sans-serif] text-3xl font-bold tracking-wide text-[#c8c8e0] uppercase sm:text-4xl">
@@ -35,9 +35,9 @@ export function GameHighlights({
           {items.map((item) => (
             <article
               key={item.title}
-              className="rounded-xl border border-[#2a2a52] bg-gradient-to-b from-[#16162f] to-[#0e0e22] p-5 transition-[border-color,transform] duration-150 hover:-translate-y-0.5 hover:border-[#ffd700]/70"
+              className="rounded-xl border border-[#2d3548] bg-gradient-to-b from-[#1a1f2e] to-[#0c101c] p-5 transition-[border-color,transform] duration-150 hover:-translate-y-0.5 hover:border-[#ffce54]/70"
             >
-              <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase">
+              <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase">
                 {item.title}
               </h3>
               <p className="mt-3 font-sans text-sm leading-relaxed text-[#8888aa]">

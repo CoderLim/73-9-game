@@ -49,7 +49,7 @@ export function GameSeoSection({
       )}
     >
       <div className="mx-auto max-w-[720px] px-4 sm:px-6">
-        <p className="font-[Barlow_Condensed,sans-serif] text-[11px] tracking-[0.28em] text-[#ff6b35] uppercase sm:text-xs">
+        <p className="font-[Barlow_Condensed,sans-serif] text-[11px] tracking-[0.28em] text-[#fd6a00] uppercase sm:text-xs">
           {eyebrow}
         </p>
         <h2 className="mt-3 font-[Barlow_Condensed,sans-serif] text-[1.75rem] leading-tight font-bold tracking-wide text-[#eaeaff] uppercase sm:text-4xl">
@@ -62,7 +62,7 @@ export function GameSeoSection({
         {steps && steps.length > 0 ? (
           <div className="mt-11 sm:mt-14">
             {howTitle ? (
-              <p className="font-[Barlow_Condensed,sans-serif] text-[11px] tracking-[0.28em] text-[#ff6b35] uppercase sm:text-xs">
+              <p className="font-[Barlow_Condensed,sans-serif] text-[11px] tracking-[0.28em] text-[#fd6a00] uppercase sm:text-xs">
                 {howTitle}
               </p>
             ) : null}
@@ -97,7 +97,7 @@ export function GameSeoSection({
         <div className="mt-11 space-y-10 sm:mt-14 sm:space-y-12">
           {blocks.map((block) => (
             <article key={block.heading}>
-              <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase sm:text-xl">
+              <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase sm:text-xl">
                 {block.heading}
               </h3>
               <div className="mt-3.5 space-y-3.5 font-sans text-[13px] leading-[1.85] text-[#9494b8] sm:mt-4 sm:space-y-4 sm:text-sm sm:leading-[1.9]">
@@ -110,19 +110,19 @@ export function GameSeoSection({
         </div>
 
         <div className="mt-12 sm:mt-16">
-          <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffd700] uppercase sm:text-xl">
+          <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase sm:text-xl">
             {faqTitle}
           </h3>
           <div className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
             {faqs.map((faq) => (
               <details
                 key={faq.question}
-                className="group rounded-xl border border-[#2a2a52] bg-[#0c0c1e]/80 px-4 py-3.5 open:border-[#ff6b35]/45"
+                className="group rounded-xl border border-[#2d3548] bg-[#0c101c]/80 px-4 py-3.5 open:border-[#fd6a00]/45"
               >
                 <summary className="cursor-pointer list-none font-[Barlow_Condensed,sans-serif] text-[13px] tracking-wide text-[#d4d4f0] uppercase marker:content-none sm:text-sm [&::-webkit-details-marker]:hidden">
                   <span className="flex items-center justify-between gap-3">
                     {faq.question}
-                    <span className="shrink-0 text-base text-[#ff6b35] transition group-open:rotate-45">
+                    <span className="shrink-0 text-base text-[#fd6a00] transition group-open:rotate-45">
                       +
                     </span>
                   </span>

@@ -56,7 +56,7 @@ export function GameLeaderboardSection({
   return (
     <section className={cn('w-full py-14 sm:py-16', className)}>
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="font-[Barlow_Condensed,sans-serif] text-xs tracking-[0.25em] text-[#ff6b35] uppercase">
+        <p className="font-[Barlow_Condensed,sans-serif] text-xs tracking-[0.25em] text-[#fd6a00] uppercase">
           {eyebrow}
         </p>
         <h2 className="mt-3 font-[Barlow_Condensed,sans-serif] text-3xl font-bold tracking-wide text-[#c8c8e0] uppercase sm:text-4xl">
@@ -97,7 +97,7 @@ export function GameLeaderboardSection({
                         key={`${col.key}-${i}-${row.name}-${row.pct}`}
                         className="grid grid-cols-[1.5rem_minmax(0,1fr)_3.25rem_3.5rem] items-baseline gap-2 border-t border-white/5 px-1 py-2.5 font-sans text-sm"
                       >
-                        <span className="font-[Barlow_Condensed,sans-serif] text-[#ff6b35]">
+                        <span className="font-[Barlow_Condensed,sans-serif] text-[#fd6a00]">
                           {i + 1}
                         </span>
                         <span className="truncate text-[#eaeaff]">

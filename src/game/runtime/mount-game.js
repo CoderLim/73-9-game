@@ -806,7 +806,7 @@ export function mountGame73(root, opts = {}) {
     return t;
   }
   const CAP_2026 = 165_000_000; // 2026-27 projected NBA salary cap ($165M, ESPN/Shams Mar 2026)
-  const BUDGET = 100_000_000; // bankroll
+  const BUDGET = 100_000_000; // draft budget
   const RESPIN_COST = 10_000_000; // real, permanent cost to give up on a landed team-season and redraw
   let respinSpent = 0; // tracked separately from player cost so the "ideal squad" comparison and
   // unspent-money commentary both know the TRUE money left for players, not
@@ -1290,7 +1290,7 @@ export function mountGame73(root, opts = {}) {
       startGame();
       return;
     }
-    if (confirm('Start over? This discards your current picks.')) startGame();
+    if (confirm('Reset draft? This discards your current picks.')) startGame();
   }
   function playAgain() {
     // Replay should jump straight back into the action: reset, then auto-spin the
@@ -1322,14 +1322,14 @@ export function mountGame73(root, opts = {}) {
     $('spinBtn').textContent = 'Spin';
     $('spinBtn').disabled = false;
     $('spinBtn').onclick = spin;
-    $('reelHint').textContent = 'Spin the wheel to draw a team';
+    $('reelHint').textContent = 'Spin for a team-season';
     buildReelIdle();
     updateHud();
   }
 
   function updateHud() {
     const pill = $('capPill');
-    pill.innerHTML = '<span class="lab">Remaining</span>' + fmtM(remaining);
+    pill.innerHTML = '<span class="lab">Left</span>' + fmtM(remaining);
     pill.classList.remove('warn', 'low');
     const frac = remaining / BUDGET;
     if (frac < 0.15) pill.classList.add('low');
@@ -1524,7 +1524,7 @@ export function mountGame73(root, opts = {}) {
     $('spinBtn').disabled = true;
     $('landed').classList.add('hidden');
     $('respinBtn').style.display = 'none';
-    $('reelHint').textContent = 'Drawing a team-season…';
+    $('reelHint').textContent = 'Pulling a team-season…';
 
     // Prefer team-seasons where you can still sign someone affordable; fall back to any
     // unpicked group, then simulate if truly stuck.
@@ -1708,7 +1708,7 @@ export function mountGame73(root, opts = {}) {
           '<div class="too-rich-note">' +
           escapeHtmlS(list) +
           (tooRich.length === 1 ? ' costs' : ' cost') +
-          ' more than your entire $100 million bankroll on ' +
+          ' more than your entire $100 million budget on ' +
           (tooRich.length === 1 ? 'his' : 'their') +
           ' own. Some teams paid a superstar such a massive share of that year\u2019s cap that, scaled to today\u2019s money, it\u2019s bigger than your whole budget. Not a bug, just too rich to sign outright.</div>';
       }
@@ -1731,7 +1731,7 @@ export function mountGame73(root, opts = {}) {
       tooRichNote +
       (anySelectable
         ? ''
-        : '<div class="center"><button class="btn" onclick="spin()">Spin again</button></div>');
+        : '<div class="center"><button class="btn" onclick="spin()">Spin once more</button></div>');
     el.classList.remove('hidden');
     // Auto-scroll (v89, adjusted v91): on mobile the wheel sits well above the
     // fold, so every landing used to leave the player cards below the viewport.
@@ -1758,7 +1758,7 @@ export function mountGame73(root, opts = {}) {
       // button inviting a click that can't work is worse than not showing it.
       const canRespin = anySelectable && remaining >= RESPIN_COST;
       respinBtn.style.display = canRespin ? '' : 'none';
-      respinBtn.textContent = 'Re-spin for ' + fmtM(RESPIN_COST);
+      respinBtn.textContent = 'Re-roll — ' + fmtM(RESPIN_COST);
       respinBtn.onclick = reSpinCurrentTeam;
     }
     if (!anySelectable) {
@@ -1866,7 +1866,7 @@ export function mountGame73(root, opts = {}) {
     if (rosterCount() >= SLOTS) {
       $('reelHint').textContent =
         'Roster complete \u2014 tap two players to swap positions, or simulate your season';
-      $('spinBtn').textContent = 'Simulate season';
+      $('spinBtn').textContent = 'Sim the season';
       $('spinBtn').disabled = false;
       $('spinBtn').onclick = showResults;
       buildReelIdle();
@@ -3587,7 +3587,7 @@ export function mountGame73(root, opts = {}) {
     }
     size();
     const COLORS = [
-      '#ffd700',
+      '#ffce54',
       '#ff5252',
       '#4fc3f7',
       '#69f0ae',
@@ -4085,11 +4085,11 @@ export function mountGame73(root, opts = {}) {
       // actions row sits between the win% area and the squad breakdown
       html +=
         '<div class="res-actions">' +
-        '<button class="btn" onclick="shareResultCard()">Share result</button>' +
+        '<button class="btn" onclick="shareResultCard()">Share run</button>' +
         (FRIEND_CHALLENGE_ENABLED
           ? '<button class="btn ghost" onclick="openChallengeModal()">Challenge a friend</button>'
           : '') +
-        '<button class="btn ghost" onclick="playAgain()">Play again</button>' +
+        '<button class="btn ghost" onclick="playAgain()">Draft again</button>' +
         '</div>';
 
       // your squad
@@ -4507,7 +4507,7 @@ export function mountGame73(root, opts = {}) {
       (canCopy
         ? '<button class="btn ghost" data-act="copy">Copy</button>'
         : '') +
-      '<button class="btn ghost" data-act="again">Play again</button>' +
+      '<button class="btn ghost" data-act="again">Draft again</button>' +
       '</div>' +
       '<div class="share-msg"></div></div>';
     document.body.appendChild(ov);
@@ -4966,7 +4966,7 @@ export function mountGame73(root, opts = {}) {
     }
     if (result.mode === 'offline') {
       panel.innerHTML =
-        '<div class="war-hdr">Friend challenge</div><div class="ch-h2h">Couldn\'t reach the series server, so this game wasn\'t counted toward the series. Play again when the connection is back.</div>';
+        '<div class="war-hdr">Friend challenge</div><div class="ch-h2h">Couldn\'t reach the series server, so this game wasn\'t counted toward the series. Draft again when the connection is back.</div>';
       return;
     }
     const chNameEsc = escapeHtmlS(result.chName);
@@ -5484,10 +5484,9 @@ export function mountGame73(root, opts = {}) {
     if (window.__SHARED__) return; // shared-link view handles its own render; skip the 17MB boot
     console.log(
       '%c[ROULETTE BUILD] ' + BUILD,
-      'color:#ffd700;font-weight:bold'
+      'color:#ffce54;font-weight:bold'
     );
     const fill = $('progressFill'),
-      text = $('progressText'),
       label = $('progressLabel');
     try {
       // --- Prefetch the auxiliary JSONs in PARALLEL with the big data.bin download.
@@ -5559,11 +5558,6 @@ export function mountGame73(root, opts = {}) {
           }
           fill.style.width =
             Math.min(80, Math.round((received / total) * 80)) + '%';
-          text.textContent =
-            (received / 1048576).toFixed(1) +
-            ' / ~' +
-            (total / 1048576).toFixed(0) +
-            ' MB';
         }
         label.textContent = 'Decompressing...';
         fill.style.width = '85%';
@@ -5768,7 +5762,6 @@ export function mountGame73(root, opts = {}) {
       console.log('[ROULETTE] ' + GROUPS.length + ' team-seasons in the wheel');
 
       fill.style.width = '100%';
-      text.textContent = 'Done!';
       setTimeout(() => {
         $('loadScreen').style.display = 'none';
         $('introBudget').textContent = fmtM(BUDGET);
@@ -5776,8 +5769,7 @@ export function mountGame73(root, opts = {}) {
         $('startBtn').onclick = startGame;
       }, 350);
     } catch (err) {
-      label.textContent = 'Load failed';
-      text.textContent = String(err.message || err);
+      label.textContent = 'Load failed: ' + String(err.message || err);
       console.error(err);
     }
   })();

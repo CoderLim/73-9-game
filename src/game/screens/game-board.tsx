@@ -20,16 +20,16 @@ export function GameBoard() {
                 ).confirmRestart;
                 fn?.();
               }}
-              title="Start over"
-              aria-label="Start over"
+              title="Reset draft"
+              aria-label="Reset draft"
             >
-              Start over
+              Reset draft
             </button>
           </div>
           <div className="slot-dots" id="slotDots" />
         </div>
         <div className="cap-pill" id="capPill">
-          <span className="lab">Remaining</span>$100.0M
+          <span className="lab">Left</span>$100.0M
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export function GameBoard() {
 
       <div className="reel-stage">
         <div className="reel-hint" id="reelHint">
-          Spin the wheel to draw a team
+          Spin for a team-season
         </div>
         <div className="reel-window">
           <div className="reel-marker" />
@@ -53,7 +53,7 @@ export function GameBoard() {
             type="button"
             style={{ display: 'none' }}
           >
-            Re-spin for $10M
+            Re-roll — $10M
           </button>
         </div>
       </div>

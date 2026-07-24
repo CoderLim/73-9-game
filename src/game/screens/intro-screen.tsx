@@ -1,4 +1,4 @@
-/** Intro screen — brand, bankroll, start CTA. Rules live in About/SEO. */
+/** Intro screen — brand, budget, start CTA. Rules live in About/SEO. */
 export function IntroScreen() {
   return (
     <div id="intro" className="hidden">
@@ -11,11 +11,9 @@ export function IntroScreen() {
         decoding="async"
       />
       <h1 className="logo-main">73-9</h1>
-      <div className="subtitle">
-        Build a five that beats the 2015-16 Warriors
-      </div>
+      <div className="subtitle">Draft five players. Outdo 73–9.</div>
       <div className="budget-hero">
-        Your bankroll
+        Your budget
         <span className="big" id="introBudget">
           $100.0M
         </span>
@@ -24,7 +22,7 @@ export function IntroScreen() {
       <div className="fine" id="introFine" />
       <div className="intro-cta">
         <button className="btn" id="startBtn" type="button">
-          Start the wheel
+          Start drafting
         </button>
       </div>
     </div>

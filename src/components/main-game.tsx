@@ -22,9 +22,9 @@ export function MainGame({ className }: { className?: string }) {
       <div className="relative mx-auto max-w-[920px] px-3 sm:px-5">
         <div
           className={cn(
-            'overflow-hidden rounded-xl border border-white/30',
-            'bg-[#0c101c]/70 shadow-[0_8px_40px_rgba(0,0,0,0.45)]',
-            'ring-1 ring-[#fd6a00]/20 backdrop-blur-[2px]'
+            'overflow-hidden rounded-xl border border-white/25',
+            'bg-[#0c101c]/50 shadow-[0_8px_40px_rgba(0,0,0,0.4)]',
+            'ring-1 ring-[#fd6a00]/20 backdrop-blur-md'
           )}
         >
           <div className="min-h-[420px] w-full sm:min-h-[460px]">
@@ -41,7 +41,7 @@ export function MainGame({ className }: { className?: string }) {
                     height={72}
                   />
                   <h1 className="logo-main">73-9</h1>
-                  <div className="subtitle">Beat the 2015-16 Warriors</div>
+                  <div className="subtitle">Challenge the 73–9 Warriors</div>
                   <div className="mt-8 text-sm text-[#90a1b9]">Loading…</div>
                 </div>
               </div>

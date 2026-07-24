@@ -11,12 +11,11 @@ export function LoadScreen() {
         decoding="async"
       />
       <h1 className="logo-main">73-9</h1>
-      <div className="subtitle">Beat the 2015-16 Warriors</div>
+      <div className="subtitle">Challenge the 73–9 Warriors</div>
       <div id="progressLabel">Loading game data...</div>
       <div className="bar">
         <div id="progressFill" />
       </div>
-      <div id="progressText">0.0 / ~11 MB</div>
     </div>
   );
 }
