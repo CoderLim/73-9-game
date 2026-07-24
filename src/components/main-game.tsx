@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { GameApp } from '@/game/GameApp';
 
 import { cn } from '@/lib/utils';
+import { m } from '@/paraglide/messages.js';
 import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 
 /**
@@ -48,8 +49,10 @@ export function MainGame({ className }: { className?: string }) {
                     height={72}
                   />
                   <p className="logo-main">73-9</p>
-                  <div className="subtitle">Challenge the 73–9 Warriors</div>
-                  <div className="mt-8 text-sm text-[#90a1b9]">Loading…</div>
+                  <div className="subtitle">{m['game.ui.load.subtitle']()}</div>
+                  <div className="mt-8 text-sm text-[#90a1b9]">
+                    {m['game.ui.load.initial']()}
+                  </div>
                 </div>
               </div>
             )}

@@ -22,6 +22,143 @@ export function mountGame73(root, opts = {}) {
     signInToSaveLabel: '',
     saveFailedText: 'Could not save this run.',
   };
+  const DEFAULT_COPY = {
+    load: {
+      initial: 'Loading game data...',
+      cached: 'Loading cached data...',
+      decompressing: 'Decompressing...',
+      parsing: 'Parsing...',
+      bio: 'Loading bio data...',
+      salary: 'Loading salary data...',
+      records: 'Loading team records...',
+      accolades: 'Loading accolades...',
+      positions: 'Loading positions...',
+      sealing_wall: 'Sealing the 73-9 wall...',
+      building_groups: 'Building team-seasons...',
+      failed: 'Load failed: {error}',
+      subtitle: 'Challenge the 73–9 Warriors',
+    },
+    intro: {
+      subtitle: 'Draft five players. Outdo 73–9.',
+      budget_label: 'Your budget',
+      start: 'Start drafting',
+    },
+    board: {
+      reset: 'Reset draft',
+      reset_confirm: 'Reset draft? This discards your current picks.',
+      cap_left: 'Left',
+      spin: 'Spin',
+      spin_hint: 'Spin for a team-season',
+    },
+    pick: {
+      pulling: 'Pulling a team-season…',
+      no_affordable:
+        'No affordable, unlocked players left anywhere — try dragging a cheaper pick, or sign what you can and simulate.',
+      none_fits: '⚠ Nobody here fits your {remaining} — spinning again…',
+      warrior_locked: '2015-16 Warrior · off the board',
+      slot_header: 'Slot {n} of {total} — sign any player',
+      spin_once_more: 'Spin once more',
+      landed: 'Landed: {name} {season}',
+      reroll: 'Re-roll — {cost}',
+      natural_misfit: 'Natural {pos} — out of position',
+      budget_guard:
+        'That leaves too little for the remaining {count} slot(s) — pick someone cheaper.',
+      roster_complete:
+        'Roster complete — tap two players to swap positions, or simulate your season',
+      sim_season: 'Sim the season',
+      next_incoming: 'Next team-season incoming…',
+      your_squad_label: 'YOUR SQUAD',
+      opponent_label: 'OPPONENT',
+    },
+    results: {
+      min_players: 'Sign at least 3 players before simulating.',
+      simulating: 'Simulating your season & the alternatives…',
+      your_season: 'Your season',
+      grade_title_contender: 'Title contender',
+      grade_playoff_lock: 'Playoff lock',
+      grade_play_in: 'Play-in team',
+      grade_lottery: 'Lottery-bound',
+      grade_tank: 'Tank commander',
+      season_sub:
+        '{ppg} – {oppg} PPG vs all-era fives · spent {spent} of {budget}',
+      warriors_header: 'vs the 2015-16 Warriors',
+      of_games_won: 'of games won',
+      avg_margin: 'avg margin {margin}',
+      best_would_win: "Best squad you could've signed would win {pct}",
+      wall_cracked:
+        'You cracked the wall. Only about 1 in 1,000 drawn teams beats the 2015-16 Warriors.',
+      wall_short:
+        'Beating them takes a top 0.1% team. You are {margin} pts/game short.',
+      their_five: 'their five: {names}',
+      war_sub_cracked: 'WALL CRACKED · {margin}',
+      war_sub_short: '{margin} PTS/GAME SHORT',
+      perfect_headline:
+        '★ Best possible squad! No five from your team-seasons beats it.',
+      perfect_tail_multi:
+        "That's {count} best-possible squads you've built on this device, all-time.",
+      perfect_tail_first: 'Your first best-possible squad.',
+      share_run: 'Share run',
+      challenge_friend: 'Challenge a friend',
+      draft_again: 'Draft again',
+      your_squad: 'Your squad',
+      squad_totals: 'spent {spent} · total RTG {rtg}',
+      optimal_header: "🏆 Best squad you could've signed",
+      optimal_totals: 'sim record {record} · spent {spent} · RTG {rtg}',
+      optimal_perfect:
+        '★ Nobody from your five team-seasons sims better — flawless drafting ★',
+      optimal_fallback:
+        'The best-performing lineup we found from the exact five team-seasons you drew, within {budget}.',
+      lb_header: 'Best win % vs the 2015-16 Warriors',
+      lb_loading: 'loading…',
+      lb_unavailable: 'leaderboard unavailable right now',
+      lb_today: 'Today',
+      lb_week: 'This week',
+      lb_alltime: 'All-time',
+    },
+    share: {
+      text: 'My team beat the 2015-16 Warriors {pct} of the time. Think you can build a squad that does better?',
+      build_failed: 'Could not build the image.',
+      close: 'Close',
+      img_alt: 'Your 73-9 result',
+      copy: 'Copy',
+      download: 'Download',
+      draft_again: 'Draft again',
+      msg_saved: 'Saved to your downloads.',
+      msg_image_copied: 'Image copied. Paste it anywhere.',
+      msg_copy_blocked_dl: 'Copy blocked here. Use Download.',
+      msg_text_copied: 'Text + link copied.',
+      msg_copy_blocked: 'Copy blocked here.',
+      msg_unavailable: 'Share unavailable. Use the buttons above.',
+      card_title: '73-9 GAME',
+      card_vs: 'VS THE 2015-16 WARRIORS',
+      card_of_games: 'OF GAMES WON  ·  {warSub}',
+      card_my_season: 'MY SEASON  {w} – {l}  ·  {grade}',
+      card_ppg: '{ppg} – {oppg} PPG  ·  {spent} spent',
+      card_footer: 'SPIN YOUR OWN FIVE AT 73-9.ORG',
+      view_tag: 'A team built in 73-9',
+      view_prompt: 'Think you can put together a five that does better?',
+      view_squad: 'The squad',
+      view_cta: 'Spin your own five →',
+    },
+  };
+
+  function mergeCopy(base, over) {
+    if (!over) return base;
+    const out = {};
+    for (const section of Object.keys(base)) {
+      out[section] = Object.assign({}, base[section], over[section] || {});
+    }
+    return out;
+  }
+  const copy = mergeCopy(DEFAULT_COPY, opts && opts.copy);
+  function fill(template, params) {
+    let s = String(template == null ? '' : template);
+    if (!params) return s;
+    for (const k of Object.keys(params)) {
+      s = s.split('{' + k + '}').join(String(params[k]));
+    }
+    return s;
+  }
   const fetchLeaderboard =
     opts && typeof opts.fetchLeaderboard === 'function'
       ? opts.fetchLeaderboard
@@ -769,7 +906,7 @@ export function mountGame73(root, opts = {}) {
   let WAR2016 = new Set(); // 2015-16 Warriors, removed from the draftable pool
   let teams = [[], []],
     adjusted = [[], []],
-    teamNames = ['YOUR SQUAD', 'OPPONENT'];
+    teamNames = [copy.pick.your_squad_label, copy.pick.opponent_label];
 
   // --- tunable game constants (easy to tweak / move to a config later) ---
   const BUILD =
@@ -815,10 +952,7 @@ export function mountGame73(root, opts = {}) {
   }
   function shareText(platform) {
     const wp = shareCardData ? shareCardData.warPct : '';
-    let t =
-      'My team beat the 2015-16 Warriors ' +
-      wp +
-      ' of the time. Think you can build a squad that does better?';
+    let t = fill(copy.share.text, { pct: wp });
     if (platform === 'x') t += '';
     else if (platform === 'bsky') t += '';
     return t;
@@ -1421,7 +1555,7 @@ export function mountGame73(root, opts = {}) {
       startGame();
       return;
     }
-    if (confirm('Reset draft? This discards your current picks.')) startGame();
+    if (confirm(copy.board.reset_confirm)) startGame();
   }
   function playAgain() {
     // Replay should jump straight back into the action: reset, then auto-spin the
@@ -1450,17 +1584,17 @@ export function mountGame73(root, opts = {}) {
     $('game').classList.remove('hidden');
     $('landed').classList.add('hidden');
     $('respinBtn').style.display = 'none';
-    $('spinBtn').textContent = 'Spin';
+    $('spinBtn').textContent = copy.board.spin;
     $('spinBtn').disabled = false;
     $('spinBtn').onclick = spin;
-    $('reelHint').textContent = 'Spin for a team-season';
+    $('reelHint').textContent = copy.board.spin_hint;
     buildReelIdle();
     updateHud();
   }
 
   function updateHud() {
     const pill = $('capPill');
-    pill.innerHTML = '<span class="lab">Left</span>' + fmtM(remaining);
+    pill.textContent = fmtM(remaining);
     pill.classList.remove('warn', 'low');
     const frac = remaining / BUDGET;
     if (frac < 0.15) pill.classList.add('low');
@@ -1497,9 +1631,11 @@ export function mountGame73(root, opts = {}) {
           '<div class="pos">' +
           slotPos +
           (mis
-            ? ' <span class="misfit-tag" title="Natural ' +
-              POS_NAMES[natP] +
-              ' — out of position">' +
+            ? ' <span class="misfit-tag" title="' +
+              escapeHtmlS(
+                fill(copy.pick.natural_misfit, { pos: POS_NAMES[natP] })
+              ) +
+              '">' +
               POS_NAMES[natP] +
               '!</span>'
             : '') +
@@ -1655,7 +1791,7 @@ export function mountGame73(root, opts = {}) {
     $('spinBtn').disabled = true;
     $('landed').classList.add('hidden');
     $('respinBtn').style.display = 'none';
-    $('reelHint').textContent = 'Pulling a team-season…';
+    $('reelHint').textContent = copy.pick.pulling;
 
     // Prefer team-seasons where you can still sign someone affordable; fall back to any
     // unpicked group, then simulate if truly stuck.
@@ -1682,8 +1818,7 @@ export function mountGame73(root, opts = {}) {
         // the whole budget gone in 1-2 picks with zero unlocked-affordable
         // players left anywhere), but must not be a silent stuck state.
         $('spinBtn').disabled = false;
-        $('reelHint').textContent =
-          'No affordable, unlocked players left anywhere \u2014 try dragging a cheaper pick, or sign what you can and simulate.';
+        $('reelHint').textContent = copy.pick.no_affordable;
         return;
       }
       showResults();
@@ -1749,9 +1884,9 @@ export function mountGame73(root, opts = {}) {
       tooRichNote = '';
     if (!anySelectable) {
       cards =
-        '<div class="none-affordable">\u26a0 Nobody here fits your ' +
-        fmtM(remaining) +
-        ' \u2014 spinning again\u2026</div>';
+        '<div class="none-affordable">' +
+        escapeHtmlS(fill(copy.pick.none_fits, { remaining: fmtM(remaining) })) +
+        '</div>';
     } else {
       const cols = depthChartColumns(avail);
       let colHtml = '';
@@ -1787,8 +1922,12 @@ export function mountGame73(root, opts = {}) {
             (locked
               ? '<span class="pc-lockbadge">73-9</span>'
               : flexed
-                ? '<span class="pc-flex" title="Natural ' +
-                  POS_NAMES[naturalPos(p)] +
+                ? '<span class="pc-flex" title="' +
+                  escapeHtmlS(
+                    fill(copy.pick.natural_misfit, {
+                      pos: POS_NAMES[naturalPos(p)],
+                    })
+                  ) +
                   '">' +
                   POS_NAMES[naturalPos(p)] +
                   '</span>'
@@ -1804,7 +1943,9 @@ export function mountGame73(root, opts = {}) {
             statTriple(p) +
             '</div>' +
             (locked
-              ? '<div class="pc-lock">2015-16 Warrior \u00b7 off the board</div>'
+              ? '<div class="pc-lock">' +
+                escapeHtmlS(copy.pick.warrior_locked) +
+                '</div>'
               : '<div class="pc-cost">' +
                 fmtM(p.cost) +
                 ' <span>\u00b7 ' +
@@ -1853,16 +1994,18 @@ export function mountGame73(root, opts = {}) {
       '</div><div class="tn">' +
       escapeHtmlS(m.name) +
       '</div></div></div>' +
-      '<div class="landed-sub">Slot ' +
-      (rosterCount() + 1) +
-      ' of ' +
-      SLOTS +
-      ' \u2014 sign any player</div>' +
+      '<div class="landed-sub">' +
+      escapeHtmlS(
+        fill(copy.pick.slot_header, { n: rosterCount() + 1, total: SLOTS })
+      ) +
+      '</div>' +
       cards +
       tooRichNote +
       (anySelectable
         ? ''
-        : '<div class="center"><button class="btn" onclick="spin()">Spin once more</button></div>');
+        : '<div class="center"><button class="btn" onclick="spin()">' +
+          escapeHtmlS(copy.pick.spin_once_more) +
+          '</button></div>');
     el.classList.remove('hidden');
     // Auto-scroll (v89, adjusted v91): on mobile the wheel sits well above the
     // fold, so every landing used to leave the player cards below the viewport.
@@ -1881,7 +2024,10 @@ export function mountGame73(root, opts = {}) {
       c.onclick = () =>
         pickPlayer(c.dataset.key, c.dataset.name, +c.dataset.pos);
     });
-    $('reelHint').textContent = 'Landed: ' + m.name + ' ' + seasonStr;
+    $('reelHint').textContent = fill(copy.pick.landed, {
+      name: m.name,
+      season: seasonStr,
+    });
     $('spinBtn').disabled = true;
     const respinBtn = $('respinBtn');
     if (respinBtn) {
@@ -1889,7 +2035,9 @@ export function mountGame73(root, opts = {}) {
       // button inviting a click that can't work is worse than not showing it.
       const canRespin = anySelectable && remaining >= RESPIN_COST;
       respinBtn.style.display = canRespin ? '' : 'none';
-      respinBtn.textContent = 'Re-roll — ' + fmtM(RESPIN_COST);
+      respinBtn.textContent = fill(copy.pick.reroll, {
+        cost: fmtM(RESPIN_COST),
+      });
       respinBtn.onclick = reSpinCurrentTeam;
     }
     if (!anySelectable) {
@@ -1949,12 +2097,7 @@ export function mountGame73(root, opts = {}) {
     ) {
       const hint = $('reelHint');
       if (hint)
-        hint.textContent =
-          'That leaves too little for the remaining ' +
-          slotsAfter +
-          ' slot' +
-          (slotsAfter === 1 ? '' : 's') +
-          ' \u2014 pick someone cheaper.';
+        hint.textContent = fill(copy.pick.budget_guard, { count: slotsAfter });
       return;
     }
 
@@ -1995,16 +2138,15 @@ export function mountGame73(root, opts = {}) {
     updateHud();
 
     if (rosterCount() >= SLOTS) {
-      $('reelHint').textContent =
-        'Roster complete \u2014 tap two players to swap positions, or simulate your season';
-      $('spinBtn').textContent = 'Sim the season';
+      $('reelHint').textContent = copy.pick.roster_complete;
+      $('spinBtn').textContent = copy.pick.sim_season;
       $('spinBtn').disabled = false;
       $('spinBtn').onclick = showResults;
       buildReelIdle();
     } else {
       // Auto-spin for the next slot (first spin of a session is manual). The short delay
       // lets the pick land in the strip before the reel takes off.
-      $('reelHint').textContent = 'Next team-season incoming\u2026';
+      $('reelHint').textContent = copy.pick.next_incoming;
       $('spinBtn').disabled = true;
       buildReelIdle();
       setTimeout(() => {
@@ -3080,11 +3222,30 @@ export function mountGame73(root, opts = {}) {
 
   function gradeFor(w) {
     if (w >= 60)
-      return { t: 'Title contender', c: 'var(--gold)', bg: '#2a230a' };
-    if (w >= 50) return { t: 'Playoff lock', c: 'var(--green)', bg: '#0e2018' };
-    if (w >= 41) return { t: 'Play-in team', c: 'var(--amber)', bg: '#231d0a' };
-    if (w >= 30) return { t: 'Lottery-bound', c: '#ff9b5a', bg: '#241405' };
-    return { t: 'Tank commander', c: 'var(--red)', bg: '#220c0c' };
+      return {
+        t: copy.results.grade_title_contender,
+        c: 'var(--gold)',
+        bg: '#2a230a',
+      };
+    if (w >= 50)
+      return {
+        t: copy.results.grade_playoff_lock,
+        c: 'var(--green)',
+        bg: '#0e2018',
+      };
+    if (w >= 41)
+      return {
+        t: copy.results.grade_play_in,
+        c: 'var(--amber)',
+        bg: '#231d0a',
+      };
+    if (w >= 30)
+      return {
+        t: copy.results.grade_lottery,
+        c: '#ff9b5a',
+        bg: '#241405',
+      };
+    return { t: copy.results.grade_tank, c: 'var(--red)', bg: '#220c0c' };
   }
   // Roster-construction critique (Forge-style). Reads the data we have on each
   // player — position, rebounding, assists (creation proxy), RTG (focal-point
@@ -3976,10 +4137,12 @@ export function mountGame73(root, opts = {}) {
   }
   function lbRenderBoard(panel, board) {
     panel.innerHTML =
-      '<div class="lb-hdr">Best win % vs the 2015-16 Warriors</div>' +
-      lbBoardSection('Today', board.day, lbFmt, 'lb-row-4') +
-      lbBoardSection('This week', board.week, lbFmt, 'lb-row-4') +
-      lbBoardSection('All-time', board.alltime, lbFmt, 'lb-row-4');
+      '<div class="lb-hdr">' +
+      escapeHtmlS(copy.results.lb_header) +
+      '</div>' +
+      lbBoardSection(copy.results.lb_today, board.day, lbFmt, 'lb-row-4') +
+      lbBoardSection(copy.results.lb_week, board.week, lbFmt, 'lb-row-4') +
+      lbBoardSection(copy.results.lb_alltime, board.alltime, lbFmt, 'lb-row-4');
   }
   async function lbInit(pct, record, isPerfect, lineup, sharePayload) {
     const panel = document.getElementById('lbPanel');
@@ -3987,10 +4150,10 @@ export function mountGame73(root, opts = {}) {
     panel.replaceChildren();
     const hdr = document.createElement('div');
     hdr.className = 'lb-hdr';
-    hdr.textContent = 'Best win % vs the 2015-16 Warriors';
+    hdr.textContent = copy.results.lb_header;
     const loading = document.createElement('div');
     loading.className = 'lb-rows lb-loading';
-    loading.textContent = 'loading\u2026';
+    loading.textContent = copy.results.lb_loading;
     panel.append(hdr, loading);
 
     let board = null;
@@ -4018,7 +4181,7 @@ export function mountGame73(root, opts = {}) {
       }
     }
     if (!board) {
-      loading.textContent = 'leaderboard unavailable right now';
+      loading.textContent = copy.results.lb_unavailable;
       return;
     }
     lbRenderBoard(panel, board);
@@ -4044,14 +4207,16 @@ export function mountGame73(root, opts = {}) {
   function showResults() {
     if (spinning) return;
     if (rosterCount() < 3) {
-      alert('Sign at least 3 players before simulating.');
+      alert(copy.results.min_players);
       return;
     }
     $('game').classList.add('hidden');
     const el = $('results');
     el.classList.remove('hidden');
     el.innerHTML =
-      '<div class="res-record"><div class="rl">Simulating your season &amp; the alternatives…</div>' +
+      '<div class="res-record"><div class="rl">' +
+      escapeHtmlS(copy.results.simulating) +
+      '</div>' +
       '<div class="rv"><span class="spinner-mini"></span></div></div>';
 
     // defer so the spinner paints before the (sync) sim work runs
@@ -4136,37 +4301,47 @@ export function mountGame73(root, opts = {}) {
       const samePicks =
         found.sameFive || !bestWar || bestWar.winPct <= war.winPct + 1e-9;
       const warNote = beatWall
-        ? 'You cracked the wall. Only about 1 in 1,000 drawn teams beats the 2015-16 Warriors.'
-        : 'Beating them takes a top 0.1% team. You are ' +
-          (-war.margin).toFixed(1) +
-          ' pts/game short.';
+        ? copy.results.wall_cracked
+        : fill(copy.results.wall_short, {
+            margin: (-war.margin).toFixed(1),
+          });
       const warPanel =
         '<div class="war-panel">' +
-        '<div class="war-hdr">vs the 2015-16 Warriors</div>' +
+        '<div class="war-hdr">' +
+        escapeHtmlS(copy.results.warriors_header) +
+        '</div>' +
         '<div class="war-main">' +
         winPctStr +
-        '<small>of games won</small></div>' +
-        '<div class="war-margin">avg margin ' +
-        marginStr +
+        '<small>' +
+        escapeHtmlS(copy.results.of_games_won) +
+        '</small></div>' +
+        '<div class="war-margin">' +
+        escapeHtmlS(fill(copy.results.avg_margin, { margin: marginStr })) +
         '</div>' +
         (bestWar
-          ? '<div class="war-best">Best squad you could\'ve signed would win <b>' +
-            fmtPct(bestWar.winPct) +
-            '</b></div>'
+          ? '<div class="war-best">' +
+            fill(copy.results.best_would_win, {
+              pct: '<b>' + fmtPct(bestWar.winPct) + '</b>',
+            }) +
+            '</div>'
           : '') +
         '<div class="war-note' +
         (beatWall ? ' war-beat' : '') +
         '">' +
-        warNote +
+        escapeHtmlS(warNote) +
         '</div>' +
         (warFive
-          ? '<div class="war-five">their five: ' + warFive + '</div>'
+          ? '<div class="war-five">' +
+            escapeHtmlS(fill(copy.results.their_five, { names: warFive })) +
+            '</div>'
           : '') +
         '</div>';
 
       let html =
         '<div class="res-record">' +
-        '<div class="rl">Your season</div>' +
+        '<div class="rl">' +
+        escapeHtmlS(copy.results.your_season) +
+        '</div>' +
         '<div class="rv">' +
         yours.w +
         '<span class="dash">–</span>' +
@@ -4179,17 +4354,18 @@ export function mountGame73(root, opts = {}) {
         ';border:1px solid ' +
         g.c +
         '55">' +
-        g.t +
+        escapeHtmlS(g.t) +
         '</div>' +
         '</div>' +
         '<div class="res-sub">' +
-        yours.ppg.toFixed(1) +
-        ' – ' +
-        yours.oppg.toFixed(1) +
-        ' PPG vs all-era fives · spent ' +
-        fmtM(spent) +
-        ' of ' +
-        fmtM(BUDGET) +
+        escapeHtmlS(
+          fill(copy.results.season_sub, {
+            ppg: yours.ppg.toFixed(1),
+            oppg: yours.oppg.toFixed(1),
+            spent: fmtM(spent),
+            budget: fmtM(BUDGET),
+          })
+        ) +
         '</div>';
 
       html += warPanel;
@@ -4197,12 +4373,14 @@ export function mountGame73(root, opts = {}) {
         const pc = bumpPerfect();
         const tail =
           pc > 1
-            ? 'That\u2019s <b>' +
-              pc +
-              '</b> best-possible squads you\u2019ve built on this device, all-time.'
-            : 'Your first best-possible squad.';
+            ? fill(copy.results.perfect_tail_multi, {
+                count: '<b>' + pc + '</b>',
+              })
+            : copy.results.perfect_tail_first;
         html =
-          '<div class="perfect-callout">\u2605 Best possible squad! No five from your team-seasons beats it. ' +
+          '<div class="perfect-callout">' +
+          escapeHtmlS(copy.results.perfect_headline) +
+          ' ' +
           tail +
           '</div>' +
           html;
@@ -4216,22 +4394,31 @@ export function mountGame73(root, opts = {}) {
       // actions row sits between the win% area and the squad breakdown
       html +=
         '<div class="res-actions">' +
-        '<button class="btn" onclick="shareResultCard()">Share run</button>' +
+        '<button class="btn" onclick="shareResultCard()">' +
+        escapeHtmlS(copy.results.share_run) +
+        '</button>' +
         (FRIEND_CHALLENGE_ENABLED
-          ? '<button class="btn ghost" onclick="openChallengeModal()">Challenge a friend</button>'
+          ? '<button class="btn ghost" onclick="openChallengeModal()">' +
+            escapeHtmlS(copy.results.challenge_friend) +
+            '</button>'
           : '') +
-        '<button class="btn ghost" onclick="playAgain()">Draft again</button>' +
+        '<button class="btn ghost" onclick="playAgain()">' +
+        escapeHtmlS(copy.results.draft_again) +
+        '</button>' +
         '</div>';
 
       // your squad
       html +=
         '<div class="sq yours">' +
-        '<div class="sq-hdr"><span class="t">Your squad</span>' +
-        '<span class="totals">spent <b>' +
-        fmtM(spent) +
-        '</b> · total RTG <b>' +
-        yourRtg.toFixed(1) +
-        '</b></span></div>' +
+        '<div class="sq-hdr"><span class="t">' +
+        escapeHtmlS(copy.results.your_squad) +
+        '</span>' +
+        '<span class="totals">' +
+        fill(copy.results.squad_totals, {
+          spent: '<b>' + fmtM(spent) + '</b>',
+          rtg: '<b>' + yourRtg.toFixed(1) + '</b>',
+        }) +
+        '</span></div>' +
         squadRowsHTML(roster.filter(Boolean), null) +
         notesHTML(roster.filter(Boolean)) +
         '</div>';
@@ -4242,23 +4429,35 @@ export function mountGame73(root, opts = {}) {
         const optRtg = opt.reduce((s, p) => s + p.rating, 0);
         html +=
           '<div class="sq optimal">' +
-          '<div class="sq-hdr"><span class="t">🏆 Best squad you could\'ve signed</span>' +
+          '<div class="sq-hdr"><span class="t">' +
+          escapeHtmlS(copy.results.optimal_header) +
+          '</span>' +
           '<span class="totals">' +
           (optRec
-            ? 'sim record <b>' + optRec.w + '–' + optRec.l + '</b> · '
-            : '') +
-          'spent <b>' +
-          fmtM(optSpent) +
-          '</b> · RTG <b>' +
-          optRtg.toFixed(1) +
-          '</b></span></div>' +
+            ? fill(copy.results.optimal_totals, {
+                record: '<b>' + optRec.w + '–' + optRec.l + '</b>',
+                spent: '<b>' + fmtM(optSpent) + '</b>',
+                rtg: '<b>' + optRtg.toFixed(1) + '</b>',
+              })
+            : 'spent <b>' +
+              fmtM(optSpent) +
+              '</b> · RTG <b>' +
+              optRtg.toFixed(1) +
+              '</b>') +
+          '</span></div>' +
           squadRowsHTML(opt, null) +
           (samePicks
-            ? '<div class="perfect">★ Nobody from your five team-seasons sims better — flawless drafting ★</div>'
+            ? '<div class="perfect">' +
+              escapeHtmlS(copy.results.optimal_perfect) +
+              '</div>'
             : bestSquadExplanation(roster, opt, yours, optRec) ||
-              '<div class="opt-note">The best-performing lineup we found from the exact five team-seasons you drew, within ' +
-                fmtM(effectiveBudget()) +
-                '. We simulated your picks against many affordable alternatives over the same schedule — this one won the most.</div>') +
+              '<div class="opt-note">' +
+                escapeHtmlS(
+                  fill(copy.results.optimal_fallback, {
+                    budget: fmtM(effectiveBudget()),
+                  })
+                ) +
+                '</div>') +
           '</div>';
       }
 
@@ -4276,8 +4475,12 @@ export function mountGame73(root, opts = {}) {
         spent: fmtM(spent),
         warPct: winPctStr,
         warSub: beatWall
-          ? 'WALL CRACKED · ' + marginStr.toUpperCase()
-          : (-war.margin).toFixed(1) + ' PTS/GAME SHORT',
+          ? fill(copy.results.war_sub_cracked, {
+              margin: marginStr.toUpperCase(),
+            })
+          : fill(copy.results.war_sub_short, {
+              margin: (-war.margin).toFixed(1),
+            }),
         players: roster.filter(Boolean).map((p) => ({
           pos: POS_NAMES[typeof p.slot === 'number' ? p.slot : p.pos],
           name: p.name,
@@ -4400,14 +4603,14 @@ export function mountGame73(root, opts = {}) {
     _ls(ctx, '2px');
     ctx.fillStyle = grd;
     ctx.font = '700 116px Barlow Condensed, sans-serif';
-    ctx.fillText('73-9 GAME', W / 2, 182);
+    ctx.fillText(copy.share.card_title, W / 2, 182);
     // hero: win% vs the 2015-16 Warriors (the headline number). Extra gap here on
     // purpose — "73-9 GAME" is the product's name, not this player's record, and
     // crowding it against the stats made it read like a season line.
     _ls(ctx, '4px');
     ctx.fillStyle = '#ffce54';
     ctx.font = '700 30px Barlow Condensed, sans-serif';
-    ctx.fillText('VS THE 2015-16 WARRIORS', W / 2, 257);
+    ctx.fillText(copy.share.card_vs, W / 2, 257);
     _ls(ctx, '0px');
     ctx.fillStyle = '#fff';
     _fit(
@@ -4423,20 +4626,32 @@ export function mountGame73(root, opts = {}) {
     _ls(ctx, '2px');
     ctx.fillStyle = '#bdc6d8';
     ctx.font = '700 24px Barlow Condensed, sans-serif';
-    ctx.fillText('OF GAMES WON  \u00b7  ' + d.warSub, W / 2, 427);
+    ctx.fillText(
+      fill(copy.share.card_of_games, { warSub: d.warSub }),
+      W / 2,
+      427
+    );
     _ls(ctx, '0px');
     // season summary (secondary)
     ctx.fillStyle = '#bdc6d8';
     ctx.font = '700 23px Geist Mono, monospace';
     ctx.fillText(
-      'MY SEASON  ' + d.w + ' \u2013 ' + d.l + '  \u00b7  ' + d.gradeT,
+      fill(copy.share.card_my_season, {
+        w: d.w,
+        l: d.l,
+        grade: d.gradeT,
+      }),
       W / 2,
       495
     );
     ctx.fillStyle = '#90a1b9';
     ctx.font = '700 21px Geist Mono, monospace';
     ctx.fillText(
-      d.ppg + ' \u2013 ' + d.oppg + ' PPG  \u00b7  ' + d.spent + ' spent',
+      fill(copy.share.card_ppg, {
+        ppg: d.ppg,
+        oppg: d.oppg,
+        spent: d.spent,
+      }),
       W / 2,
       527
     );
@@ -4506,7 +4721,7 @@ export function mountGame73(root, opts = {}) {
     ctx.fillStyle = '#90a1b9';
     ctx.font = '700 24px Barlow Condensed, sans-serif';
     _ls(ctx, '2px');
-    ctx.fillText('SPIN YOUR OWN FIVE AT 73-9.ORG', W / 2, H - 72);
+    ctx.fillText(copy.share.card_footer, W / 2, H - 72);
     _ls(ctx, '0px');
     return cv;
   }
@@ -4537,7 +4752,7 @@ export function mountGame73(root, opts = {}) {
       blob = _dataURLtoBlob(durl);
     } catch (e) {
       console.warn('share card failed', e);
-      alert('Could not build the image.');
+      alert(copy.share.build_failed);
       return;
     }
     _openShareModal(durl, blob);
@@ -4610,13 +4825,19 @@ export function mountGame73(root, opts = {}) {
     };
     ov.innerHTML =
       '<div class="share-box">' +
-      '<button class="share-x" aria-label="Close">\u00d7</button>' +
-      '<img class="share-img" alt="Your 73-9 result" src="' +
+      '<button class="share-x" aria-label="' +
+      escapeHtmlS(copy.share.close) +
+      '">\u00d7</button>' +
+      '<img class="share-img" alt="' +
+      escapeHtmlS(copy.share.img_alt) +
+      '" src="' +
       durl +
       '">' +
       '<div class="share-link"><input class="share-url" readonly value="' +
       escapeHtmlS(link) +
-      '"><button class="share-copybtn" data-act="copylink">Copy</button></div>' +
+      '"><button class="share-copybtn" data-act="copylink">' +
+      escapeHtmlS(copy.share.copy) +
+      '</button></div>' +
       '<div class="share-social">' +
       SOC.map(
         (s) =>
@@ -4634,11 +4855,17 @@ export function mountGame73(root, opts = {}) {
       ).join('') +
       '</div>' +
       '<div class="share-btns">' +
-      '<button class="btn" data-act="download">Download</button>' +
+      '<button class="btn" data-act="download">' +
+      escapeHtmlS(copy.share.download) +
+      '</button>' +
       (canCopy
-        ? '<button class="btn ghost" data-act="copy">Copy</button>'
+        ? '<button class="btn ghost" data-act="copy">' +
+          escapeHtmlS(copy.share.copy) +
+          '</button>'
         : '') +
-      '<button class="btn ghost" data-act="again">Draft again</button>' +
+      '<button class="btn ghost" data-act="again">' +
+      escapeHtmlS(copy.share.draft_again) +
+      '</button>' +
       '</div>' +
       '<div class="share-msg"></div></div>';
     document.body.appendChild(ov);
@@ -4676,24 +4903,24 @@ export function mountGame73(root, opts = {}) {
         }
         if (act === 'download') {
           _downloadBlob(blob);
-          msg.textContent = 'Saved to your downloads.';
+          msg.textContent = copy.share.msg_saved;
         } else if (act === 'copy') {
           try {
             await navigator.clipboard.write([
               new ClipboardItem({ 'image/png': blob }),
             ]);
-            msg.textContent = 'Image copied. Paste it anywhere.';
+            msg.textContent = copy.share.msg_image_copied;
           } catch (e) {
-            msg.textContent = 'Copy blocked here. Use Download.';
+            msg.textContent = copy.share.msg_copy_blocked_dl;
           }
         } else if (act === 'copylink') {
           try {
             await navigator.clipboard.writeText(
               shareText() + '\n' + buildShareURL()
             );
-            msg.textContent = 'Text + link copied.';
+            msg.textContent = copy.share.msg_text_copied;
           } catch (e) {
-            msg.textContent = 'Copy blocked here.';
+            msg.textContent = copy.share.msg_copy_blocked;
           }
         } else if (act === 'share') {
           const file = new File([blob], '73-9-result.png', {
@@ -4708,7 +4935,7 @@ export function mountGame73(root, opts = {}) {
             });
           } catch (e) {
             if (!(e && e.name === 'AbortError'))
-              msg.textContent = 'Share unavailable. Use the buttons above.';
+              msg.textContent = copy.share.msg_unavailable;
           }
         }
       };
@@ -5422,18 +5649,30 @@ export function mountGame73(root, opts = {}) {
       .join('');
     const html =
       '' +
-      '<div class="shared-tag">A team built in 73-9</div>' +
+      '<div class="shared-tag">' +
+      escapeHtmlS(copy.share.view_tag) +
+      '</div>' +
       '<div class="war-panel">' +
-      '<div class="war-hdr">vs the 2015-16 Warriors</div>' +
+      '<div class="war-hdr">' +
+      escapeHtmlS(copy.results.warriors_header) +
+      '</div>' +
       '<div class="war-main">' +
       wp +
-      '<small>of games won</small></div>' +
-      '<div class="war-note">Think you can put together a five that does better?</div>' +
+      '<small>' +
+      escapeHtmlS(copy.results.of_games_won) +
+      '</small></div>' +
+      '<div class="war-note">' +
+      escapeHtmlS(copy.share.view_prompt) +
       '</div>' +
-      '<div class="sq yours"><div class="sq-hdr"><span class="t">The squad</span></div>' +
+      '</div>' +
+      '<div class="sq yours"><div class="sq-hdr"><span class="t">' +
+      escapeHtmlS(copy.share.view_squad) +
+      '</span></div>' +
       rows +
       '</div>' +
-      '<div class="shared-cta"><button class="btn" id="sharedSpinBtn">Spin your own five \u2192</button></div>';
+      '<div class="shared-cta"><button class="btn" id="sharedSpinBtn">' +
+      escapeHtmlS(copy.share.view_cta) +
+      '</button></div>';
     const res = $('results');
     res.innerHTML = html;
     res.classList.remove('hidden');
@@ -5647,7 +5886,7 @@ export function mountGame73(root, opts = {}) {
           (cached.raw.v === 2 ||
             Array.isArray(cached.raw.d?.[Object.keys(cached.raw.d || {})[0]]))
         ) {
-          label.textContent = 'Loading cached data...';
+          label.textContent = copy.load.cached;
           fill.style.width = '90%';
           raw = cached.raw;
         }
@@ -5697,7 +5936,7 @@ export function mountGame73(root, opts = {}) {
           fill.style.width =
             Math.min(80, Math.round((received / total) * 80)) + '%';
         }
-        label.textContent = 'Decompressing...';
+        label.textContent = copy.load.decompressing;
         fill.style.width = '85%';
         let decompressed;
         if (streaming) {
@@ -5719,7 +5958,7 @@ export function mountGame73(root, opts = {}) {
           }
           decompressed = inflateToString(compressed);
         }
-        label.textContent = 'Parsing...';
+        label.textContent = copy.load.parsing;
         fill.style.width = '92%';
         raw = JSON.parse(decompressed);
         if (dataVer) idbSet('data.bin', { ver: dataVer, raw }); // cache for next visit; best-effort, never blocks
@@ -5733,7 +5972,7 @@ export function mountGame73(root, opts = {}) {
       // (Safari: iterating a v2 player record throws "{} is not iterable").
       DATA_V2 = isSeasonAggregateData(raw);
 
-      label.textContent = 'Loading bio data...';
+      label.textContent = copy.load.bio;
       fill.style.width = '95%';
       try {
         const bioResp = await bioPromise;
@@ -5754,7 +5993,7 @@ export function mountGame73(root, opts = {}) {
         console.warn('bio.json load failed', e);
       }
 
-      label.textContent = 'Loading salary data...';
+      label.textContent = copy.load.salary;
       fill.style.width = '98%';
       const salResp = await salPromise;
       if (!salResp.ok) throw new Error('salaries.json HTTP ' + salResp.status);
@@ -5798,7 +6037,7 @@ export function mountGame73(root, opts = {}) {
       // Optional team-season records → winning-% quality factor. Keyed by "abbr|sy"
       // (sy = season END year, same as the salary data). Each value may be [W,L],
       // {w,l}, or a win pct (0–1 or 0–100). Absent file → factor stays neutral.
-      label.textContent = 'Loading team records...';
+      label.textContent = copy.load.records;
       try {
         const recResp = await recPromise;
         if (recResp.ok) {
@@ -5833,7 +6072,7 @@ export function mountGame73(root, opts = {}) {
 
       // Optional season-accolades file → per-season honor badges. Keyed by player
       // name, then season END year. Absent file → no badges (graceful).
-      label.textContent = 'Loading accolades...';
+      label.textContent = copy.load.accolades;
       try {
         const accResp = await accPromise;
         if (accResp.ok) {
@@ -5854,7 +6093,7 @@ export function mountGame73(root, opts = {}) {
         console.warn('accolades.json not loaded (badges off)', e);
       }
 
-      label.textContent = 'Loading positions...';
+      label.textContent = copy.load.positions;
       try {
         const posResp = await posPromise;
         if (posResp.ok) {
@@ -5877,7 +6116,7 @@ export function mountGame73(root, opts = {}) {
       // these players in the pool so they still show up (locked, unpickable) on every roster
       // they pass through. The 2015-16 Warriors team-season itself is dropped from the wheel in
       // buildGroups(), since landing on a team where everyone is locked would be a dead end.
-      label.textContent = 'Sealing the 73-9 wall...';
+      label.textContent = copy.load.sealing_wall;
       WAR2016 = new Set();
       for (const name of playerNames) {
         if (DATA_V2) {
@@ -5910,7 +6149,7 @@ export function mountGame73(root, opts = {}) {
         );
       }
 
-      label.textContent = 'Building team-seasons...';
+      label.textContent = copy.load.building_groups;
       fill.style.width = '99%';
       buildGroups();
       console.log('[ROULETTE] ' + GROUPS.length + ' team-seasons in the wheel');
@@ -5923,7 +6162,9 @@ export function mountGame73(root, opts = {}) {
         $('startBtn').onclick = startGame;
       }, 350);
     } catch (err) {
-      label.textContent = 'Load failed: ' + String(err.message || err);
+      label.textContent = fill(copy.load.failed, {
+        error: String(err.message || err),
+      });
       console.error(err);
     }
   })();

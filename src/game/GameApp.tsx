@@ -1,4 +1,5 @@
 import { memo, useEffect, useRef } from 'react';
+import { buildGameCopy } from '@/game/runtime/game-copy';
 import { mountGame73 } from '@/game/runtime/mount-game';
 import {
   GameBoard,
@@ -39,6 +40,7 @@ function GameAppImpl() {
 
     return mountGame73(root, {
       search: window.location.search,
+      copy: buildGameCopy(),
       auth: {
         isAuthenticated: Boolean(session?.user),
         signInHref,

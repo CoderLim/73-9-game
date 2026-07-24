@@ -1,4 +1,6 @@
 /** Loading screen — matches `#loadScreen` from the standalone build. */
+import { m } from '@/paraglide/messages.js';
+
 export function LoadScreen() {
   return (
     <div id="loadScreen">
@@ -11,8 +13,8 @@ export function LoadScreen() {
         decoding="async"
       />
       <p className="logo-main">73-9</p>
-      <div className="subtitle">Challenge the 73–9 Warriors</div>
-      <div id="progressLabel">Loading game data...</div>
+      <div className="subtitle">{m['game.ui.load.subtitle']()}</div>
+      <div id="progressLabel">{m['game.ui.load.initial']()}</div>
       <div className="bar">
         <div id="progressFill" />
       </div>

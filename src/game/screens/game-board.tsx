@@ -2,7 +2,11 @@
  * In-game HUD + reel + landed picker — matches `#game` from the standalone build.
  * Dynamic content (#strip, #reelTrack, #landed) is filled by the game runtime.
  */
+import { m } from '@/paraglide/messages.js';
+
 export function GameBoard() {
+  const resetLabel = m['game.ui.board.reset']();
+
   return (
     <div id="game" className="hidden">
       <div className="hud">
@@ -20,16 +24,16 @@ export function GameBoard() {
                 ).confirmRestart;
                 fn?.();
               }}
-              title="Reset draft"
-              aria-label="Reset draft"
+              title={resetLabel}
+              aria-label={resetLabel}
             >
-              Reset draft
+              {resetLabel}
             </button>
           </div>
           <div className="slot-dots" id="slotDots" />
         </div>
         <div className="cap-pill" id="capPill">
-          <span className="lab">Left</span>$100.0M
+          $100.0M
         </div>
       </div>
 
@@ -37,7 +41,7 @@ export function GameBoard() {
 
       <div className="reel-stage">
         <div className="reel-hint" id="reelHint">
-          Spin for a team-season
+          {m['game.ui.board.spin_hint']()}
         </div>
         <div className="reel-window">
           <div className="reel-marker" />
@@ -45,7 +49,7 @@ export function GameBoard() {
         </div>
         <div className="spin-row">
           <button className="btn" id="spinBtn" type="button">
-            Spin
+            {m['game.ui.board.spin']()}
           </button>
           <button
             className="btn"
@@ -53,7 +57,7 @@ export function GameBoard() {
             type="button"
             style={{ display: 'none' }}
           >
-            Re-roll — $10M
+            {m['game.ui.pick.reroll']({ cost: '$10M' })}
           </button>
         </div>
       </div>

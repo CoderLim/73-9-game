@@ -1,4 +1,6 @@
 /** Intro screen — brand, budget, start CTA. Rules live in About/SEO. */
+import { m } from '@/paraglide/messages.js';
+
 export function IntroScreen() {
   return (
     <div id="intro" className="hidden">
@@ -11,9 +13,9 @@ export function IntroScreen() {
         decoding="async"
       />
       <p className="logo-main">73-9</p>
-      <div className="subtitle">Draft five players. Outdo 73–9.</div>
+      <div className="subtitle">{m['game.ui.intro.subtitle']()}</div>
       <div className="budget-hero">
-        Your budget
+        {m['game.ui.intro.budget_label']()}
         <span className="big" id="introBudget">
           $100.0M
         </span>
@@ -22,7 +24,7 @@ export function IntroScreen() {
       <div className="fine" id="introFine" />
       <div className="intro-cta">
         <button className="btn" id="startBtn" type="button">
-          Start drafting
+          {m['game.ui.intro.start']()}
         </button>
       </div>
     </div>
