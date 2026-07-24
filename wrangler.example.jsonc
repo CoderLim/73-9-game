@@ -16,6 +16,9 @@
     // sync with .env.production (better-auth trustedOrigins, payment callbacks).
     "VITE_APP_URL": "https://<worker>.<your-subdomain>.workers.dev",
     "VITE_APP_NAME": "My App",
+    // Optional: comma-separated extra origins. Dot-prefix = hostname suffix
+    // wildcard (e.g. ".example.com" trusts https://www.example.com).
+    // "AUTH_TRUSTED_ORIGINS": ".example.com",
   },
   "d1_databases": [
     {

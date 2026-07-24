@@ -29,6 +29,28 @@ function ensureCloudflareEnv(): Promise<void> {
 export default {
   async fetch(req: Request): Promise<Response> {
     await ensureCloudflareEnv();
+
+    // Canonical host: www → apex (avoids better-auth Invalid origin when
+    // VITE_APP_URL is https://73-9.org but users land on www via DNS/forward).
+    try {
+      const url = new URL(req.url);
+      const appUrl = process.env.VITE_APP_URL || '';
+      if (appUrl) {
+        const canonicalHost = new URL(appUrl).hostname;
+        if (
+          canonicalHost &&
+          url.hostname === `www.${canonicalHost}` &&
+          req.method === 'GET'
+        ) {
+          url.hostname = canonicalHost;
+          url.protocol = 'https:';
+          return Response.redirect(url.toString(), 301);
+        }
+      }
+    } catch {
+      // ignore bad VITE_APP_URL / request URL
+    }
+
     const response = await paraglideMiddleware(req, () => handler.fetch(req));
     const utmSource = new URL(req.url).searchParams.get('utm_source');
     const existing = getCookieFromHeader(
