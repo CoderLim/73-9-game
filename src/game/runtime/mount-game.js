@@ -1303,19 +1303,6 @@ export function mountGame73(root, opts = {}) {
     }, 350);
   }
   function startGame() {
-    // Anti-cherry-pick: if a series is live, the series/casual choice happens HERE,
-    // before a single team is drawn. Choosing after seeing your five (the old flow)
-    // let you draft unlimited squads and attach only your best one to the series.
-    if (false) {
-      const act =
-        _knownFeuds()
-          .filter((x) => !x.done && x.opp)
-          .sort((a, b) => (b.ts || 0) - (a.ts || 0))[0] || null;
-      if (act) {
-        showSeriesIntentModal(act);
-        return;
-      }
-    }
     remaining = BUDGET;
     respinSpent = 0;
     roster = [null, null, null, null, null];
@@ -3800,22 +3787,10 @@ export function mountGame73(root, opts = {}) {
       localStorage.setItem('h99_name', n);
     } catch (e) {}
   }
-  function playerHandle() {
-    try {
-      return localStorage.getItem('h99_handle') || '';
-    } catch (e) {
-      return '';
-    }
-  }
-  function setPlayerHandle(h) {
-    try {
-      localStorage.setItem('h99_handle', h);
-    } catch (e) {}
-  }
   // A name safe to store as a shared data key (never the literal word "You", which
   // reads as addressing whoever's looking at it, not as a fixed identity).
   function displayName() {
-    const n = playerName() || _lbSavedName;
+    const n = playerName();
     return n || 'Player-' + playerId().slice(-4).toUpperCase();
   }
   function lbFmt(e) {
@@ -4620,7 +4595,6 @@ export function mountGame73(root, opts = {}) {
    the link-carried score still works, you just don't get the mailbox ping or
    the badge update.
    ============================================================ */
-  let _lbSavedName = ''; // set when the player names a leaderboard mark, used as the default challenger name
 
   function genId() {
     try {
@@ -4793,71 +4767,6 @@ export function mountGame73(root, opts = {}) {
     try {
       localStorage.removeItem(_ACTIVE_CH_KEY);
     } catch (e) {}
-  }
-  function showSeriesIntentModal(act) {
-    const ex = document.getElementById('chIntent');
-    if (ex) ex.remove();
-    const ov = document.createElement('div');
-    ov.id = 'chIntent';
-    ov.className = 'share-modal';
-    const sc = feudStandingsHTML({ s: act.score }) || '0-0';
-    ov.innerHTML =
-      '<div class="share-box ch-box">' +
-      '<div class="ch-modal-hdr">Series game?</div>' +
-      '<div class="ch-modal-sub">You have a live series with <b>' +
-      escapeHtmlS(act.opp) +
-      '</b> (' +
-      sc +
-      ', first to 4). Decide before you draft \u2014 this five is locked to your choice.</div>' +
-      '<div class="ch-fire-row"><button class="btn ch-fire" id="ciSeries">Play for the series</button> ' +
-      '<button class="btn ghost" id="ciCasual">Casual game</button></div>' +
-      '<div style="text-align:center;margin-top:10px"><a href="#" id="ciDecline" style="color:var(--dim);font-size:13px;text-decoration:underline">Decline this series \u2014 don\u2019t ask again</a></div>' +
-      '</div>';
-    document.body.appendChild(ov);
-    const go = () => {
-      ov.remove();
-      startGame();
-    };
-    ov.querySelector('#ciSeries').onclick = () => {
-      window.__CHALLENGE__ = {
-        nm: act.opp || 'Challenger',
-        wp: '',
-        rec: '',
-        st: null,
-        p: null,
-        f: { id: act.id, n: 0, s: act.score || {}, done: false, winner: null },
-      };
-      _saveActiveChallenge();
-      go();
-    };
-    ov.querySelector('#ciCasual').onclick = () => {
-      window.__CASUAL_GAME__ = true;
-      go();
-    };
-    // Decline (added v89): marks this specific feud id done in the LOCAL known-
-    // feuds list only, so startGame()'s active-feud filter stops picking it up
-    // and this modal never resurfaces for this opponent. Client-side only —
-    // doesn't tell the Worker or the other player anything, this is a personal
-    // "stop asking me" rather than a forfeit. Falls through to a casual game for
-    // right now, same safe default as clicking outside the modal.
-    ov.querySelector('#ciDecline').onclick = (e) => {
-      e.preventDefault();
-      const list = _knownFeuds();
-      const idx = list.findIndex((x) => x.id === act.id);
-      if (idx >= 0) {
-        list[idx].done = true;
-        _saveKnownFeuds(list);
-      }
-      window.__CASUAL_GAME__ = true;
-      go();
-    };
-    // clicking outside = casual (safe default: never touches the series)
-    ov.addEventListener('click', (e) => {
-      if (e.target === ov) {
-        window.__CASUAL_GAME__ = true;
-        go();
-      }
-    });
   }
   // ---- mailbox check: on load, surface series updates and offer the next game ----
   window.__FEUD_CONTINUE__ = {}; // id -> live feud doc, so the banner's button can act without re-serializing HTML
@@ -5223,7 +5132,7 @@ export function mountGame73(root, opts = {}) {
     const nameInput = ov.querySelector('.ch-name');
     const urlField = ov.querySelector('.share-url');
     const msg = ov.querySelector('.share-msg');
-    let knownName = playerName() || _lbSavedName || '';
+    let knownName = playerName() || '';
     // Sanity guard: your name can't be your current opponent's name. If the saved
     // name somehow matches them (test sessions, shared devices), start blank.
     if (

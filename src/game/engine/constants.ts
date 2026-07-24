@@ -79,10 +79,6 @@ export const SY_MAX = 2026;
 export const BUILD =
   'v96 · removed 14-15 Warriors from the wheel, fixed perfect-board name re-sync · 2026-07-16';
 
-/** Leaderboard Cloudflare Worker. Empty string hides the leaderboard. */
-export const LB_API =
-  'https://hoopsmatic-73-9-leaderboard.thejorgesierra.workers.dev';
-
 export const CAP_2026 = 165_000_000;
 export const BUDGET = 100_000_000;
 export const RESPIN_COST = 10_000_000;
