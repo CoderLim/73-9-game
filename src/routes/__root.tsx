@@ -53,7 +53,8 @@ const getAnalyticsConfigs = createServerFn().handler(async () => {
     plausibleDomain: configs.plausible_domain?.trim() || '73-9.org',
     plausibleSrc:
       configs.plausible_src?.trim() || 'https://app.pageview.app/js/script.js',
-    adsenseCode: configs.adsense_code?.trim() || '',
+    // AdSense. Admin DB value overrides this default.
+    adsenseCode: configs.adsense_code?.trim() || 'ca-pub-8028656293202971',
     crispWebsiteId:
       configs.crisp_enabled === 'true'
         ? configs.crisp_website_id?.trim() || ''
