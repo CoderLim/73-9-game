@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import {
-  CreditCard,
+  Coins,
   FolderOpen,
   Home,
   LayoutDashboard,
@@ -38,15 +38,10 @@ function AdminLayout() {
       ],
     },
     {
-      href: '/admin/payments',
-      label: m['admin.nav.billing'](),
-      icon: CreditCard,
+      href: '/admin/credits',
+      label: m['admin.nav.credits'](),
+      icon: Coins,
       group,
-      items: [
-        { href: '/admin/payments', label: m['admin.nav.payments']() },
-        { href: '/admin/subscriptions', label: m['admin.nav.subscriptions']() },
-        { href: '/admin/credits', label: m['admin.nav.credits']() },
-      ],
     },
     {
       href: '/admin/categories',

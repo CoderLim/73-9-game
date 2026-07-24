@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { Activity, CreditCard, Key, TrendingUp } from 'lucide-react';
+import { Activity, CreditCard, Key } from 'lucide-react';
 
 import { useSession } from '@/core/auth/client';
 import { apiGet } from '@/lib/api-client';
@@ -13,12 +13,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-type Subscription = {
-  status: string;
-  planName?: string | null;
-  productName?: string | null;
-};
-
 function DashboardPage() {
   const { data: session } = useSession();
 
@@ -30,20 +24,9 @@ function DashboardPage() {
     queryKey: ['user-apikeys'],
     queryFn: () => apiGet<unknown[]>('/api/apikeys'),
   });
-  const { data: subscriptionData } = useQuery({
-    queryKey: ['user-subscription-current'],
-    queryFn: () =>
-      apiGet<Subscription | null>('/api/user/subscriptions/current'),
-  });
 
   const credits = creditsData?.balance ?? null;
   const apiKeys = apiKeysData?.length ?? null;
-  const subscription = subscriptionData ?? null;
-
-  const planLabel =
-    subscription?.planName ||
-    subscription?.productName ||
-    m['settings.overview.plan_free']();
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -58,22 +41,7 @@ function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              {m['settings.overview.plan']()}
-            </CardTitle>
-            <TrendingUp className="text-muted-foreground size-4" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{planLabel}</div>
-            <p className="text-muted-foreground mt-1 text-xs">
-              {m['settings.overview.plan_description']()}
-            </p>
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">

@@ -65,16 +65,12 @@ async function POST({ request }: { request: Request }) {
 
     // Build success/cancel URLs — only accept same-origin redirects.
     const baseUrl = configs.app_url || 'http://localhost:3000';
-    const safeRedirectPath = safeSameOriginPath(
-      redirect,
-      '/settings/billing',
-      baseUrl
-    );
+    const safeRedirectPath = safeSameOriginPath(redirect, '/settings', baseUrl);
     const finalRedirect = redirect
       ? `${baseUrl}/auth-callback?redirect=${encodeURIComponent(`${baseUrl}${safeRedirectPath}`)}`
-      : `${baseUrl}/settings/billing`;
+      : `${baseUrl}/settings`;
     const successUrl = `${baseUrl}/api/payment/callback?redirect=${encodeURIComponent(finalRedirect)}`;
-    const cancelUrl = `${baseUrl}/pricing`;
+    const cancelUrl = `${baseUrl}/`;
 
     const checkout = await createCheckout({
       userId: session.user.id,
