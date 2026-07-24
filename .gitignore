@@ -66,5 +66,9 @@ package-lock.json
 # Runtime image uploads (no-storage local fallback)
 /public/uploads/
 
+# Full box-score dump used only to rebuild public/73-9-game/data.bin
+# Restore: git show pre-season-aggregate:public/73-9-game/data.bin > scripts/game-data/data.full.bin
+/scripts/game-data/data.full.bin
+
 # git worktrees
 .worktrees/

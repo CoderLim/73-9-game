@@ -144,11 +144,45 @@ export interface VsWarriorsResult {
   margin: number;
 }
 
-/** Raw data.bin JSON shape (post-inflate). */
+/**
+ * Season-aggregate row (data.bin v2):
+ * [gp, minTotal, pos, tms[], mn,pts,fgm,fga,p3m,p3a,ftm,fta,orb,drb,reb,ast,stl,blk,tov,pf]
+ */
+export type SeasonAggRow = [
+  number,
+  number,
+  number,
+  number[],
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+];
+
+export interface PlayerSeasonIndex {
+  c: number;
+  cp: number;
+  s: Record<string, SeasonAggRow>;
+}
+
+/** Raw data.bin JSON shape (post-inflate). v2 = season aggregates. */
 export interface GameData {
+  v?: number;
   t: string[];
   p: string[];
-  d: Record<string, GameTuple[]>;
+  d: Record<string, GameTuple[] | PlayerSeasonIndex>;
 }
 
 export type RecordsMap = Record<string, number>;
@@ -177,7 +211,7 @@ export interface SalaryJson {
 export interface GameBundle {
   teams: string[];
   pos: string[];
-  playerIndex: Record<string, GameTuple[]>;
+  playerIndex: Record<string, GameTuple[] | PlayerSeasonIndex>;
   playerNames: string[];
   bioData: BioRow[];
   bioByName: Record<string, number>;

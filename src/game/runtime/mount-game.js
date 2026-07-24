@@ -204,6 +204,10 @@ export function mountGame73(root, opts = {}) {
     return idx >= 0 ? idx : 2;
   }
   function getMostCommonPos(name) {
+    if (DATA_V2) {
+      const rec = playerIndex[name];
+      return rec && rec.cp != null ? rec.cp | 0 : 2;
+    }
     const games = playerIndex[name];
     if (!games) return 2;
     const ct = [0, 0, 0, 0, 0];
@@ -741,6 +745,8 @@ export function mountGame73(root, opts = {}) {
     POS = [],
     playerIndex = {},
     playerNames = [];
+  /** True when data.bin is season-aggregate v2 ({v:2,d[name]={c,cp,s}}). */
+  let DATA_V2 = false;
   let bioData = [],
     bioByName = {};
   let ACC_DATA = {}; // season accolades: { "Player Name": { "<endYear>": [codes...] } }
@@ -755,7 +761,7 @@ export function mountGame73(root, opts = {}) {
 
   // --- tunable game constants (easy to tweak / move to a config later) ---
   const BUILD =
-    'v96 · removed 14-15 Warriors from the wheel, fixed perfect-board name re-sync · 2026-07-16';
+    'v97 · season-aggregate data.bin (v2) for mobile memory · 2026-07-24';
   // Where a shared squad link points. This must be a page that serves THIS game's
   // HTML (it reads the ?sq= payload client-side). Until the share route serves
   // this file, shared links will 404 — change this one line back to the GitHub Pages
@@ -1009,22 +1015,91 @@ export function mountGame73(root, opts = {}) {
 
   /* ---- per-(player,season) helpers ---- */
   const _seasonGamesCache = {};
+  /** v2 season row: [gp, minTotal, pos, tms[], mn,pts,fgm,fga,p3m,p3a,ftm,fta,orb,drb,reb,ast,stl,blk,tov,pf] */
+  function seasonRow(name, sy) {
+    const rec = playerIndex[name];
+    if (!rec || !rec.s) return null;
+    return rec.s[sy] || rec.s[String(sy)] || null;
+  }
+  function synthGameFromRow(row, sy, tm) {
+    const av = row.slice(4);
+    const g = new Array(22).fill(0);
+    g[G.TM] = tm;
+    // row[2] is POS_NAMES index (PG=0..C=4); G.PS indexes into POS table (order differs).
+    const posName = POS_NAMES[row[2] | 0] || 'SF';
+    const ps = POS.indexOf(posName);
+    g[G.PS] = ps >= 0 ? ps : 0;
+    g[G.MN] = av[0] || 0;
+    g[G.PT] = av[1] || 0;
+    g[G.FM] = av[2] || 0;
+    g[G.FA] = av[3] || 0;
+    g[G.PM] = av[4] || 0;
+    g[G.PA] = av[5] || 0;
+    g[G.FT] = av[6] || 0;
+    g[G.TA] = av[7] || 0;
+    g[G.OR] = av[8] || 0;
+    g[G.DR] = av[9] || 0;
+    g[G.RB] = av[10] || 0;
+    g[G.AS] = av[11] || 0;
+    g[G.ST] = av[12] || 0;
+    g[G.BK] = av[13] || 0;
+    g[G.TO] = av[14] || 0;
+    g[G.PF] = av[15] || 0;
+    g[G.TY] = 0;
+    g[G.SY] = sy;
+    g[G.GY] = sy - 1;
+    return g;
+  }
   function seasonGames(name, sy) {
     const k = name + '|' + sy;
     if (_seasonGamesCache[k]) return _seasonGamesCache[k];
-    const out = (playerIndex[name] || []).filter(
-      (g) => g[G.SY] === sy && isPlayableGame(g)
-    );
+    let out;
+    if (DATA_V2) {
+      const row = seasonRow(name, sy);
+      if (!row) out = [];
+      else {
+        const tms = row[3] && row[3].length ? row[3] : [0];
+        // One synthetic box score per team worn that season (franchise checks + sim template).
+        out = tms.map((tm) => synthGameFromRow(row, sy, tm));
+      }
+    } else {
+      out = (playerIndex[name] || []).filter(
+        (g) => g[G.SY] === sy && isPlayableGame(g)
+      );
+    }
     _seasonGamesCache[k] = out;
     return out;
   }
+  function seasonGp(name, sy) {
+    if (DATA_V2) {
+      const row = seasonRow(name, sy);
+      return row ? row[0] | 0 : 0;
+    }
+    return seasonGames(name, sy).length;
+  }
   function sampleSeasonGame(name, sy) {
     let gs = seasonGames(name, sy);
-    if (!gs.length) gs = (playerIndex[name] || []).filter(isPlayableGame); // fallback to any era
+    if (!gs.length) {
+      if (DATA_V2) {
+        const rec = playerIndex[name];
+        const keys = rec && rec.s ? Object.keys(rec.s) : [];
+        if (keys.length) {
+          const anySy = +keys.sort()[keys.length - 1];
+          gs = seasonGames(name, anySy);
+        }
+      } else {
+        gs = (playerIndex[name] || []).filter(isPlayableGame); // fallback to any era
+      }
+    }
     if (!gs.length) return null;
     return gs[Math.floor(Math.random() * gs.length)];
   }
   function positionForSeason(name, sy) {
+    if (DATA_V2) {
+      const row = seasonRow(name, sy);
+      if (row) return row[2] | 0;
+      return getMostCommonPos(name);
+    }
     const gs = seasonGames(name, sy);
     if (gs.length) {
       const ct = [0, 0, 0, 0, 0];
@@ -1040,6 +1115,47 @@ export function mountGame73(root, opts = {}) {
   // ppg/rpg/apg are the per-game season averages shown on the cards.
   // (The actual record always comes from full simulation, never from these.)
   function seasonProfile(name, sy) {
+    if (DATA_V2) {
+      const row = seasonRow(name, sy);
+      if (!row) return { rating: 0, ppg: 0, rpg: 0, apg: 0, fgpct: 0 };
+      // row avgs already match COUNT_STATS inputs (per-game).
+      const a = {
+        PTS: row[5] || 0,
+        FGM: row[6] || 0,
+        FGA: row[7] || 0,
+        '3PM': row[8] || 0,
+        '3PA': row[9] || 0,
+        FTM: row[10] || 0,
+        FTA: row[11] || 0,
+        ORB: row[12] || 0,
+        DRB: row[13] || 0,
+        REB: row[14] || 0,
+        AST: row[15] || 0,
+        STL: row[16] || 0,
+        BLK: row[17] || 0,
+        TOV: row[18] || 0,
+        PF: row[19] || 0,
+      };
+      const rating =
+        a.PTS +
+        0.4 * a.FGM -
+        0.7 * a.FGA -
+        0.4 * (a.FTA - a.FTM) +
+        0.7 * a.ORB +
+        0.3 * a.DRB +
+        a.STL +
+        0.7 * a.AST +
+        0.7 * a.BLK -
+        0.4 * a.PF -
+        a.TOV;
+      return {
+        rating,
+        ppg: a.PTS,
+        rpg: a.REB,
+        apg: a.AST,
+        fgpct: a.FGA > 0 ? (a.FGM / a.FGA) * 100 : 0,
+      };
+    }
     const gs = seasonGames(name, sy);
     if (!gs.length) return { rating: 0, ppg: 0, rpg: 0, apg: 0 };
     const sum = {};
@@ -1075,6 +1191,10 @@ export function mountGame73(root, opts = {}) {
   // Total minutes a player logged that season (sum of MN over playable games) — used
   // to keep each team-season's draftable pool to its 15 most-used players.
   function seasonMinutes(name, sy) {
+    if (DATA_V2) {
+      const row = seasonRow(name, sy);
+      return row ? row[1] | 0 : 0;
+    }
     const gs = seasonGames(name, sy);
     let m = 0;
     for (const g of gs) m += g[G.MN] || 0;
@@ -1129,7 +1249,7 @@ export function mountGame73(root, opts = {}) {
       const pos = positionForSeason(name, sy);
       const wf = winFactor(abbr, sy);
       const _mins = seasonMinutes(name, sy);
-      const _gp = seasonGames(name, sy).length; // games played that season (cached)
+      const _gp = seasonGp(name, sy); // games played that season
       byKey[key].players.push({
         name,
         sy,
@@ -1215,8 +1335,7 @@ export function mountGame73(root, opts = {}) {
       // across every game the group's players actually played that season.
       const tally = {};
       for (const p of group.players) {
-        for (const g of playerIndex[p.name] || []) {
-          if (g[G.SY] !== group.sy || !isPlayableGame(g)) continue;
+        for (const g of seasonGames(p.name, group.sy)) {
           for (const f of NBA_FRANCHISES) {
             if (gameMatchesFranchise(g, f.abbr)) {
               tally[f.abbr] = (tally[f.abbr] || 0) + 1;
@@ -5429,7 +5548,7 @@ export function mountGame73(root, opts = {}) {
         reject(new Error('no indexedDB'));
         return;
       }
-      const req = indexedDB.open('h99cache-v2', 1);
+      const req = indexedDB.open('h99cache-v3', 1);
       req.onupgradeneeded = () => {
         try {
           req.result.createObjectStore('files');
@@ -5590,6 +5709,7 @@ export function mountGame73(root, opts = {}) {
       TEAMS = raw.t;
       POS = raw.p;
       playerIndex = raw.d;
+      DATA_V2 = raw.v === 2;
       playerNames = Object.keys(playerIndex).sort();
 
       label.textContent = 'Loading bio data...';
@@ -5598,9 +5718,12 @@ export function mountGame73(root, opts = {}) {
         const bioResp = await bioPromise;
         if (bioResp.ok) {
           const bioRaw = await bioResp.json();
-          bioData = bioRaw.filter(
-            (r) => playerIndex[r[0]] && playerIndex[r[0]].length >= 20
-          );
+          bioData = bioRaw.filter((r) => {
+            const rec = playerIndex[r[0]];
+            if (!rec) return false;
+            if (DATA_V2) return (rec.c | 0) >= 20;
+            return rec.length >= 20;
+          });
           bioData.forEach((r, i) => {
             bioByName[r[0]] = i;
           });
@@ -5625,12 +5748,16 @@ export function mountGame73(root, opts = {}) {
         const sy = (e0[1] | 0) + 1;
         const e = [name, sy, e0[2], e0[3], e0[4]];
         if (!bioByName.hasOwnProperty(name)) continue; // needs a bio entry (parity w/ salary variant)
-        const games = playerIndex[name] || [];
         let gp = 0;
-        for (const g of games) {
-          if (g[G.SY] === sy && isPlayableGame(g)) {
-            gp++;
-            if (gp >= 1) break;
+        if (DATA_V2) {
+          gp = seasonGp(name, sy);
+        } else {
+          const games = playerIndex[name] || [];
+          for (const g of games) {
+            if (g[G.SY] === sy && isPlayableGame(g)) {
+              gp++;
+              if (gp >= 1) break;
+            }
           }
         }
         if (gp < 1) continue; // ≥1 playable game that (end-year) season
@@ -5732,15 +5859,22 @@ export function mountGame73(root, opts = {}) {
       label.textContent = 'Sealing the 73-9 wall...';
       WAR2016 = new Set();
       for (const name of playerNames) {
-        const games = playerIndex[name] || [];
-        for (const gm of games) {
-          if (
-            gm[G.SY] === 2016 &&
-            isPlayableGame(gm) &&
-            gameMatchesFranchise(gm, 'GSW')
-          ) {
+        if (DATA_V2) {
+          const gs = seasonGames(name, 2016);
+          if (gs.some((gm) => gameMatchesFranchise(gm, 'GSW'))) {
             WAR2016.add(name);
-            break;
+          }
+        } else {
+          const games = playerIndex[name] || [];
+          for (const gm of games) {
+            if (
+              gm[G.SY] === 2016 &&
+              isPlayableGame(gm) &&
+              gameMatchesFranchise(gm, 'GSW')
+            ) {
+              WAR2016.add(name);
+              break;
+            }
           }
         }
       }

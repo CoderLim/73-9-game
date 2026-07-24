@@ -22,7 +22,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "game:parity": "tsx scripts/game-parity-smoke.ts"
+    "game:parity": "tsx scripts/game-parity-smoke.ts",
+    "game:build-data": "node scripts/game-data/build-season-bin.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": "prettier --write",

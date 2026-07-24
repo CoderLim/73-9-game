@@ -119,7 +119,7 @@ function idbOpen(): Promise<IDBDatabase> {
       reject(new Error('no indexedDB'));
       return;
     }
-    const req = indexedDB.open('h99cache', 1);
+    const req = indexedDB.open('h99cache-v3', 1);
     req.onupgradeneeded = () => {
       try {
         req.result.createObjectStore('files');
@@ -326,11 +326,13 @@ export async function loadGameData(
     const bioResp = await bioPromise;
     if (bioResp.ok) {
       const bioRaw = (await bioResp.json()) as BioRow[];
-      bioData = bioRaw.filter(
-        (r) =>
-          playerIndex[r[0] as string] &&
-          playerIndex[r[0] as string].length >= 20
-      );
+      const dataV2 = raw.v === 2;
+      bioData = bioRaw.filter((r) => {
+        const rec = playerIndex[r[0] as string];
+        if (!rec) return false;
+        if (dataV2 && !Array.isArray(rec)) return (rec.c | 0) >= 20;
+        return Array.isArray(rec) && rec.length >= 20;
+      });
       bioData.forEach((r, i) => {
         bioByName[r[0] as string] = i;
       });
@@ -357,12 +359,17 @@ export async function loadGameData(
       e0[4],
     ];
     if (!Object.prototype.hasOwnProperty.call(bioByName, name)) continue;
-    const games = playerIndex[name] || [];
     let gp = 0;
-    for (const g of games) {
-      if (g[G.SY] === sy && isPlayableGame(g)) {
-        gp++;
-        if (gp >= 1) break;
+    const rec = playerIndex[name];
+    if (raw.v === 2 && rec && !Array.isArray(rec)) {
+      const row = rec.s[String(sy)] || rec.s[sy as unknown as string];
+      gp = row ? row[0] | 0 : 0;
+    } else if (Array.isArray(rec)) {
+      for (const g of rec) {
+        if (g[G.SY] === sy && isPlayableGame(g)) {
+          gp++;
+          if (gp >= 1) break;
+        }
       }
     }
     if (gp < 1) continue;
@@ -416,15 +423,51 @@ export async function loadGameData(
   onProgress({ label: 'Sealing the 73-9 wall...', loaded: 99, total: 100 });
   const war2016 = new Set<string>();
   for (const name of playerNames) {
-    const games = playerIndex[name] || [];
-    for (const gm of games) {
-      if (
-        gm[G.SY] === 2016 &&
-        isPlayableGame(gm) &&
-        gameMatchesFranchise(gm, 'GSW', teams)
-      ) {
-        war2016.add(name);
-        break;
+    const rec = playerIndex[name];
+    if (!rec) continue;
+    if (raw.v === 2 && !Array.isArray(rec)) {
+      const row = rec.s['2016'];
+      if (!row) continue;
+      for (const tm of row[3] || []) {
+        const gm = [
+          tm,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2016,
+          2015,
+        ];
+        if (gameMatchesFranchise(gm as never, 'GSW', teams)) {
+          war2016.add(name);
+          break;
+        }
+      }
+    } else if (Array.isArray(rec)) {
+      for (const gm of rec) {
+        if (
+          gm[G.SY] === 2016 &&
+          isPlayableGame(gm) &&
+          gameMatchesFranchise(gm, 'GSW', teams)
+        ) {
+          war2016.add(name);
+          break;
+        }
       }
     }
   }
