@@ -16,6 +16,7 @@ export interface SeoStep {
 }
 
 export function GameSeoSection({
+  id = 'about',
   eyebrow,
   title,
   intro,
@@ -27,6 +28,7 @@ export function GameSeoSection({
   faqs,
   className,
 }: {
+  id?: string;
   eyebrow: string;
   title: string;
   intro: string;
@@ -40,7 +42,7 @@ export function GameSeoSection({
 }) {
   return (
     <section
-      id="about"
+      id={id}
       className={cn(
         'w-full bg-[#05050a]/85 py-14 backdrop-blur-sm sm:py-16',
         className

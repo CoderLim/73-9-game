@@ -30,6 +30,8 @@ export function mountGame73(root, opts = {}) {
     opts && typeof opts.submitResult === 'function' ? opts.submitResult : null;
   const DATA_BASE = '/73-9-game/';
   const asset = (name) => DATA_BASE + name;
+  // Friend-challenge series needs a first-party feud API; keep UI off until then.
+  const FRIEND_CHALLENGE_ENABLED = false;
 
   // Vite's ESM pako build may ignore {to:'string'} and return Uint8Array.
   function inflateToString(bytes) {
@@ -4074,7 +4076,7 @@ export function mountGame73(root, opts = {}) {
           '</div>' +
           html;
       }
-      if (window.__CHALLENGE__)
+      if (FRIEND_CHALLENGE_ENABLED && window.__CHALLENGE__)
         html +=
           '<div id="chPanel" class="war-panel ch-panel"><div class="war-hdr">Friend challenge</div><div class="ch-h2h lb-loading">Checking the latest round\u2026</div></div>';
       // (series-vs-casual is declared BEFORE drafting, in startGame, so a finished
@@ -4084,7 +4086,9 @@ export function mountGame73(root, opts = {}) {
       html +=
         '<div class="res-actions">' +
         '<button class="btn" onclick="shareResultCard()">Share result</button>' +
-        '<button class="btn ghost" onclick="openChallengeModal()">Challenge a friend</button>' +
+        (FRIEND_CHALLENGE_ENABLED
+          ? '<button class="btn ghost" onclick="openChallengeModal()">Challenge a friend</button>'
+          : '') +
         '<button class="btn ghost" onclick="playAgain()">Play again</button>' +
         '</div>';
 
@@ -4165,7 +4169,7 @@ export function mountGame73(root, opts = {}) {
         mountGuestTip(el);
       } catch (e) {}
       window.__LAST_WP__ = winPctStr;
-      if (window.__CHALLENGE__) {
+      if (FRIEND_CHALLENGE_ENABLED && window.__CHALLENGE__) {
         try {
           renderChallengePanel(winPctStr);
         } catch (e) {}
@@ -5063,6 +5067,7 @@ export function mountGame73(root, opts = {}) {
       fireRow;
   }
   function openChallengeModal(opts) {
+    if (!FRIEND_CHALLENGE_ENABLED) return;
     opts = opts || {};
     const fireBack = !!opts.fireBack,
       newSeries = !!opts.newSeries;
@@ -5325,7 +5330,12 @@ export function mountGame73(root, opts = {}) {
       return null;
     }
   })();
-  if (CH_PAYLOAD && Array.isArray(CH_PAYLOAD.p) && !window.__SHARED__) {
+  if (
+    FRIEND_CHALLENGE_ENABLED &&
+    CH_PAYLOAD &&
+    Array.isArray(CH_PAYLOAD.p) &&
+    !window.__SHARED__
+  ) {
     window.__CHALLENGE__ = CH_PAYLOAD;
     try {
       const nm = CH_PAYLOAD.nm
@@ -5388,7 +5398,7 @@ export function mountGame73(root, opts = {}) {
     try {
       checkFeudInbox((CH_PAYLOAD.f && CH_PAYLOAD.f.id) || null);
     } catch (e) {}
-  } else if (!window.__SHARED__) {
+  } else if (FRIEND_CHALLENGE_ENABLED && !window.__SHARED__) {
     // Normal entry (not opening a specific challenge link): first, restore a
     // mid-draft series if the browser was refreshed while one was in progress.
     try {

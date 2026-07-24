@@ -4,6 +4,7 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { GameLeaderboard } from '@/blocks/game-leaderboard';
+import { GameLeaderboardSeo } from '@/blocks/game-leaderboard-seo';
 import { Header } from '@/blocks/header';
 
 export const Route = createFileRoute('/leaderboard')({
@@ -32,6 +33,7 @@ function LeaderboardPage() {
       <div className="h-[calc(52px+env(safe-area-inset-top))] shrink-0 md:h-[73px]" />
       <main className="flex flex-1 flex-col">
         <GameLeaderboard />
+        <GameLeaderboardSeo />
       </main>
       <Footer />
     </div>
