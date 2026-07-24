@@ -19,6 +19,8 @@ export function Header() {
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
   const onHome = pathname === '/';
   const onLeaderboard = pathname === '/leaderboard';
+  const onHowToPlay = pathname === '/how-to-play';
+  const onHowItWorks = pathname === '/how-it-works';
   const onBlog = pathname === '/blog' || pathname.startsWith('/blog/');
 
   async function handleSignOut() {
@@ -36,12 +38,20 @@ export function Header() {
           active: onLeaderboard,
         },
         {
+          href: '/how-to-play',
+          label: m['game.nav.how_to_play'](),
+          active: onHowToPlay,
+        },
+        {
+          href: '/how-it-works',
+          label: m['game.nav.how_it_works'](),
+          active: onHowItWorks,
+        },
+        {
           href: '/blog',
           label: m['game.nav.blog'](),
           active: onBlog,
         },
-        { href: '/#about', label: m['game.nav.about']() },
-        { href: '/#highlights', label: m['game.nav.highlights']() },
       ]}
       auth={{
         status: authStatus,

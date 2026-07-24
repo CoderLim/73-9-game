@@ -13,6 +13,8 @@ const STATIC_PATHS = [
   '/cookies',
   '/about',
   '/contact',
+  '/how-to-play',
+  '/how-it-works',
 ];
 
 type Entry = {
