@@ -1,45 +1,122 @@
 export const meta = {
   title: 'Welcome to 73-9: draft five, challenge the Warriors',
   description:
-    'What 73-9.org is, how the salary-cap draft puzzle works, and how to save runs on the leaderboard.',
+    'An introduction to the 73-9 browser basketball game, its $100M draft puzzle, historical benchmark, simulation feedback, leaderboard, and independent project goals.',
   created_at: '2026-07-24',
   author_name: '73-9',
   author_image: '/logo.png',
 };
 
-**73-9.org** is a single-purpose home for one basketball puzzle: build a five-man lineup that can stand up to the **2015–16 Golden State Warriors** — the team that finished **73–9**, the best regular-season record in NBA history.
+**73-9.org** is a focused browser basketball strategy game. The challenge is simple to describe and difficult to solve: build a five-player lineup under a **$100 million budget**, then see how it performs against the benchmark created by the **2015-16 Golden State Warriors**.
 
-This site is not a game aggregator. There is no menu of unrelated titles. You land on the court, draft, simulate, and climb the board.
+The site is not a game aggregator and does not embed a catalog of unrelated titles. The playable draft, methodology pages, strategy guides, and development notes all support the same question: how much historical player-season value can you fit into one constrained lineup?
 
-## The challenge
+## Why the target is 73-9
 
-You start with a **$100 million** budget. Five times, a reel lands on a random **team-season** (roughly 1990 through today). From that roster you may **sign exactly one player**. Cap hits are scaled to today’s money, so a max deal from an old season still has to fit your remaining budget.
+Golden State won 73 regular-season games and lost 9 in 2015-16, passing the 1995-96 Chicago Bulls’ 72-10 record. Stephen Curry became the first unanimous NBA Most Valuable Player and made 402 three-pointers. The Warriors opened 24-0 and set a record with 34 road wins.
 
-When the five slots are filled, you run a season simulation against the 73–9 Warriors wall. Win percentage, share cards, and — if you are signed in — a saved run on the public **leaderboard**.
+Those facts make the team a recognizable and demanding target. They do not end every historical debate. Golden State lost the 2016 Finals, while the 72-10 Bulls completed their season with a championship. Fans can reasonably weigh regular-season performance, playoff outcome, era, style, and opponent quality differently.
 
-Need a do-over on a bad land? **Re-roll** costs **$10M** from the same budget. Spend wisely.
+The game uses 73-9 as a wall, not as a final verdict on the greatest team.
 
-## How a run flows
+## The core draft puzzle
 
-1. **Start drafting** from the home court card.
-2. **Spin** for a franchise season, then pick one affordable player for the open slot.
-3. Fill all five positions (you can swap slot order before you sim).
-4. **Sim the season**, share the card, or draft again.
-5. Sign in if you want that run counted on the leaderboard.
+A new run begins with five empty positions and a $100M cap. You do not receive a list of every player in history. Instead, the reel lands on a random franchise-season, and that roster becomes the market for one selection.
 
-The full rules also live on the homepage **About** section and the [About](/about) page — the game itself stays focused on the draft.
+From that team-season, you sign one player. The contract reduces the same budget used for all later positions. A re-spin can replace an unattractive market, but it also costs money.
 
-## What you will find on the platform
+The process repeats until the lineup contains a point guard, shooting guard, small forward, power forward, and center.
 
-- **Play** (`/`) — the live draft board over the arena backdrop
-- **Leaderboard** (`/leaderboard`) — best saved runs from signed-in players
-- **Blog** (`/blog`) — notes like this one: how the game works and site updates
-- **About / legal** — background on 73–9, contact, and policies
+This structure creates three connected decisions:
 
-Guests can play freely. Unsaved guest runs are fine for casual spins; create an account when you want a permanent place on the board.
+- **Player-season quality:** how strong is the version of the player shown?
+- **Price:** how much of the cap does that season consume?
+- **Roster consequence:** what options remain for the other positions?
 
-## Why “73-9”
+A player can be excellent and still be the wrong signing when the contract makes the rest of the lineup impossible.
 
-Fans already use **73-9** as shorthand for that Warriors season. The game turns the number into a playable bar: not “guess trivia,” but **allocate a salary cap under randomness** and see whether your five can hang with the best regular-season team ever.
+## Why the game uses player-seasons
 
-Open [73-9.org](/), hit **Start drafting**, and take your shot at the wall.
+Careers flatten important differences. The same player can move from a small role to a peak, change teams, lose minutes, improve efficiency, or age into a different style.
+
+73-9 therefore treats the player in the displayed season as the draft asset. A famous name is not automatically the best choice. A less famous player during a productive season can be more useful when the price leaves enough room to complete the five.
+
+Historical data informs the ratings and prices, but those values are game mechanics. They are not official NBA grades or real salary estimates.
+
+## What happens after the fifth signing
+
+Once the lineup is complete, the game runs an 82-game simulation. The result screen presents a season-shaped record and an estimate of how often the roster clears the Warriors benchmark inside the 73-9 model.
+
+The result is not a real-world prediction. Cross-era basketball includes rule changes, coaching, injuries, pace, defensive schemes, team chemistry, and other factors that no compact browser simulation can reproduce completely.
+
+The simulation is most useful as a consistent comparison tool. Every lineup is evaluated by the same system, so you can compare your own drafts and learn how the budget affected the result.
+
+## The most useful result is the comparison lineup
+
+The game also looks back at the exact team-seasons you received and builds a stronger legal lineup under the same $100M cap.
+
+This separates luck from decision-making. Your lineup and the comparison lineup had the same wheel outcomes. The difference comes from which player-season was selected and how the spending fit together.
+
+A large gap may reveal that:
+
+- You paid too much for reputation.
+- One early contract forced several weak late picks.
+- A cheap value player would have preserved room for a later star.
+- The lineup duplicated one type of production instead of balancing the five.
+
+A small gap means your choices were close to the model’s strongest legal combination, even when the overall wheel was difficult.
+
+## Guest play and accounts
+
+The full game is available to guests. You do not need an account to spin, draft, simulate, or study the result.
+
+An account is useful when you want an eligible run saved to the public [leaderboard](/leaderboard). Account features are optional, and privacy practices are described in the [Privacy Policy](/privacy-policy).
+
+Leaderboard placement cannot be purchased. The current core game does not sell better players, extra simulated wins, or paid rank.
+
+## What the site includes
+
+- **[Play](/):** the live wheel, roster selection, budget, simulation, and result.
+- **[How to Play](/how-to-play):** a complete rules and strategy walkthrough.
+- **[How It Works](/how-it-works):** data, pricing, simulation, limitations, and sources.
+- **[Blog](/blog):** strategy, history, methodology, and development updates.
+- **[Leaderboard](/leaderboard):** eligible saved community runs.
+- **[About](/about):** project purpose, independence, and support model.
+- **Legal and privacy pages:** terms, privacy, cookies, and contact information.
+
+The goal is not to create pages for their own sake. Each page should help someone play, understand, verify, or safely use the project.
+
+## Original content and independent ownership
+
+73-9.org is an independent fan-made project. It is not affiliated with, endorsed by, sponsored by, or officially connected to the NBA, any team, or any player.
+
+The site maintains its own game implementation, interface, brand, guides, and editorial content. Player and team names and historical statistics are used for identification, commentary, education, and simulation.
+
+The project does not present itself as an official league product.
+
+## How advertising should fit
+
+The game and editorial content are the reason to visit. Advertising, when enabled, should remain secondary.
+
+Ads should not appear while the core game is showing only a loading state. They should not be placed on sign-in, error, account, empty, or other low-value screens. During advertising review, the ad-serving loader can remain disabled while site ownership is verified through the AdSense account metadata and ads.txt.
+
+Before personalized ads are served in regions that require it, the appropriate Google-certified consent management configuration must be published and tested.
+
+## What comes next
+
+The project will continue to improve in four areas:
+
+1. **Game reliability:** faster loading, clearer errors, and better mobile compatibility.
+2. **Data quality:** corrections for player-season records, names, positions, and unusual cases.
+3. **Decision feedback:** clearer explanations of why one lineup outperformed another.
+4. **Original guides:** useful strategy, history, methodology, and development notes.
+
+Changes that affect how runs are interpreted should be documented rather than silently shipped.
+
+## Start with one complete run
+
+Open the [73-9 game](/), finish all five signings, and run the simulation even when the roster looks imperfect. The comparison lineup makes a completed run more valuable than an abandoned one.
+
+Then read [How to Play](/how-to-play) or [Draft Strategy Under a $100M Cap](/blog/draft-strategy-under-100m), return to the wheel, and test one improvement.
+
+Questions, corrections, and bug reports are welcome at [support@73-9.org](mailto:support@73-9.org).
