@@ -1,5 +1,7 @@
 import { Link } from '@/core/i18n/navigation';
+import { localeNames } from '@/config/locale';
 import { cn } from '@/lib/utils';
+import { getLocale, locales, setLocale } from '@/paraglide/runtime.js';
 
 export type GamePageFooterLink = {
   label: string;
@@ -80,6 +82,22 @@ export function GamePageFooter({
           ) : null}
         </div>
         <div className="flex flex-col items-start gap-4 sm:items-end">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            {locales.map((loc) => (
+              <button
+                key={loc}
+                onClick={() => setLocale(loc)}
+                className={cn(
+                  'font-sans text-sm transition-colors',
+                  loc === getLocale()
+                    ? 'font-semibold text-[#c2c2e8]'
+                    : 'text-[#5c5c82] hover:text-[#8f8fc0]'
+                )}
+              >
+                {localeNames[loc] || loc}
+              </button>
+            ))}
+          </div>
           <p className="font-sans text-xs text-[#5c5c82]">{copyright}</p>
         </div>
       </div>
