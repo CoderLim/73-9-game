@@ -1,55 +1,115 @@
 export const meta = {
   title: 'How 73-9 Works',
   description:
-    'How the 73-9 game prices players, rates lineups, and simulates an 82-game season against the 2015-16 Warriors under a $100M cap.',
-  updated_at: '2026-07-24',
+    'A transparent guide to the 73-9 game data, player-season pricing, lineup evaluation, 82-game simulation, comparison roster, and important limitations.',
+  updated_at: '2026-07-28',
 };
 
 ## The short version
 
-73-9 turns the NBA’s best regular-season record into a bankroll puzzle. A wheel lands on random franchise seasons; you sign one player per stop; prices map historical production to a modern salary-cap scale; an 82-game sim reports how often your five beats the 2015-16 Warriors. Results are entertainment—not predictions or betting advice.
+73-9 turns a famous regular-season benchmark into a repeatable roster-building puzzle. The wheel gives you a sequence of franchise-seasons. You select one player-season from each market, keep the five contracts within a $100M budget, and simulate the completed lineup against the 2015-16 Golden State Warriors.
 
-For the click-by-click flow, see [How to play](/how-to-play).
+The game uses historical basketball data to make the choices meaningful, but the output is a designed game model. It is not an official NBA product, a scouting service, a salary calculator, a betting model, or a claim that one cross-era matchup has a provably correct answer.
 
-## Where the $100M budget comes from
+For the click-by-click rules, begin with [How to play](/how-to-play).
 
-Each player is priced by what that season’s production would be worth against the 2026 salary cap. A prime Jokic or a 33-9-9 Luka can devour most of your cash in one signing. Land a megastar and the other four spots become role players, veterans, and the occasional minimum.
+## Why the game drafts player-seasons
 
-Five max contracts would cost nearly half a billion; you have one hundred million. That tension is the point. The best players make you the best team—and instantly make you poor. Winning means hunting seasons where someone was quietly elite and underpriced, then stitching five value pieces together before the money runs out.
+A player’s name can cover fifteen or twenty very different years. Production, role, minutes, health, teammates, and style can change dramatically from one season to another. Treating an entire career as one fixed version would erase the detail that makes historical roster building interesting.
 
-## How player ratings work
+73-9 therefore presents players in the context of a specific team-season. The season attached to the spin is part of the asset you are buying. A veteran star in a reduced role is not automatically priced like the same player at a peak, and an overlooked role player can become valuable when the selected season contains unusually strong production.
 
-Each signed player carries a rating built from real per-game scoring, playmaking, rebounding, and shooting efficiency, weighted by minutes played. Historical box scores feed the pool; ratings and prices create the economy.
+This season-specific approach also creates more variety. Landing on the same franchise in two different years can produce a completely different market.
 
-Add the five ratings and you get a team-strength number. That number drives the season sim and the head-to-head projection against the 2015-16 Warriors—a club sitting near the top 0.1% of historical team strength.
+## What the historical data contributes
 
-## How the simulation decides if you win
+The player pool is built from historical game and season information used by the game runtime. Visible player-season values are informed by categories such as scoring, playmaking, rebounding, shooting, minutes, and other box-score production represented in the dataset.
 
-A merely good five loses to that bar most nights. To win consistently you need star power five deep—which the budget is designed to make almost impossible. Almost.
+Historical data provides the raw material; it does not remove design judgment. The game still needs rules for converting different statistical profiles into prices, ratings, lineup strength, and simulated outcomes. Those rules are calibrated for a playable budget challenge, not for academic player valuation.
 
-Kerr’s everyday spine that year featured Curry, Klay, Draymond, Iguodala, and Barnes: shooting gravity, switching defense, and two-way versatility that still defines the target. Your projected win percentage is how often your lineup clears that wall across an 82-game sample.
+Several things are deliberately outside the model. Box scores cannot fully capture defensive positioning, screening, off-ball movement, coaching, injury context, rule changes, travel, playoff adjustments, or the way five specific players would learn to play together. The game should be read as a structured comparison, not a complete reconstruction of basketball reality.
 
-## The best squad you could have signed
+## How the $100M economy works
 
-When the sim ends, the engine looks back at the five team-seasons you landed on and computes the strongest legal five under the same $100M cap. Identical wheel luck, perfect decisions.
+The fixed budget is the central constraint. Without it, the obvious strategy would be to select the strongest available player on every spin. The cap forces opportunity cost: every premium contract weakens your ability to solve the remaining positions.
 
-The gap is usually a few points per game—a star you passed on for value, or a cheaper wing that should have funded a bigger swing. Learning to read that gap is how you climb from lottery vibes to a real contender.
+Player prices translate a season’s in-game value into the same shared budget environment. The number is not the player’s historical salary and is not a forecast of a real contract. It is a game price designed to make seasons comparable inside one run.
 
-## Why 73-9 still matters
+The useful question is therefore not “Is this player worth this many real dollars?” It is “Does this player-season add enough to this five for the amount of my game budget it consumes?”
 
-In 2015-16 the Warriors went 73-9, edging past the 1995-96 Bulls’ 72-10 for the best regular-season mark the league has recorded. They then lost the Finals. The debate over whether that team crowns the greatest regular-season club will never fully settle.
+A high price can still be excellent value when the player becomes the lineup’s engine. A low price can be poor value when it fills a slot without adding enough. Price and quality should always be read together.
 
-This challenge keeps the argument on a scoreboard: pull legends from thirty years of team-seasons, throw them at that historic core, and see what holds up across eighty-two games.
+## How lineup strength is evaluated
 
-## Independent fan project
+After five signings, the game combines the player-season inputs into a team-level estimate. Individual ratings matter, but a lineup is more than one star. The five contracts determine how much high-end production, depth, and positional coverage you managed to purchase.
 
-Player names and stats appear for information and simulation only. 73-9.org is an independent fan project—not affiliated with, endorsed by, or sponsored by the NBA, any team, or any player. The experience is free, runs in your browser, and needs no account.
+The model is intentionally consistent: your lineup and the comparison lineup are evaluated under the same rules. This consistency is more important to the game than claiming perfect realism. It lets you compare decisions made from the same wheel outcomes.
 
-## Related guides
+The model does not know every tactical interaction. It cannot guarantee that a player listed at one position would defend every opponent, that a historical coach would use the lineup in a specific way, or that personalities and injuries would remain constant. Those uncertainties are why the result is framed as a simulation rather than a factual prediction.
 
-- [How to play](/how-to-play) — spins, positions, and practical tips
-- [About 73-9](/about) — the name, the record, and the project
+## What the 82-game simulation represents
 
-## Contact
+An 82-game sample turns lineup strength into a season-shaped result. Instead of presenting one deterministic matchup, the game introduces variation and reports how the roster performs across repeated games.
 
-Questions or issues: [support@73-9.org](mailto:support@73-9.org).
+The simulated record gives you an intuitive summary. The Warriors comparison then asks a more difficult question: how often does this roster clear the benchmark set by the 73-9 team?
+
+A percentage near the middle does not mean the teams would literally split a real series. It means the game model sees meaningful uncertainty across repeated simulated matchups. A very low percentage means the lineup usually falls short under the model; a higher percentage means the lineup more consistently reaches the game’s historical target.
+
+The result is best used comparatively. Compare your own runs, compare different spending structures, and compare your roster with the legal alternative generated from the same markets.
+
+## Why the 2015-16 Warriors are the benchmark
+
+The Warriors finished 73-9, surpassing the 1995-96 Chicago Bulls’ 72-10 regular-season record. Stephen Curry became the first unanimous NBA Most Valuable Player and made 402 three-pointers that season. The team opened 24-0 and set a then-record with 34 road wins.
+
+Those achievements make the team a recognizable target, but the game is not arguing that regular-season wins settle every “greatest team” debate. Golden State did not win the 2016 championship, while the 72-10 Bulls completed their season with a title. Different fans can reasonably value peak record, playoff outcome, era, matchup, or longevity differently.
+
+73-9 uses the Warriors because the number creates a clear, difficult wall. The game turns that wall into a budget problem rather than trying to end the historical debate.
+
+## How the comparison lineup works
+
+When a run finishes, the game looks back at the team-seasons you were offered and identifies a stronger legal lineup it could build under the same $100M constraint.
+
+This feature separates two sources of performance:
+
+- **Wheel outcomes:** which team-seasons appeared.
+- **Draft decisions:** which player you selected from each market and how the spending fit together.
+
+The comparison roster cannot change your spins. It only makes different choices from the same opportunity set. That is why it is the most useful diagnostic on the result screen.
+
+A small gap suggests your choices were close to the model’s best legal combination. A large gap often points to one expensive mistake, a missed value season, or a budget curve that became too restrictive.
+
+## What the model does not claim
+
+73-9 does not claim to:
+
+- Predict a real game, playoff series, or future season.
+- Provide official player ratings or historical salary values.
+- Account for every rule change or era-specific playing environment.
+- Replace film study, scouting, or advanced analytics.
+- Offer gambling, fantasy-sports, or financial advice.
+- Prove that one historical lineup is objectively greater than another.
+
+The model is useful because it is transparent about its purpose: creating a fair, replayable decision game from a consistent historical dataset.
+
+## Data quality and corrections
+
+Historical sports datasets can contain missing values, naming variations, traded-player records, position ambiguity, or unusual small-sample seasons. The game applies validation and aggregation rules, but errors are still possible.
+
+When you notice a player-season that looks incorrect, send the player name, team-season, displayed value, and a screenshot to [support@73-9.org](mailto:support@73-9.org). Specific reports are easier to investigate than general impressions.
+
+Game balance may also change. If a pricing rule, dataset, or simulation parameter is updated, old and new runs may not be perfectly comparable. Important changes should be recorded in the [blog](/blog).
+
+## Sources for the historical benchmark
+
+The NBA’s official season review documents Golden State’s 73 wins, Curry’s 402 three-pointers, and his unanimous MVP. NBA Communications also records the 24-0 start and 34 road wins. The 1995-96 NBA season review documents Chicago’s 72-10 championship season.
+
+- [NBA season review: 2015-16](https://www.nba.com/news/history-season-review-2015-16)
+- [NBA Communications: Stephen Curry wins 2015-16 MVP](https://pr.nba.com/stephen-curry-2015-16-kia-nba-mvp-award-warriors/)
+- [NBA season review: 1995-96](https://www.nba.com/news/history-season-review-1995-96)
+
+## Continue reading
+
+- [How to play](/how-to-play) for the complete game flow.
+- [Why the 73-9 Warriors remain a useful benchmark](/blog/why-the-73-9-warriors-are-the-benchmark).
+- [How to read your simulation result](/blog/how-to-read-your-simulation-result).
+- [About 73-9](/about) for project ownership and fan-project disclosures.
