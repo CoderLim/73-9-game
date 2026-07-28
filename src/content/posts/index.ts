@@ -11,7 +11,12 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * fetched through the server functions in ./server.ts and merged with the
  * local posts via the pure helpers below.
  */
-export const BLOG_POST_SLUGS = ['introducing-73-9'] as const;
+export const BLOG_POST_SLUGS = [
+  'introducing-73-9',
+  'draft-strategy-under-100m',
+  'how-to-read-your-simulation-result',
+  'why-the-73-9-warriors-are-the-benchmark',
+] as const;
 
 export type BlogPostMeta = {
   title: string;
