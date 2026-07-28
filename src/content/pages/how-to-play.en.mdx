@@ -1,45 +1,125 @@
 export const meta = {
   title: 'How to Play 73-9',
   description:
-    'Learn how to play the free 73-9 browser basketball challenge: spin the wheel, spend $100M, build a starting five, and face the 2015-16 Warriors.',
-  updated_at: '2026-07-24',
+    'A complete guide to the free 73-9 browser basketball challenge: spin for team-seasons, manage a $100M budget, build a five, and challenge the 2015-16 Warriors.',
+  updated_at: '2026-07-28',
 };
 
-## The goal
+## The objective
 
-**73-9** is a free browser challenge at [73-9.org](https://73-9.org). You get one hundred million dollars and five spins of a wheel. Build a starting five that can stand up to the 2015-16 Golden State Warriors—the club that finished 73-9.
+**73-9** is a free browser basketball strategy game at [73-9.org](https://73-9.org). Your job is to build a five-player lineup that can compete with the 2015-16 Golden State Warriors, the team that finished the regular season with a 73-9 record.
 
-## Step-by-step
+You receive a **$100 million budget** and fill five positions: point guard, shooting guard, small forward, power forward, and center. The game does not give you the entire player pool at once. Instead, each spin lands on a random franchise-season, and you must choose one player from that roster or pay to spin again. The challenge is part basketball knowledge, part salary-cap puzzle, and part risk management.
 
-1. **Spin the wheel** — It lands on a random team-season anywhere from 1990 to today. That roster is your market for this pick.
-2. **Sign exactly one player** — Choose one name for the current position and pay what that deal would cost under the 2026 salary cap.
-3. **Stay under $100M** — Repeat through point guard, shooting guard, small forward, power forward, and center. Overspend early and the last seats become minimum-salary scraps.
-4. **Simulate the season** — When the lineup locks, run an 82-game simulation and see how often your five topples the Warriors who authored 73-9.
+A complete run takes only a few minutes, but the choices are designed to create different trade-offs every time.
 
-Optional re-spins tax the same bankroll, so every reload is a strategic choice—not a free mulligan.
+## The basic game loop
 
-## What you are deciding each spin
+1. **Start a new draft.** The board opens with five empty lineup slots and your full $100M budget.
+2. **Spin for a team-season.** The reel may land on any supported franchise-season in the historical data pool.
+3. **Review the available roster.** Compare the players who appeared for that team in that season, their in-game ratings, and their prices.
+4. **Sign one player.** Your choice fills the current lineup slot and reduces your remaining budget.
+5. **Repeat until the lineup is complete.** You need enough money to fill all five spots.
+6. **Simulate the season.** The game estimates how your lineup performs across an 82-game sample and how often it clears the 2015-16 Warriors benchmark.
+7. **Study the comparison lineup.** The results also show a stronger legal lineup that could have been built from the same team-seasons under the same cap.
 
-You are not drafting from the entire league. Each stop of the wheel narrows the market to one franchise season. The tension is always the same: take the megastar and starve the other four spots, or hunt value and stitch five complementary pieces together before the money runs out.
+Guests can play the full game without an account. Signing in is only needed when you want eligible results saved to the [leaderboard](/leaderboard).
 
-## After the sim
+## What a team-season means
 
-The result card shows your projected win percentage against the 2015-16 Warriors, plus the strongest legal five you could have signed from the same five team-seasons under the same cap. Read that gap—then open a new run and try again.
+A spin does not land on a franchise in the abstract. It lands on a specific season for that franchise. A 2015-16 roster and a 2022-23 roster can contain very different players, roles, and levels of production even when the team name is the same.
 
-Signed-in players can save results and appear on the [leaderboard](/leaderboard). Guests can still play the full game for free.
+This is important because you are drafting a **player-season**, not a career reputation. A famous player near the end of a career may be less useful than an overlooked player during a peak season. Read the season, price, position, and rating together rather than selecting only by name recognition.
 
-## Quick tips
+The game uses historical performance data as an input, but its prices and simulation outputs are game mechanics. They are not official NBA ratings, salary projections, betting advice, or claims about how players from different eras would perform in real life.
 
-- Do not max out on the first two picks unless you have a plan for the other three.
-- A quietly elite season can beat a household name that empties the bankroll.
-- Compare your lineup to the “best squad you could have signed” after every sim—that is the fastest way to improve.
-- Every run reshuffles the wheel, so every bankroll puzzle is new.
+## Managing the $100M budget
+
+The most common beginner mistake is spending as though every lineup slot can hold a superstar. It cannot. A premium first pick can be correct, but it changes the job of every later pick.
+
+Before signing, divide the remaining budget by the number of open slots. That figure is not a strict spending limit; it is a warning signal. If you have $48M left with four positions open, you are averaging $12M per slot. A $30M second signing would leave only $18M for the final three players, so the next spins must produce unusually cheap value.
+
+Try thinking in three budget roles:
+
+- **Anchor:** the player who gives the lineup its highest-end production.
+- **Connector:** a strong, reasonably priced player who keeps the lineup balanced.
+- **Value pick:** a cheaper player-season that preserves enough money for the remaining positions.
+
+You do not need exactly one of each, but the framework prevents five isolated decisions from destroying the overall roster.
+
+## When to re-spin
+
+A re-spin is not a free reset. It costs money from the same budget used to sign players. That means a re-spin should solve a real problem.
+
+Good reasons to consider one include:
+
+- Every affordable option creates a severe positional or budget weakness.
+- The roster offers no player who fits the amount you can safely spend.
+- Your remaining slots require flexibility that the current market cannot provide.
+- You are deliberately chasing a high-upside run and accept the reduced budget.
+
+A weak reason is simply disliking the franchise-season. Even an ordinary roster can contain one useful player-season at the right price. Re-spinning too often converts uncertainty into a guaranteed cap penalty.
+
+## Position-by-position thinking
+
+Position labels help organize the lineup, but do not treat them as five unrelated boxes.
+
+At point guard, playmaking and ball control can stabilize the offense. At shooting guard and small forward, scoring, spacing, and two-way flexibility often help lineups avoid one-dimensional builds. Power forwards can add rebounding, defense, or secondary creation. Centers can provide interior scoring and rebounding, but an expensive center may make it difficult to fund the perimeter.
+
+The game permits you to compare and rearrange lineup choices before the simulation. Use that opportunity to look at the five as a unit. A lineup with several individually strong scorers may still be less balanced than a group with passing, shooting, size, and defensive value spread across positions.
+
+## How to read the results
+
+The result is not only a win-or-lose label. It is feedback on the draft.
+
+First, check the simulated record and the estimated performance against the Warriors benchmark. Then compare your lineup with the “best squad you could have signed” from the exact team-seasons you received. That comparison removes wheel luck from the lesson: both lineups had access to the same markets and the same $100M cap.
+
+If the comparison lineup is much stronger, review the largest differences:
+
+- Did you pay for reputation instead of the best player-season?
+- Did an early contract force several weak late picks?
+- Did you pass on a low-cost player who would have funded a better star later?
+- Did your lineup duplicate one skill while neglecting another?
+
+The goal is not to memorize one perfect formula. It is to make the next run more intentional.
+
+## A practical first-run strategy
+
+For a first attempt, avoid using more than half the budget on the first player unless the rest of the market clearly supports it. Try to leave meaningful flexibility through the third signing. After every pick, calculate the average budget per remaining slot and identify which position is most difficult to fill.
+
+When the lineup is complete, run the simulation even if the team looks imperfect. The comparison lineup is one of the most useful teaching tools in the game, and you only see it after finishing the draft.
+
+Then start a second run with one specific improvement goal: fewer re-spins, a more balanced spending curve, or better value recognition. Small, measurable changes are more useful than simply trying to “draft better.”
+
+## Common mistakes
+
+### Spending the cap too early
+
+Two exciting names can leave three unusable slots. Track the whole lineup, not just the next pick.
+
+### Drafting careers instead of seasons
+
+The game evaluates the season displayed on the wheel. A player’s best-known years may not match the season in front of you.
+
+### Re-spinning without a plan
+
+Every re-spin reduces future options. Know what problem the next spin needs to solve.
+
+### Ignoring the comparison lineup
+
+The optimal legal lineup is not an insult to your draft; it is a replay tool. Study it before starting again.
+
+### Treating the simulation as a real-world prediction
+
+73-9 is an entertainment and strategy experience built from historical data. Cross-era basketball cannot be reduced to one definitive answer.
 
 ## Related guides
 
-- [How it works](/how-it-works) — ratings, pricing, and how the simulation scores your five
-- [About 73-9](/about) — where the name comes from and what this project is
+- [How 73-9 works](/how-it-works) explains the game’s data, prices, simulation, and limitations.
+- [Draft strategy under a $100M cap](/blog/draft-strategy-under-100m) goes deeper on spending plans.
+- [How to read a 73-9 result](/blog/how-to-read-your-simulation-result) explains the post-run screen.
+- [About 73-9](/about) covers the project, the historical benchmark, and its independent fan status.
 
-## Play free
+## Start a run
 
-Open [73-9.org](https://73-9.org), spin the wheel, and spend the hundred million wisely. Questions: [support@73-9.org](mailto:support@73-9.org).
+Open the [73-9 game](/), spin for your first team-season, and treat every dollar as part of a five-player plan. For questions or bug reports, contact [support@73-9.org](mailto:support@73-9.org).
