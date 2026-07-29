@@ -39,6 +39,15 @@ src/paraglide
 # Public assets
 public
 
+# Research / clone extraction dumps (verbatim HTML)
+docs/research/**/page.html
+docs/research/**/body-snippet.html
+docs/research/**/game.js
+docs/research/**/*.css
+
+# Inlang project metadata (tooling-managed)
+project.inlang
+
 # Config files that shouldn't be formatted
 .prettierrc
 .prettierrc.*

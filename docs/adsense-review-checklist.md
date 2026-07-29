@@ -27,7 +27,7 @@ This checklist turns the July 28 AdSense preflight report into deploy and accoun
 - [ ] The domain is controlled by the same publisher and DNS can be edited.
 - [ ] AdSense reports the site as connected through the meta tag, ads.txt, or the connection method selected in the account.
 - [ ] `https://73-9.org/ads.txt` returns:
-  `google.com, pub-8028656293202971, DIRECT, f08c47fec0942fa0`
+      `google.com, pub-8028656293202971, DIRECT, f08c47fec0942fa0`
 
 ### CMP and privacy messaging
 
