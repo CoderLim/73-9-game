@@ -75,17 +75,7 @@ function BlogPage() {
             </p>
           </div>
 
-          {isBaseLocale && (
-            <article className="border-border bg-card/40 mx-auto mb-16 max-w-3xl rounded-2xl border px-6 py-8 sm:px-9">
-              <div className="text-foreground/90 text-[15px] leading-7">
-                <MDXProvider components={mdxComponents}>
-                  <BlogIndexContent />
-                </MDXProvider>
-              </div>
-            </article>
-          )}
-
-          <section aria-labelledby="latest-articles">
+          <section aria-labelledby="latest-articles" className="mb-16">
             {isBaseLocale && (
               <div className="mb-7">
                 <p className="text-muted-foreground text-sm font-medium tracking-[0.18em] uppercase">
@@ -121,6 +111,16 @@ function BlogPage() {
               </div>
             )}
           </section>
+
+          {isBaseLocale && (
+            <article className="border-border bg-card/40 mx-auto max-w-3xl rounded-2xl border px-6 py-8 sm:px-9">
+              <div className="text-foreground/90 text-[15px] leading-7">
+                <MDXProvider components={mdxComponents}>
+                  <BlogIndexContent />
+                </MDXProvider>
+              </div>
+            </article>
+          )}
         </div>
       </main>
       <Footer />
