@@ -14,6 +14,8 @@ import { m } from '@/paraglide/messages.js';
 
 import '@/game/game-73.css';
 
+const GAME_READY_EVENT = '73-9:game-ready';
+
 /**
  * React host for the 73-9 game.
  *
@@ -38,7 +40,7 @@ function GameAppImpl() {
     );
     const signInHref = `/sign-in?callbackUrl=${callback}`;
 
-    return mountGame73(root, {
+    const dispose = mountGame73(root, {
       search: window.location.search,
       copy: buildGameCopy(),
       auth: {
@@ -66,6 +68,42 @@ function GameAppImpl() {
         }
       },
     });
+
+    let announced = false;
+    let frame = 0;
+
+    const announceWhenReady = () => {
+      if (announced) return;
+
+      const intro = root.querySelector<HTMLElement>('#intro');
+      if (!intro) return;
+
+      const visible =
+        !intro.classList.contains('hidden') &&
+        intro.getAttribute('aria-hidden') !== 'true' &&
+        window.getComputedStyle(intro).display !== 'none';
+
+      if (!visible) return;
+
+      announced = true;
+      document.documentElement.dataset.gameReady = 'true';
+      window.dispatchEvent(new Event(GAME_READY_EVENT));
+    };
+
+    const observer = new MutationObserver(announceWhenReady);
+    observer.observe(root, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style', 'hidden', 'aria-hidden'],
+    });
+    frame = window.requestAnimationFrame(announceWhenReady);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      delete document.documentElement.dataset.gameReady;
+      dispose?.();
+    };
   }, [isPending, session?.user?.id]);
 
   return (

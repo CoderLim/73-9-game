@@ -14,6 +14,9 @@ import { baseLocale } from '@/paraglide/runtime.js';
 export const BLOG_POST_SLUGS = [
   'what-is-the-82-0-game',
   'introducing-73-9',
+  'draft-strategy-under-100m',
+  'how-to-read-your-simulation-result',
+  'why-the-73-9-warriors-are-the-benchmark',
 ] as const;
 
 export type BlogPostMeta = {

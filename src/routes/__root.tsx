@@ -53,8 +53,10 @@ const getAnalyticsConfigs = createServerFn().handler(async () => {
     plausibleDomain: configs.plausible_domain?.trim() || '73-9.org',
     plausibleSrc:
       configs.plausible_src?.trim() || 'https://app.pageview.app/js/script.js',
-    // AdSense. Admin DB value overrides this default.
+    // AdSense account verification stays present sitewide. Actual ad requests
+    // are disabled by default during review and require an explicit opt-in.
     adsenseCode: configs.adsense_code?.trim() || 'ca-pub-8028656293202971',
+    adsenseAutoAdsEnabled: configs.adsense_auto_ads_enabled === 'true',
     crispWebsiteId:
       configs.crisp_enabled === 'true'
         ? configs.crisp_website_id?.trim() || ''
@@ -97,7 +99,7 @@ export const Route = createRootRoute({
           type: 'image/png',
           sizes: '32x32',
         },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon' },
         ...locales.map((loc) => ({
           rel: 'alternate',
           hrefLang: loc,
@@ -136,7 +138,12 @@ function RootComponent() {
             src={analytics.plausibleSrc || undefined}
           />
         ) : null}
-        {analytics?.adsenseCode ? <Ads code={analytics.adsenseCode} /> : null}
+        {analytics?.adsenseCode ? (
+          <Ads
+            code={analytics.adsenseCode}
+            enabled={analytics.adsenseAutoAdsEnabled}
+          />
+        ) : null}
         <CustomerService
           crispWebsiteId={analytics?.crispWebsiteId || undefined}
           tawkPropertyId={analytics?.tawkPropertyId || undefined}
