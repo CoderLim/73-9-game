@@ -23,6 +23,7 @@ export function Header() {
   const onHowToPlay = pathname === '/how-to-play';
   const onHowItWorks = pathname === '/how-it-works';
   const onBlog = pathname === '/blog' || pathname.startsWith('/blog/');
+  const onAbout = pathname === '/about';
 
   async function handleSignOut() {
     await signOut();
@@ -58,6 +59,11 @@ export function Header() {
           href: '/blog',
           label: m['game.nav.blog'](),
           active: onBlog,
+        },
+        {
+          href: '/about',
+          label: m['game.nav.about'](),
+          active: onAbout,
         },
       ]}
       auth={{
