@@ -16,6 +16,14 @@ export function GameSeo() {
       eyebrow={m['game.seo.eyebrow']()}
       title={isEnglish ? ENGLISH_HOME_H1 : m['game.seo.title']()}
       intro={isEnglish ? ENGLISH_HOME_INTRO : m['game.seo.intro']()}
+      relatedLink={
+        isEnglish
+          ? {
+              href: '/blog/what-is-73-9-warriors-historic-season',
+              label: 'What is 73-9? Read the Warriors historic season guide.',
+            }
+          : undefined
+      }
       howTitle={m['game.seo.how.kicker']()}
       howSubtitle={m['game.seo.how.title']()}
       steps={[
