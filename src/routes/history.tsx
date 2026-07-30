@@ -6,12 +6,22 @@ import { Footer } from '@/blocks/footer';
 import { GameHistory } from '@/blocks/game-history';
 import { Header } from '@/blocks/header';
 
+const ENGLISH_TITLE = '73-9 Game History | Review Your Saved NBA Drafts';
+const ENGLISH_DESCRIPTION =
+  '73-9 game history for signed-in players: review saved NBA draft simulator lineups, win percentages, 82-game records, costs, ratings, and dates.';
+
 export const Route = createFileRoute('/history')({
   loader: () => {
     const locale = getLocale();
     return {
-      title: m['game.history.page_title']({}, { locale }),
-      description: m['game.history.page_description']({}, { locale }),
+      title:
+        locale === 'en'
+          ? ENGLISH_TITLE
+          : m['game.history.page_title']({}, { locale }),
+      description:
+        locale === 'en'
+          ? ENGLISH_DESCRIPTION
+          : m['game.history.page_description']({}, { locale }),
     };
   },
   head: ({ loaderData }) => ({
