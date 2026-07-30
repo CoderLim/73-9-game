@@ -1,11 +1,17 @@
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { GameSeoSection } from '@/components/game-seo-section';
 
+const ENGLISH_HOME_H1 =
+  '73-9: Can You Beat the Warriors? | Free NBA Draft Game';
+
 export function GameSeo() {
+  const locale = getLocale();
+
   return (
     <GameSeoSection
       eyebrow={m['game.seo.eyebrow']()}
-      title={m['game.seo.title']()}
+      title={locale === 'en' ? ENGLISH_HOME_H1 : m['game.seo.title']()}
       intro={m['game.seo.intro']()}
       howTitle={m['game.seo.how.kicker']()}
       howSubtitle={m['game.seo.how.title']()}

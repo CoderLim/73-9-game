@@ -9,34 +9,87 @@ import { Header } from '@/blocks/header';
 import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
 
+const HOME_TITLE = '73-9: Can You Beat the Warriors? | Free NBA Draft Game';
+const HOME_DESCRIPTION =
+  '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record. Play free at 73-9.org.';
+
+const WEB_APPLICATION_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '73-9 Game',
+  alternateName: '73-9 Basketball Lineup Builder',
+  url: 'https://73-9.org/',
+  description: HOME_DESCRIPTION,
+  image: 'https://73-9.org/73-9-game/og-73-9.png',
+  applicationCategory: 'GameApplication',
+  applicationSubCategory: 'Basketball lineup builder and simulation game',
+  operatingSystem: 'Any operating system with a modern web browser',
+  browserRequirements: 'Requires JavaScript and a modern web browser',
+  isAccessibleForFree: true,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/OnlineOnly',
+  },
+  featureList: [
+    'Draft five historical NBA player-seasons',
+    'Manage a $100 million virtual salary cap',
+    'Simulate an 82-game season',
+    'Compare the lineup with the 2015-16 Warriors',
+    'Review the strongest legal lineup from the same team-seasons',
+  ],
+  inLanguage: ['en', 'ja', 'ko', 'zh'],
+  audience: {
+    '@type': 'Audience',
+    audienceType: 'Basketball fans and lineup-building game players',
+  },
+  creator: {
+    '@type': 'Organization',
+    name: '73-9.org',
+    url: 'https://73-9.org/',
+  },
+};
+
 function HomePage() {
   return (
-    <div className="flex min-h-dvh flex-col font-sans text-[#c8c8e0]">
-      {/* First viewport: arena backdrop + game card (fills 100dvh) */}
-      <div className="relative flex min-h-dvh flex-col">
-        <ArenaCourtBackdrop
-          className="absolute inset-0"
-          imageClassName="scale-105"
-          fetchPriority="high"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-[#05050a]/50 via-transparent to-[#05050a]/92" />
-        </ArenaCourtBackdrop>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(WEB_APPLICATION_JSON_LD).replace(
+            /</g,
+            '\\u003c'
+          ),
+        }}
+      />
+      <div className="flex min-h-dvh flex-col font-sans text-[#c8c8e0]">
+        {/* First viewport: arena backdrop + game card (fills 100dvh) */}
+        <div className="relative flex min-h-dvh flex-col">
+          <ArenaCourtBackdrop
+            className="absolute inset-0"
+            imageClassName="scale-105"
+            fetchPriority="high"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-[#05050a]/50 via-transparent to-[#05050a]/92" />
+          </ArenaCourtBackdrop>
 
-        <Header />
-        {/* Spacer for fixed header (73px desktop / ~52px mobile) */}
-        <div className="relative z-10 h-[calc(52px+env(safe-area-inset-top))] shrink-0 md:h-[73px]" />
+          <Header />
+          {/* Spacer for fixed header (73px desktop / ~52px mobile) */}
+          <div className="relative z-10 h-[calc(52px+env(safe-area-inset-top))] shrink-0 md:h-[73px]" />
 
-        <div className="relative z-10 flex flex-1 flex-col justify-center py-4 sm:py-6">
-          <MainGame />
+          <div className="relative z-10 flex flex-1 flex-col justify-center py-4 sm:py-6">
+            <MainGame />
+          </div>
         </div>
-      </div>
 
-      <main className="relative">
-        <GameSeo />
-        <GameHighlightsSection />
-      </main>
-      <Footer />
-    </div>
+        <main className="relative">
+          <GameSeo />
+          <GameHighlightsSection />
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }
 
@@ -52,23 +105,21 @@ export const Route = createFileRoute('/')({
     return {
       meta: [
         {
-          title: '73-9 Game: Can you beat the 2015-16 Warriors?',
+          title: HOME_TITLE,
         },
         {
           name: 'description',
-          content:
-            '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record. Play free at 73-9.org.',
+          content: HOME_DESCRIPTION,
         },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: '73-9 Game' },
         {
           property: 'og:title',
-          content: '73-9 Game: Can you beat the 2015-16 Warriors?',
+          content: HOME_TITLE,
         },
         {
           property: 'og:description',
-          content:
-            '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record.',
+          content: HOME_DESCRIPTION,
         },
         { property: 'og:url', content: 'https://73-9.org' },
         {
