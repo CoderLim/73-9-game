@@ -1,11 +1,18 @@
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { GameHighlights } from '@/components/game-highlights';
 
 export function GameHighlightsSection() {
+  const locale = getLocale();
+
   return (
     <GameHighlights
       eyebrow={m['game.highlights.eyebrow']()}
-      title={m['game.highlights.title']()}
+      title={
+        locale === 'en'
+          ? 'Why the 73-9 Game Hits Different'
+          : m['game.highlights.title']()
+      }
       items={[
         {
           title: m['game.highlights.wheel.title'](),
