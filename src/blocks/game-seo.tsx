@@ -2,7 +2,8 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { GameSeoSection } from '@/components/game-seo-section';
 
-const ENGLISH_HOME_H1 = '73-9 Game: Draft Your Five, Beat the Warriors';
+const ENGLISH_HOME_H1 =
+  '73-9: Can You Beat the Warriors? | Free NBA Draft Game';
 
 export function GameSeo() {
   const locale = getLocale();
