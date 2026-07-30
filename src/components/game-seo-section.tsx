@@ -20,6 +20,7 @@ export function GameSeoSection({
   eyebrow,
   title,
   intro,
+  relatedLink,
   howTitle,
   howSubtitle,
   steps,
@@ -32,6 +33,7 @@ export function GameSeoSection({
   eyebrow: string;
   title: string;
   intro: string;
+  relatedLink?: { href: string; label: string };
   howTitle?: string;
   howSubtitle?: string;
   steps?: SeoStep[];
@@ -58,6 +60,16 @@ export function GameSeoSection({
         <p className="mt-5 max-w-2xl font-sans text-[13px] leading-[1.85] text-[#a0a0c0] sm:text-sm sm:leading-[1.9]">
           {intro}
         </p>
+        {relatedLink ? (
+          <p className="mt-4 font-sans text-[13px] leading-[1.85] sm:text-sm">
+            <a
+              href={relatedLink.href}
+              className="font-medium text-[#ffce54] underline decoration-[#fd6a00]/60 underline-offset-4 transition hover:text-[#ffe29a]"
+            >
+              {relatedLink.label}
+            </a>
+          </p>
+        ) : null}
 
         {steps && steps.length > 0 ? (
           <div className="mt-11 sm:mt-14">
