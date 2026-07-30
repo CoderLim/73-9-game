@@ -9,20 +9,21 @@ import { Header } from '@/blocks/header';
 import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
 
-const HOME_TITLE = '73-9: Can You Beat the Warriors? | Free NBA Draft Game';
+const HOME_TITLE =
+  '73-9 Game: Beat the Warriors | Free NBA Draft Simulator';
 const HOME_DESCRIPTION =
-  '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record. Play free at 73-9.org.';
+  '73-9 game lets you draft five NBA player-seasons under a $100M cap, simulate 82 games, and see whether your lineup can beat the 2015-16 Warriors.';
 
 const WEB_APPLICATION_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: '73-9 Game',
-  alternateName: '73-9 Basketball Lineup Builder',
+  alternateName: '73-9 Game NBA Draft Simulator',
   url: 'https://73-9.org/',
   description: HOME_DESCRIPTION,
   image: 'https://73-9.org/73-9-game/og-73-9.png',
   applicationCategory: 'GameApplication',
-  applicationSubCategory: 'Basketball lineup builder and simulation game',
+  applicationSubCategory: 'NBA draft simulator and basketball lineup game',
   operatingSystem: 'Any operating system with a modern web browser',
   browserRequirements: 'Requires JavaScript and a modern web browser',
   isAccessibleForFree: true,
@@ -33,6 +34,7 @@ const WEB_APPLICATION_JSON_LD = {
     availability: 'https://schema.org/OnlineOnly',
   },
   featureList: [
+    'Play the 73-9 game in a web browser',
     'Draft five historical NBA player-seasons',
     'Manage a $100 million virtual salary cap',
     'Simulate an 82-game season',
@@ -42,7 +44,7 @@ const WEB_APPLICATION_JSON_LD = {
   inLanguage: ['en', 'ja', 'ko', 'zh'],
   audience: {
     '@type': 'Audience',
-    audienceType: 'Basketball fans and lineup-building game players',
+    audienceType: 'Basketball fans and NBA draft simulator players',
   },
   creator: {
     '@type': 'Organization',
@@ -127,6 +129,14 @@ export const Route = createFileRoute('/')({
           content: 'https://73-9.org/73-9-game/og-73-9.png',
         },
         { name: 'twitter:card', content: 'summary_large_image' },
+        {
+          name: 'twitter:title',
+          content: HOME_TITLE,
+        },
+        {
+          name: 'twitter:description',
+          content: HOME_DESCRIPTION,
+        },
         {
           name: 'twitter:image',
           content: 'https://73-9.org/73-9-game/og-73-9.png',

@@ -2,16 +2,28 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { GameSeoSection } from '@/components/game-seo-section';
 
-const ENGLISH_HOME_H1 = '73-9 Game: Draft Your Five, Beat the Warriors';
+const ENGLISH_HOME_H1 =
+  '73-9 Game — Draft Your Five, Beat the 2015-16 Warriors';
+const ENGLISH_HOME_INTRO =
+  'The 73-9 game is a free NBA draft simulator built around one question: can your five beat the 2015-16 Warriors? In the 73-9 game, you start with $100 million, spin for five random team-seasons, and sign one player from each roster. Every choice changes the budget left for the next position. Finish the 73-9 game to simulate an 82-game season, compare your lineup with the Warriors, and review the strongest legal five you could have drafted from the same markets.';
 
 export function GameSeo() {
   const locale = getLocale();
+  const isEnglish = locale === 'en';
 
   return (
     <GameSeoSection
       eyebrow={m['game.seo.eyebrow']()}
-      title={locale === 'en' ? ENGLISH_HOME_H1 : m['game.seo.title']()}
-      intro={m['game.seo.intro']()}
+      title={isEnglish ? ENGLISH_HOME_H1 : m['game.seo.title']()}
+      intro={isEnglish ? ENGLISH_HOME_INTRO : m['game.seo.intro']()}
+      relatedLink={
+        isEnglish
+          ? {
+              href: '/blog/what-is-73-9-warriors-historic-season',
+              label: 'What is 73-9? Read the Warriors historic season guide.',
+            }
+          : undefined
+      }
       howTitle={m['game.seo.how.kicker']()}
       howSubtitle={m['game.seo.how.title']()}
       steps={[
@@ -34,11 +46,15 @@ export function GameSeo() {
       ]}
       blocks={[
         {
-          heading: m['game.seo.what.heading'](),
+          heading: isEnglish
+            ? 'Where the 73-9 game comes from'
+            : m['game.seo.what.heading'](),
           paragraphs: [m['game.seo.what.p1'](), m['game.seo.what.p2']()],
         },
         {
-          heading: m['game.seo.budget.heading'](),
+          heading: isEnglish
+            ? 'The $100M budget defines the 73-9 game'
+            : m['game.seo.budget.heading'](),
           paragraphs: [m['game.seo.budget.p1'](), m['game.seo.budget.p2']()],
         },
         {
@@ -57,8 +73,12 @@ export function GameSeo() {
       faqTitle={m['game.seo.faq.title']()}
       faqs={[
         {
-          question: m['game.seo.faq.q1'](),
-          answer: m['game.seo.faq.a1'](),
+          question: isEnglish
+            ? 'What is the 73-9 game?'
+            : m['game.seo.faq.q1'](),
+          answer: isEnglish
+            ? 'The 73-9 game is a free browser-based NBA draft simulator. You draft five historical player-seasons under a $100 million cap, simulate an 82-game season, and test the lineup against the 2015-16 Golden State Warriors.'
+            : m['game.seo.faq.a1'](),
         },
         {
           question: m['game.seo.faq.q2'](),
