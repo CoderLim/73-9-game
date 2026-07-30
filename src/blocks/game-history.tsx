@@ -4,6 +4,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSession } from '@/core/auth/client';
 import { ApiError, apiGet, pageQuery, type PageResult } from '@/lib/api-client';
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import {
   GameHistorySection,
   type HistoryRow,
@@ -12,6 +13,7 @@ import {
 const PAGE_SIZE = 20;
 
 export function GameHistory() {
+  const locale = getLocale();
   const { data: session, isPending: sessionPending } = useSession();
   const [page, setPage] = useState(1);
   const signedIn = Boolean(session?.user);
@@ -51,7 +53,9 @@ export function GameHistory() {
   return (
     <GameHistorySection
       eyebrow={m['game.history.eyebrow']()}
-      title={m['game.history.title']()}
+      title={
+        locale === 'en' ? 'My 73-9 Game History' : m['game.history.title']()
+      }
       loadingLabel={m['game.history.loading']()}
       errorLabel={m['game.history.error']()}
       emptyLabel={m['game.history.empty']()}
@@ -59,7 +63,9 @@ export function GameHistory() {
       guestBody={m['game.history.guest_body']()}
       signInLabel={m['game.history.sign_in']()}
       signInHref="/sign-in?callbackUrl=/history"
-      playCtaLabel={m['game.history.play_cta']()}
+      playCtaLabel={
+        locale === 'en' ? 'Play the 73-9 game' : m['game.history.play_cta']()
+      }
       playHref="/"
       pctLabel={m['game.history.pct']()}
       recordLabel={m['game.history.record']()}
