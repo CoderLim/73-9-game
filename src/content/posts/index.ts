@@ -12,10 +12,12 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  'nba-draft-simulator-build-your-dream-team',
+  'how-the-73-9-warriors-changed-basketball-forever',
+  'best-nba-lineup-builder-games-2026',
   'introducing-73-9',
   'draft-strategy-under-100m',
   'how-to-read-your-simulation-result',
-  'why-the-73-9-warriors-are-the-benchmark',
 ] as const;
 
 export type BlogPostMeta = {
