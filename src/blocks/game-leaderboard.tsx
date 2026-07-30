@@ -2,12 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import { apiGet } from '@/lib/api-client';
 import { m } from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import {
   GameLeaderboardSection,
   type LeaderboardColumns,
 } from '@/components/game-leaderboard-section';
 
 export function GameLeaderboard() {
+  const locale = getLocale();
   const query = useQuery({
     queryKey: ['game-leaderboard'],
     queryFn: () => apiGet<LeaderboardColumns>('/api/game/leaderboard'),
@@ -22,7 +24,11 @@ export function GameLeaderboard() {
   return (
     <GameLeaderboardSection
       eyebrow={m['game.leaderboard.eyebrow']()}
-      title={m['game.leaderboard.title']()}
+      title={
+        locale === 'en'
+          ? '73-9 Game Leaderboard: Best Win % vs the Warriors'
+          : m['game.leaderboard.title']()
+      }
       dayLabel={m['game.leaderboard.day']()}
       weekLabel={m['game.leaderboard.week']()}
       alltimeLabel={m['game.leaderboard.alltime']()}
