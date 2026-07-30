@@ -12,6 +12,7 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  'what-is-73-9-warriors-historic-season',
   'nba-draft-simulator-build-your-dream-team',
   'how-the-73-9-warriors-changed-basketball-forever',
   'best-nba-lineup-builder-games-2026',
