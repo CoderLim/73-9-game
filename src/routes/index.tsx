@@ -9,7 +9,7 @@ import { Header } from '@/blocks/header';
 import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
 
-const HOME_TITLE = '73-9 Game: Draft Your Five, Beat the Warriors';
+const HOME_TITLE = '73-9: Can You Beat the Warriors? | Free NBA Draft Game';
 const HOME_DESCRIPTION =
   '73-9 is a free browser game: spend $100 million to draft a five that can beat the 2015-16 Warriors’ 73-9 record. Play free at 73-9.org.';
 
