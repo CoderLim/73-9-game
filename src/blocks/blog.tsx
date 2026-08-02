@@ -25,7 +25,7 @@ export function Blog({ posts }: { posts: BlogPost[] }) {
             {m['landing.blog.description']()}
           </p>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {posts.map((post) => (
             <BlogCard
               key={post.slug}

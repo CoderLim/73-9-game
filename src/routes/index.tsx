@@ -2,15 +2,16 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
 import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { Blog } from '@/blocks/blog';
 import { Footer } from '@/blocks/footer';
 import { GameHighlightsSection } from '@/blocks/game-highlights';
 import { GameSeo } from '@/blocks/game-seo';
 import { Header } from '@/blocks/header';
 import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
+import { getBlogPostsFn } from '@/content/posts/server';
 
-const HOME_TITLE =
-  '73-9 Game: Beat the Warriors | Free NBA Draft Simulator';
+const HOME_TITLE = '73-9 Game: Beat the Warriors | Free NBA Draft Simulator';
 const HOME_DESCRIPTION =
   '73-9 game lets you draft five NBA player-seasons under a $100M cap, simulate 82 games, and see whether your lineup can beat the 2015-16 Warriors.';
 
@@ -54,6 +55,8 @@ const WEB_APPLICATION_JSON_LD = {
 };
 
 function HomePage() {
+  const { posts } = Route.useLoaderData();
+
   return (
     <>
       <script
@@ -88,6 +91,7 @@ function HomePage() {
         <main className="relative">
           <GameSeo />
           <GameHighlightsSection />
+          <Blog posts={posts} />
         </main>
         <Footer />
       </div>
@@ -96,9 +100,10 @@ function HomePage() {
 }
 
 export const Route = createFileRoute('/')({
-  loader: () => {
+  loader: async () => {
     const locale = getLocale();
-    return { locale };
+    const posts = await getBlogPostsFn({ data: { locale, limit: 4 } });
+    return { locale, posts };
   },
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';
