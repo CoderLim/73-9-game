@@ -5,7 +5,7 @@ import { GameSeoSection } from '@/components/game-seo-section';
 const ENGLISH_HOME_H1 =
   '73-9 Game — Draft Your Five, Beat the 2015-16 Warriors';
 const ENGLISH_HOME_INTRO =
-  'The 73-9 game is a free NBA draft simulator built around one question: can your five beat the 2015-16 Warriors? In the 73-9 game, you start with $100 million, spin for five random team-seasons, and sign one player from each roster. Every choice changes the budget left for the next position. Finish the 73-9 game to simulate an 82-game season, compare your lineup with the Warriors, and review the strongest legal five you could have drafted from the same markets.';
+  'The 73-9 game is a free NBA draft simulator built around one question: can your five beat the 2015-16 Warriors? You start with $100 million, spin for five random team-seasons, and sign one player from each roster. Every choice changes the budget left for the next position. Finish the run to simulate an 82-game season, measure your lineup against that NBA 73-9 benchmark, and review the strongest legal five you could have drafted from the same markets.';
 
 export function GameSeo() {
   const locale = getLocale();
@@ -47,7 +47,7 @@ export function GameSeo() {
       blocks={[
         {
           heading: isEnglish
-            ? 'Where the 73-9 game comes from'
+            ? 'Where the NBA 73-9 record comes from'
             : m['game.seo.what.heading'](),
           paragraphs: [m['game.seo.what.p1'](), m['game.seo.what.p2']()],
         },
