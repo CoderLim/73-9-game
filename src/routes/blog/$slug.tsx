@@ -28,10 +28,23 @@ export const Route = createFileRoute('/blog/$slug')({
     const canonical = localizeUrl(`${envConfigs.app_url}/blog/${post.slug}`, {
       locale: locale as any,
     }).href;
+    const title = `${post.title} | ${envConfigs.app_name}`;
+    const description = post.description || '';
+    const ogImage = post.image || `${envConfigs.app_url}/73-9-game/og-73-9.jpg`;
     return {
       meta: [
-        { title: `${post.title} | ${envConfigs.app_name}` },
-        { name: 'description', content: post.description },
+        { title },
+        { name: 'description', content: description },
+        { property: 'og:type', content: 'article' },
+        { property: 'og:site_name', content: '73-9 Game' },
+        { property: 'og:title', content: title },
+        { property: 'og:description', content: description },
+        { property: 'og:url', content: canonical },
+        { property: 'og:image', content: ogImage },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: title },
+        { name: 'twitter:description', content: description },
+        { name: 'twitter:image', content: ogImage },
       ],
       links: [{ rel: 'canonical', href: canonical }],
     };

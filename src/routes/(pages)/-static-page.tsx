@@ -3,7 +3,12 @@ import { notFound, useLoaderData } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
-import { baseLocale, getLocale, localizeUrl } from '@/paraglide/runtime.js';
+import {
+  baseLocale,
+  getLocale,
+  locales,
+  localizeUrl,
+} from '@/paraglide/runtime.js';
 
 type PageMeta = {
   title: string;
@@ -14,6 +19,11 @@ type PageMeta = {
 type PageModule = {
   default: ComponentType;
   meta: PageMeta;
+};
+
+type StaticPageOptions = {
+  /** When true, emit noindex so crawl budget stays on play / guide / blog pages. */
+  noindex?: boolean;
 };
 
 // Eagerly bundle the static content pages (small legal/info MDX files).
@@ -36,7 +46,11 @@ type LoaderData = { meta: PageMeta; slug: string; locale: string };
 // explicit route file (e.g. privacy-policy.tsx) so static segments
 // always outrank dynamic ones — add a new page by creating the MDX
 // content plus a thin route file using this factory.
-export function staticPageRouteOptions(slug: string) {
+export function staticPageRouteOptions(
+  slug: string,
+  options: StaticPageOptions = {}
+) {
+  const { noindex = false } = options;
   return {
     loader: (): LoaderData => {
       const locale = getLocale();
@@ -47,15 +61,36 @@ export function staticPageRouteOptions(slug: string) {
     head: ({ loaderData }: { loaderData?: LoaderData }) => {
       if (!loaderData) return {};
       const { meta, locale } = loaderData;
-      const canonical = localizeUrl(`${envConfigs.app_url}/${slug}`, {
-        locale: locale as ReturnType<typeof getLocale>,
-      }).href;
+      const urlFor = (loc: string) =>
+        localizeUrl(`${envConfigs.app_url}/${slug}`, {
+          locale: loc as ReturnType<typeof getLocale>,
+        }).href;
+      const ogImage = `${envConfigs.app_url}/73-9-game/og-73-9.jpg`;
       return {
         meta: [
           { title: meta.title },
           { name: 'description', content: meta.description },
+          ...(noindex ? [{ name: 'robots', content: 'noindex,follow' }] : []),
+          { property: 'og:type', content: 'website' },
+          { property: 'og:site_name', content: '73-9 Game' },
+          { property: 'og:title', content: meta.title },
+          { property: 'og:description', content: meta.description },
+          { property: 'og:url', content: urlFor(locale) },
+          { property: 'og:image', content: ogImage },
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:title', content: meta.title },
+          { name: 'twitter:description', content: meta.description },
+          { name: 'twitter:image', content: ogImage },
         ],
-        links: [{ rel: 'canonical', href: canonical }],
+        links: [
+          { rel: 'canonical', href: urlFor(locale) },
+          ...locales.map((loc) => ({
+            rel: 'alternate',
+            hrefLang: loc,
+            href: urlFor(loc),
+          })),
+          { rel: 'alternate', hrefLang: 'x-default', href: urlFor(baseLocale) },
+        ],
       };
     },
     component: StaticPage,

@@ -7,6 +7,21 @@ import { getLocalPosts, mergePosts } from '@/content/posts';
 const STATIC_PAGES: { path: string; title: string; description: string }[] = [
   { path: '', title: 'Home', description: 'Landing page' },
   { path: '/blog', title: 'Blog', description: 'Blog posts and articles' },
+  {
+    path: '/leaderboard',
+    title: 'Leaderboard',
+    description: 'Best saved 73-9 lineups vs the Warriors',
+  },
+  {
+    path: '/how-to-play',
+    title: 'How to Play',
+    description: 'Rules and draft tips for the 73-9 game',
+  },
+  {
+    path: '/how-it-works',
+    title: 'How It Works',
+    description: 'How the 73-9 simulation model works',
+  },
 ];
 
 export const Route = createFileRoute('/llms.txt')({

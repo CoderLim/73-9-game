@@ -22,7 +22,7 @@ const WEB_APPLICATION_JSON_LD = {
   alternateName: '73-9 Game NBA Draft Simulator',
   url: 'https://73-9.org/',
   description: HOME_DESCRIPTION,
-  image: 'https://73-9.org/73-9-game/og-73-9.png',
+  image: 'https://73-9.org/73-9-game/og-73-9.jpg',
   applicationCategory: 'GameApplication',
   applicationSubCategory: 'NBA draft simulator and basketball lineup game',
   operatingSystem: 'Any operating system with a modern web browser',
@@ -131,7 +131,7 @@ export const Route = createFileRoute('/')({
         { property: 'og:url', content: 'https://73-9.org' },
         {
           property: 'og:image',
-          content: 'https://73-9.org/73-9-game/og-73-9.png',
+          content: 'https://73-9.org/73-9-game/og-73-9.jpg',
         },
         { name: 'twitter:card', content: 'summary_large_image' },
         {
@@ -144,7 +144,7 @@ export const Route = createFileRoute('/')({
         },
         {
           name: 'twitter:image',
-          content: 'https://73-9.org/73-9-game/og-73-9.png',
+          content: 'https://73-9.org/73-9-game/og-73-9.jpg',
         },
       ],
       links: [

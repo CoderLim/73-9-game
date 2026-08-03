@@ -17,8 +17,7 @@ import BlogIndexContent from '@/content/blog-index.en.mdx';
 import { formatPostDate } from '@/content/posts';
 import { getBlogPostsFn } from '@/content/posts/server';
 
-const ENGLISH_BLOG_TITLE =
-  '73-9 Game Blog: Strategy, History, and NBA Guides';
+const ENGLISH_BLOG_TITLE = '73-9 Game Blog: Strategy, History, and NBA Guides';
 const ENGLISH_BLOG_DESCRIPTION =
   '73-9 game blog with draft strategy, simulation guides, Warriors history, NBA lineup tools, and transparent notes about how the free browser game works.';
 
@@ -50,6 +49,29 @@ export const Route = createFileRoute('/blog/')({
         ...(!isBaseLocale
           ? [{ name: 'robots', content: 'noindex,follow' }]
           : []),
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: '73-9 Game' },
+        {
+          property: 'og:title',
+          content: isBaseLocale
+            ? ENGLISH_BLOG_TITLE
+            : `${m['blog.title']({}, { locale: locale as any })} | ${envConfigs.app_name}`,
+        },
+        {
+          property: 'og:description',
+          content: isBaseLocale
+            ? ENGLISH_BLOG_DESCRIPTION
+            : m['blog.description']({}, { locale: locale as any }),
+        },
+        {
+          property: 'og:url',
+          content: urlFor(isBaseLocale ? locale : baseLocale),
+        },
+        {
+          property: 'og:image',
+          content: `${envConfigs.app_url}/73-9-game/og-73-9.jpg`,
+        },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       links: [
         { rel: 'canonical', href: urlFor(isBaseLocale ? locale : baseLocale) },

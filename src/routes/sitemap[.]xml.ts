@@ -4,14 +4,11 @@ import { envConfigs } from '@/config';
 import { baseLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
 import { getLocalPosts, mergePosts } from '@/content/posts';
 
+/** Public indexable routes only — legal/about/contact are noindex (crawl budget). */
 const STATIC_PATHS = [
   '',
   '/blog',
-  '/privacy-policy',
-  '/terms-of-service',
-  '/cookies',
-  '/about',
-  '/contact',
+  '/leaderboard',
   '/how-to-play',
   '/how-it-works',
 ];

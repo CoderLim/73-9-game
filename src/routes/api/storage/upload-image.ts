@@ -9,6 +9,18 @@ import { md5 } from '@/lib/hash';
 import { enforceMinIntervalRateLimit } from '@/lib/rate-limit';
 import { respData, respErr } from '@/lib/resp';
 
+/** Raster-only — SVG omitted (stored SVG can execute script when opened). */
+const ALLOWED_IMAGE_MIME = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/avif',
+  'image/heic',
+  'image/heif',
+]);
+
 const extFromMime = (mimeType: string) => {
   const map: Record<string, string> = {
     'image/jpeg': 'jpg',
@@ -16,7 +28,6 @@ const extFromMime = (mimeType: string) => {
     'image/png': 'png',
     'image/webp': 'webp',
     'image/gif': 'gif',
-    'image/svg+xml': 'svg',
     'image/avif': 'avif',
     'image/heic': 'heic',
     'image/heif': 'heif',
@@ -53,8 +64,10 @@ async function POST({ request }: { request: Request }) {
     }> = [];
 
     for (const file of files) {
-      if (!file.type.startsWith('image/')) {
-        return respErr(`File ${file.name} is not an image`);
+      if (!ALLOWED_IMAGE_MIME.has(file.type)) {
+        return respErr(
+          `File ${file.name} type not allowed (use JPEG, PNG, WebP, GIF, or AVIF)`
+        );
       }
 
       const arrayBuffer = await file.arrayBuffer();
