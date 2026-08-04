@@ -174,16 +174,30 @@ function NbaTradeMachinePage() {
         <div className="h-[calc(52px+env(safe-area-inset-top))] md:h-[73px]" />
 
         <main>
-          <section className="relative overflow-hidden border-b border-white/5">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(105,59,170,0.3),transparent_36%),radial-gradient(circle_at_top_right,rgba(255,206,84,0.12),transparent_30%),linear-gradient(to_bottom,#0b0913,#05050a)]" />
-            <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 sm:pt-20 sm:pb-16 lg:px-8">
-              <div className="max-w-4xl">
+          <section className="relative flex min-h-[calc(100dvh-52px)] items-start overflow-hidden border-b border-white/5 py-4 sm:py-6 md:min-h-[calc(100dvh-73px)] lg:items-center">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(105,59,170,0.24),transparent_34%),radial-gradient(circle_at_top_right,rgba(255,206,84,0.1),transparent_28%),linear-gradient(to_bottom,#0b0913,#05050a)]" />
+            <div className="relative w-full">
+              <div className="mx-auto mb-3 flex max-w-7xl flex-col gap-1 px-4 sm:mb-4 sm:px-6 lg:px-8">
+                <div className="text-[11px] font-semibold tracking-[0.16em] text-[#ffce54] uppercase">
+                  2026-27 salary checker
+                </div>
+                <h1 className="font-[Barlow_Condensed,sans-serif] text-2xl font-extrabold tracking-wide text-white uppercase sm:text-3xl">
+                  NBA Trade Machine
+                </h1>
+              </div>
+              <NbaTradeMachine />
+            </div>
+          </section>
+
+          <section className="bg-[#080811]">
+            <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+              <header>
                 <div className="inline-flex items-center rounded-full border border-[#ffce54]/25 bg-[#ffce54]/8 px-3 py-1.5 text-xs font-semibold tracking-[0.14em] text-[#ffce54] uppercase">
                   2026-27 salary checker
                 </div>
-                <h1 className="mt-5 font-[Barlow_Condensed,sans-serif] text-4xl font-extrabold leading-[0.98] tracking-tight text-white uppercase sm:text-6xl lg:text-7xl">
+                <h2 className="mt-5 font-[Barlow_Condensed,sans-serif] text-3xl font-extrabold leading-tight tracking-tight text-white uppercase sm:text-5xl">
                   NBA Trade Machine – Build and Check NBA Trades
-                </h1>
+                </h2>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-[#a4a4c0] sm:text-lg">
                   Use the NBA Trade Machine to test a two-team salary exchange
                   against the 2026-27 salary cap, first apron, and second apron.
@@ -217,17 +231,9 @@ function NbaTradeMachinePage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </section>
+              </header>
 
-          <div className="py-10 sm:py-14">
-            <NbaTradeMachine />
-          </div>
-
-          <section className="border-t border-white/5 bg-[#080811]">
-            <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-              <div className="rounded-2xl border border-[#ffce54]/20 bg-[#ffce54]/5 p-5 text-sm leading-7 text-[#b7b7cf]">
+              <div className="mt-10 rounded-2xl border border-[#ffce54]/20 bg-[#ffce54]/5 p-5 text-sm leading-7 text-[#b7b7cf]">
                 <strong className="text-[#ffce54]">Data disclosure:</strong>{' '}
                 team payroll totals were compiled on August 4, 2026 from
                 Basketball-Reference contract pages. The official 2026-27 cap
