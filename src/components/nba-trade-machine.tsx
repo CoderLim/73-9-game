@@ -1,17 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
   ArrowRightLeft,
   Check,
   CheckCircle2,
   Database,
-  Plus,
   RotateCcw,
   Search,
   Trash2,
   UserPlus,
 } from 'lucide-react';
 
+import { getNbaPlayerHeadshotUrl } from '@/data/nba-player-headshots';
 import {
   NBA_TRADE_SNAPSHOT,
   NBA_TRADE_TEAMS,
@@ -44,7 +44,10 @@ type TeamEvaluation = {
 
 function createCustomRow(): ContractRow {
   return {
-    id: crypto.randomUUID(),
+    id:
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `custom-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     player: '',
     salary: '',
     source: 'custom',
@@ -85,6 +88,52 @@ function payrollTier(payroll: number): string {
   if (payroll >= NBA_TRADE_SNAPSHOT.firstApron) return 'Above first apron';
   if (payroll >= NBA_TRADE_SNAPSHOT.luxuryTax) return 'Luxury-tax team';
   return 'Over salary cap';
+}
+
+function playerInitials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
+
+function PlayerAvatar({
+  name,
+  size = 'md',
+}: {
+  name: string;
+  size?: 'sm' | 'md';
+}) {
+  const imageUrl = getNbaPlayerHeadshotUrl(name);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => setFailed(false), [imageUrl]);
+
+  const sizeClass = size === 'sm' ? 'size-9' : 'size-10';
+  const textClass = size === 'sm' ? 'text-[10px]' : 'text-xs';
+
+  return (
+    <span
+      aria-hidden="true"
+      className={`relative grid ${sizeClass} shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-[#202035] ${textClass} font-bold text-[#ffce54]`}
+    >
+      {imageUrl && !failed ? (
+        <img
+          src={imageUrl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailed(true)}
+          className="absolute inset-0 size-full object-cover object-top"
+        />
+      ) : (
+        playerInitials(name)
+      )}
+    </span>
+  );
 }
 
 function evaluateTeam(
@@ -310,13 +359,7 @@ function ContractEditor({
                     key={row.id}
                     className="flex items-center gap-3 rounded-xl border border-[#ffce54]/15 bg-[#ffce54]/5 px-3 py-2.5"
                   >
-                    <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#ffce54]/10 text-xs font-bold text-[#ffce54]">
-                      {row.player
-                        .split(/\s+/)
-                        .slice(0, 2)
-                        .map((part) => part[0])
-                        .join('')}
-                    </div>
+                    <PlayerAvatar name={row.player} size="sm" />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold text-white">
                         {row.player}
@@ -412,7 +455,7 @@ function ContractEditor({
                     aria-checked={selected}
                     disabled={disabled}
                     onClick={() => toggleRosterPlayer(player, index)}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
                       selected
                         ? 'bg-[#ffce54]/10 text-white'
                         : 'text-[#c3c3d8] hover:bg-white/5'
@@ -427,6 +470,7 @@ function ContractEditor({
                     >
                       {selected ? <Check className="size-3.5" /> : null}
                     </span>
+                    <PlayerAvatar name={player[0]} />
                     <span className="min-w-0 flex-1 truncate text-sm font-medium">
                       {player[0]}
                     </span>
