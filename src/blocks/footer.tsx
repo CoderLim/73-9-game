@@ -10,6 +10,7 @@ export function Footer() {
       supportEmail="support@73-9.org"
       copyright={m['game.footer.copyright']({ year: String(year) })}
       links={[
+        { label: 'NBA Trade Machine', href: '/nba-trade-machine' },
         { label: m['game.footer.how_to_play'](), href: '/how-to-play' },
         { label: m['game.footer.how_it_works'](), href: '/how-it-works' },
         { label: m['game.footer.about'](), href: '/about' },

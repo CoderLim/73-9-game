@@ -9,6 +9,7 @@ const STATIC_PATHS = [
   '',
   '/blog',
   '/leaderboard',
+  '/nba-trade-machine',
   '/how-to-play',
   '/how-it-works',
 ];
@@ -53,7 +54,7 @@ export const Route = createFileRoute('/sitemap.xml')({
         const entries: Entry[] = STATIC_PATHS.map((path) => ({
           path,
           changeFrequency: path === '/blog' ? 'daily' : 'weekly',
-          priority: path === '' ? 1 : 0.8,
+          priority: path === '' ? 1 : path === '/nba-trade-machine' ? 0.9 : 0.8,
         }));
 
         // Blog posts: db posts merged with local MDX posts.
