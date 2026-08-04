@@ -9,7 +9,7 @@ export const NBA_TRADE_SNAPSHOT = {
   adjustedTradeAmount: 9_095_709,
   sourceNotes: [
     'League thresholds: NBA official 2026-27 salary cap release.',
-    'Team payroll totals: Basketball-Reference contract summary retrieved for the August 4, 2026 snapshot.',
+    'Team payroll totals and roster salaries: Basketball-Reference team contract pages retrieved for the August 4, 2026 snapshot.',
     'Basketball-Reference notes that salary tables are updated monthly.',
   ],
 } as const;
@@ -28,7 +28,7 @@ export const NBA_TRADE_TEAMS: NbaTradeTeam[] = [
   { code: 'CHI', name: 'Chicago Bulls', payroll: 161_545_080 },
   { code: 'CLE', name: 'Cleveland Cavaliers', payroll: 226_017_942 },
   { code: 'DAL', name: 'Dallas Mavericks', payroll: 197_866_094 },
-  { code: 'DEN', name: 'Denver Nuggets', payroll: 211_739_533 },
+  { code: 'DEN', name: 'Denver Nuggets', payroll: 217_593_192 },
   { code: 'DET', name: 'Detroit Pistons', payroll: 153_163_826 },
   { code: 'GSW', name: 'Golden State Warriors', payroll: 210_390_143 },
   { code: 'HOU', name: 'Houston Rockets', payroll: 200_547_409 },
@@ -49,6 +49,6 @@ export const NBA_TRADE_TEAMS: NbaTradeTeam[] = [
   { code: 'SAC', name: 'Sacramento Kings', payroll: 189_346_486 },
   { code: 'SAS', name: 'San Antonio Spurs', payroll: 196_130_556 },
   { code: 'TOR', name: 'Toronto Raptors', payroll: 198_020_399 },
-  { code: 'UTA', name: 'Utah Jazz', payroll: 176_915_598 },
+  { code: 'UTA', name: 'Utah Jazz', payroll: 179_365_019 },
   { code: 'WAS', name: 'Washington Wizards', payroll: 186_471_414 },
 ];
