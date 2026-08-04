@@ -246,6 +246,19 @@ function NbaTradeMachinePage() {
                       {section.paragraphs.map((paragraph) => (
                         <p key={paragraph.slice(0, 64)}>{paragraph}</p>
                       ))}
+                      {section.heading === 'How this NBA Trade Machine works' ? (
+                        <p>
+                          For the exact branch order, formulas, apron ceiling,
+                          and unsupported edge cases, read the{' '}
+                          <a
+                            href="/nba-trade-machine/how-it-works"
+                            className="font-semibold text-[#ffce54] underline underline-offset-4 transition hover:text-white"
+                          >
+                            complete NBA Trade Machine calculation logic
+                          </a>
+                          .
+                        </p>
+                      ) : null}
                     </div>
                   </section>
                 ))}

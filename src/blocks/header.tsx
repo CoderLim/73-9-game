@@ -19,7 +19,7 @@ export function Header() {
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
   const onHome = pathname === '/';
   const onLeaderboard = pathname === '/leaderboard';
-  const onTradeMachine = pathname === '/nba-trade-machine';
+  const onTradeMachine = pathname.startsWith('/nba-trade-machine');
   const onHistory = pathname === '/history';
   const onHowToPlay = pathname === '/how-to-play';
   const onHowItWorks = pathname === '/how-it-works';
