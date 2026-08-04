@@ -1,38 +1,35 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   AlertTriangle,
   ArrowRightLeft,
   Check,
   CheckCircle2,
-  ChevronDown,
   Database,
-  LoaderCircle,
   Plus,
   RotateCcw,
   Search,
   Trash2,
+  UserPlus,
 } from 'lucide-react';
 
-import {
-  NBA_PLAYER_CONTRACT_SNAPSHOT,
-  parseNbaPlayerContractsCsv,
-  type NbaPlayerContract,
-} from '@/data/nba-player-contracts-2026-08-04';
 import {
   NBA_TRADE_SNAPSHOT,
   NBA_TRADE_TEAMS,
   type NbaTradeTeam,
 } from '@/data/nba-trade-machine-2026-08-04';
+import {
+  NBA_TRADE_ROSTERS,
+  NBA_TRADE_ROSTER_SNAPSHOT,
+  type NbaTradeRosterRow,
+} from '@/data/nba-trade-rosters-2026-08-04';
 
 type ContractRow = {
   id: string;
   player: string;
   salary: string;
-  contractNote?: string;
-  source?: 'snapshot' | 'custom';
+  source: 'roster' | 'custom';
+  rosterKey?: string;
 };
-
-type ContractsStatus = 'loading' | 'ready' | 'error';
 
 type TeamEvaluation = {
   legal: boolean;
@@ -45,15 +42,22 @@ type TeamEvaluation = {
   message: string;
 };
 
-const createRow = (): ContractRow => ({
-  id:
-    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-      ? crypto.randomUUID()
-      : `row-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-  player: '',
-  salary: '',
-  source: 'custom',
-});
+function createCustomRow(): ContractRow {
+  return {
+    id: crypto.randomUUID(),
+    player: '',
+    salary: '',
+    source: 'custom',
+  };
+}
+
+function salaryToInput(value: number): string {
+  return String(Math.round((value / 1_000_000) * 1_000) / 1_000);
+}
+
+function rosterKey(teamCode: string, index: number): string {
+  return `${teamCode}-${index}`;
+}
 
 function parseSalary(value: string): number {
   const parsed = Number(value.replace(/,/g, ''));
@@ -73,20 +77,6 @@ function formatMoney(value: number): string {
     notation: value >= 1_000_000 ? 'compact' : 'standard',
     maximumFractionDigits: value >= 1_000_000 ? 2 : 0,
   }).format(value);
-}
-
-function formatSalaryInput(value: number): string {
-  return (value / 1_000_000)
-    .toFixed(6)
-    .replace(/0+$/, '')
-    .replace(/\.$/, '');
-}
-
-function normalizeSearch(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
 }
 
 function payrollTier(payroll: number): string {
@@ -167,240 +157,84 @@ function evaluateTeam(
   };
 }
 
-function PlayerCombobox({
-  team,
-  row,
-  contracts,
-  contractsStatus,
-  selectedPlayers,
-  onChange,
-}: {
-  team: NbaTradeTeam;
-  row: ContractRow;
-  contracts: NbaPlayerContract[];
-  contractsStatus: ContractsStatus;
-  selectedPlayers: string[];
-  onChange: (patch: Partial<ContractRow>) => void;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const selectedElsewhere = useMemo(
-    () =>
-      new Set(
-        selectedPlayers
-          .filter((player) => player !== row.player)
-          .map((player) => normalizeSearch(player))
-      ),
-    [row.player, selectedPlayers]
-  );
-
-  const teamContracts = useMemo(
-    () =>
-      contracts
-        .filter((contract) => contract.team === team.code)
-        .filter(
-          (contract) =>
-            !selectedElsewhere.has(normalizeSearch(contract.player))
-        )
-        .sort((a, b) => b.salary - a.salary),
-    [contracts, selectedElsewhere, team.code]
-  );
-
-  const options = useMemo(() => {
-    const query = normalizeSearch(row.player.trim());
-    const matches = query
-      ? teamContracts.filter((contract) =>
-          normalizeSearch(contract.player).includes(query)
-        )
-      : teamContracts;
-
-    return matches.slice(0, 12);
-  }, [row.player, teamContracts]);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [row.player, team.code]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const closeOnOutsideClick = (event: PointerEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', closeOnOutsideClick);
-    return () =>
-      document.removeEventListener('pointerdown', closeOnOutsideClick);
-  }, [open]);
-
-  const selectContract = (contract: NbaPlayerContract) => {
-    onChange({
-      player: contract.player,
-      salary: formatSalaryInput(contract.salary),
-      contractNote: contract.note,
-      source: 'snapshot',
-    });
-    setOpen(false);
-  };
-
-  const handleTextChange = (value: string) => {
-    const clearAutofill = row.source === 'snapshot' && value !== row.player;
-    onChange({
-      player: value,
-      ...(clearAutofill
-        ? {
-            salary: '',
-            contractNote: '',
-            source: 'custom' as const,
-          }
-        : {}),
-    });
-    setOpen(true);
-  };
-
-  return (
-    <div ref={containerRef} className="relative min-w-0">
-      <Search className="pointer-events-none absolute top-3 left-3 z-10 size-4 text-[#676783]" />
-      <input
-        value={row.player}
-        onChange={(event) => handleTextChange(event.target.value)}
-        onFocus={() => setOpen(true)}
-        onKeyDown={(event) => {
-          if (event.key === 'ArrowDown') {
-            event.preventDefault();
-            setOpen(true);
-            setActiveIndex((current) =>
-              Math.min(current + 1, Math.max(0, options.length - 1))
-            );
-          } else if (event.key === 'ArrowUp') {
-            event.preventDefault();
-            setActiveIndex((current) => Math.max(0, current - 1));
-          } else if (event.key === 'Enter' && open && options[activeIndex]) {
-            event.preventDefault();
-            selectContract(options[activeIndex]);
-          } else if (event.key === 'Escape') {
-            setOpen(false);
-          }
-        }}
-        placeholder={`Search ${team.code} player`}
-        aria-label={`Search ${team.name} player`}
-        aria-autocomplete="list"
-        aria-expanded={open}
-        role="combobox"
-        className="w-full rounded-xl border border-white/10 bg-[#151526] py-2.5 pr-9 pl-9 text-sm text-white outline-none placeholder:text-[#62627d] focus:border-[#ffce54]/60"
-      />
-      <button
-        type="button"
-        onClick={() => setOpen((current) => !current)}
-        aria-label={`Show ${team.name} contracts`}
-        className="absolute top-0 right-0 grid h-full w-9 place-items-center text-[#777795] transition hover:text-white"
-      >
-        <ChevronDown
-          className={`size-4 transition-transform ${open ? 'rotate-180' : ''}`}
-        />
-      </button>
-
-      {open ? (
-        <div
-          role="listbox"
-          className="absolute top-[calc(100%+0.4rem)] right-0 left-0 z-50 max-h-72 overflow-y-auto rounded-xl border border-white/15 bg-[#111120] p-1.5 shadow-2xl shadow-black/70"
-        >
-          {contractsStatus === 'loading' ? (
-            <div className="flex items-center gap-2 px-3 py-3 text-xs text-[#9a9ab8]">
-              <LoaderCircle className="size-4 animate-spin" />
-              Loading {team.code} contracts…
-            </div>
-          ) : contractsStatus === 'error' ? (
-            <div className="px-3 py-3 text-xs leading-5 text-amber-200">
-              Player search is unavailable. Type a custom player and salary.
-            </div>
-          ) : options.length === 0 ? (
-            <div className="px-3 py-3 text-xs leading-5 text-[#9a9ab8]">
-              No matching contract. Keep typing to use a custom player.
-            </div>
-          ) : (
-            <>
-              <div className="px-2.5 py-1.5 text-[10px] font-semibold tracking-[0.14em] text-[#73738f] uppercase">
-                {row.player.trim()
-                  ? `${team.code} matches`
-                  : `${team.code} 2026-27 contracts`}
-              </div>
-              {options.map((contract, index) => (
-                <button
-                  key={`${contract.team}-${contract.player}`}
-                  type="button"
-                  role="option"
-                  aria-selected={index === activeIndex}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => selectContract(contract)}
-                  className={`flex w-full items-start justify-between gap-3 rounded-lg px-2.5 py-2.5 text-left transition ${
-                    index === activeIndex
-                      ? 'bg-[#ffce54]/12'
-                      : 'hover:bg-white/5'
-                  }`}
-                >
-                  <span className="min-w-0">
-                    <span className="flex items-center gap-2 text-sm font-semibold text-white">
-                      {contract.player}
-                      {row.player === contract.player ? (
-                        <Check className="size-3.5 text-emerald-300" />
-                      ) : null}
-                    </span>
-                    {contract.note ? (
-                      <span className="mt-0.5 block truncate text-[10px] text-[#8585a3]">
-                        {contract.note}
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="shrink-0 font-[Geist_Mono,monospace] text-xs font-bold text-[#ffce54]">
-                    {formatMoney(contract.salary)}
-                  </span>
-                </button>
-              ))}
-            </>
-          )}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 function ContractEditor({
   team,
   otherTeamCode,
   rows,
-  contracts,
-  contractsStatus,
   onTeamChange,
   onRowsChange,
 }: {
   team: NbaTradeTeam;
   otherTeamCode: string;
   rows: ContractRow[];
-  contracts: NbaPlayerContract[];
-  contractsStatus: ContractsStatus;
   onTeamChange: (code: string) => void;
   onRowsChange: (rows: ContractRow[]) => void;
 }) {
-  const updateRow = (id: string, patch: Partial<ContractRow>) => {
+  const [search, setSearch] = useState('');
+  const roster = NBA_TRADE_ROSTERS[team.code] ?? [];
+  const selectedKeys = useMemo(
+    () =>
+      new Set(
+        rows
+          .filter((row) => row.source === 'roster' && row.rosterKey)
+          .map((row) => row.rosterKey as string)
+      ),
+    [rows]
+  );
+  const filteredRoster = useMemo(() => {
+    const query = search.trim().toLocaleLowerCase();
+    if (!query) return roster;
+    return roster.filter(([name]) =>
+      name.toLocaleLowerCase().includes(query)
+    );
+  }, [roster, search]);
+
+  const updateCustomRow = (
+    id: string,
+    field: 'player' | 'salary',
+    value: string
+  ) => {
     onRowsChange(
-      rows.map((row) => (row.id === id ? { ...row, ...patch } : row))
+      rows.map((row) =>
+        row.id === id && row.source === 'custom'
+          ? { ...row, [field]: value }
+          : row
+      )
     );
   };
 
   const removeRow = (id: string) => {
-    const next = rows.filter((row) => row.id !== id);
-    onRowsChange(next.length ? next : [createRow()]);
+    onRowsChange(rows.filter((row) => row.id !== id));
   };
 
-  const selectedPlayers = rows
-    .map((row) => row.player.trim())
-    .filter(Boolean);
+  const toggleRosterPlayer = (
+    player: NbaTradeRosterRow,
+    index: number
+  ) => {
+    const key = rosterKey(team.code, index);
+    const existing = rows.find((row) => row.rosterKey === key);
+    if (existing) {
+      removeRow(existing.id);
+      return;
+    }
+    if (rows.length >= 8) return;
+
+    onRowsChange([
+      ...rows,
+      {
+        id: key,
+        player: player[0],
+        salary: salaryToInput(player[1]),
+        source: 'roster',
+        rosterKey: key,
+      },
+    ]);
+  };
+
+  const addCustomPlayer = () => {
+    if (rows.length >= 8) return;
+    onRowsChange([...rows, createCustomRow()]);
+  };
 
   return (
     <section className="rounded-3xl border border-white/10 bg-[#0b0b16]/95 p-4 shadow-2xl shadow-black/30 sm:p-6">
@@ -411,7 +245,10 @@ function ContractEditor({
           </label>
           <select
             value={team.code}
-            onChange={(event) => onTeamChange(event.target.value)}
+            onChange={(event) => {
+              setSearch('');
+              onTeamChange(event.target.value);
+            }}
             className="mt-2 w-full rounded-xl border border-white/10 bg-[#151526] px-3 py-2.5 text-sm font-semibold text-white outline-none transition focus:border-[#ffce54]/70 sm:min-w-64"
           >
             {NBA_TRADE_TEAMS.map((option) => (
@@ -437,83 +274,184 @@ function ContractEditor({
       </div>
 
       <div className="mt-5">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-bold tracking-wide text-white uppercase">
-              Contracts sent out
+              Players sent out
             </h3>
             <p className="mt-1 text-xs leading-5 text-[#8f8fb2]">
-              Search the selected team to auto-fill salary, or type a custom
-              contract. Salary stays editable.
+              Select players from the dated roster. Salaries fill automatically.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() =>
-              rows.length < 8 && onRowsChange([...rows, createRow()])
-            }
-            disabled={rows.length >= 8}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white transition hover:border-[#ffce54]/40 hover:bg-[#ffce54]/10 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <Plus className="size-3.5" />
-            Add
-          </button>
+          <div className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-[#b6b6cf]">
+            {rows.length}/8 selected
+          </div>
         </div>
 
-        <div className="mt-4 space-y-3">
-          {rows.map((row, index) => (
-            <div key={row.id}>
-              <div className="grid grid-cols-[minmax(0,1fr)_6.75rem_2.25rem] gap-2">
-                <PlayerCombobox
-                  team={team}
-                  row={row}
-                  contracts={contracts}
-                  contractsStatus={contractsStatus}
-                  selectedPlayers={selectedPlayers}
-                  onChange={(patch) => updateRow(row.id, patch)}
-                />
-                <div className="relative">
-                  <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-xs text-[#777795]">
-                    $
-                  </span>
-                  <input
-                    value={row.salary}
-                    onChange={(event) =>
-                      updateRow(row.id, { salary: event.target.value })
-                    }
-                    inputMode="decimal"
-                    type="number"
-                    min="0"
-                    step="0.000001"
-                    placeholder="M"
-                    aria-label={`${team.name} salary ${index + 1} in millions`}
-                    className="w-full rounded-xl border border-white/10 bg-[#151526] py-2.5 pr-7 pl-6 font-[Geist_Mono,monospace] text-sm text-white outline-none placeholder:text-[#62627d] focus:border-[#ffce54]/60"
-                  />
-                  <span className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-xs text-[#777795]">
-                    M
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeRow(row.id)}
-                  aria-label={`Remove ${row.player || `player ${index + 1}`}`}
-                  className="grid place-items-center rounded-xl border border-white/10 bg-white/5 text-[#8f8fb2] transition hover:border-red-400/40 hover:bg-red-500/10 hover:text-red-300"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
+        <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 p-3">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold tracking-[0.12em] text-[#8f8fb2] uppercase">
+              Trade package
+            </span>
+            <span className="font-[Geist_Mono,monospace] text-xs font-bold text-[#ffce54]">
+              {formatMoney(totalSalary(rows))}
+            </span>
+          </div>
 
-              {row.source === 'snapshot' ? (
-                <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 px-1 text-[10px] leading-4 text-[#8585a3]">
-                  <span className="inline-flex items-center gap-1 text-emerald-300">
-                    <CheckCircle2 className="size-3" />
-                    Salary auto-filled
-                  </span>
-                  {row.contractNote ? <span>{row.contractNote}</span> : null}
-                </div>
-              ) : null}
+          {rows.length === 0 ? (
+            <p className="py-5 text-center text-xs leading-5 text-[#686884]">
+              No players selected. Choose from the roster below.
+            </p>
+          ) : (
+            <div className="mt-3 space-y-2">
+              {rows.map((row, index) =>
+                row.source === 'roster' ? (
+                  <div
+                    key={row.id}
+                    className="flex items-center gap-3 rounded-xl border border-[#ffce54]/15 bg-[#ffce54]/5 px-3 py-2.5"
+                  >
+                    <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#ffce54]/10 text-xs font-bold text-[#ffce54]">
+                      {row.player
+                        .split(/\s+/)
+                        .slice(0, 2)
+                        .map((part) => part[0])
+                        .join('')}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-semibold text-white">
+                        {row.player}
+                      </div>
+                      <div className="mt-0.5 font-[Geist_Mono,monospace] text-xs text-[#a6a6c0]">
+                        {formatMoney(parseSalary(row.salary))}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeRow(row.id)}
+                      aria-label={`Remove ${row.player}`}
+                      className="grid size-8 shrink-0 place-items-center rounded-lg text-[#8f8fb2] transition hover:bg-red-500/10 hover:text-red-300"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    key={row.id}
+                    className="grid grid-cols-[1fr_7rem_2.25rem] gap-2 rounded-xl border border-white/10 bg-white/[0.025] p-2"
+                  >
+                    <input
+                      value={row.player}
+                      onChange={(event) =>
+                        updateCustomRow(row.id, 'player', event.target.value)
+                      }
+                      placeholder={`Custom player ${index + 1}`}
+                      aria-label={`${team.name} custom player ${index + 1}`}
+                      className="min-w-0 rounded-lg border border-white/10 bg-[#151526] px-3 py-2 text-sm text-white outline-none placeholder:text-[#62627d] focus:border-[#ffce54]/60"
+                    />
+                    <div className="relative">
+                      <span className="pointer-events-none absolute inset-y-0 left-2.5 flex items-center text-xs text-[#777795]">
+                        $
+                      </span>
+                      <input
+                        value={row.salary}
+                        onChange={(event) =>
+                          updateCustomRow(row.id, 'salary', event.target.value)
+                        }
+                        inputMode="decimal"
+                        type="number"
+                        min="0"
+                        step="0.001"
+                        placeholder="M"
+                        aria-label={`${team.name} custom salary ${index + 1} in millions`}
+                        className="w-full rounded-lg border border-white/10 bg-[#151526] py-2 pr-6 pl-5 font-[Geist_Mono,monospace] text-sm text-white outline-none placeholder:text-[#62627d] focus:border-[#ffce54]/60"
+                      />
+                      <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[10px] text-[#777795]">
+                        M
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeRow(row.id)}
+                      aria-label="Remove custom player"
+                      className="grid place-items-center rounded-lg text-[#8f8fb2] transition hover:bg-red-500/10 hover:text-red-300"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                )
+              )}
             </div>
-          ))}
+          )}
+        </div>
+
+        <div className="mt-4">
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#777795]" />
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={`Search ${team.name} roster`}
+              aria-label={`Search ${team.name} roster`}
+              className="w-full rounded-xl border border-white/10 bg-[#151526] py-2.5 pr-3 pl-10 text-sm text-white outline-none placeholder:text-[#62627d] focus:border-[#ffce54]/60"
+            />
+          </div>
+
+          <div className="mt-2 max-h-64 space-y-1 overflow-y-auto rounded-2xl border border-white/10 bg-[#10101d] p-2">
+            {filteredRoster.length ? (
+              filteredRoster.map((player) => {
+                const index = roster.indexOf(player);
+                const key = rosterKey(team.code, index);
+                const selected = selectedKeys.has(key);
+                const disabled = !selected && rows.length >= 8;
+
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    role="checkbox"
+                    aria-checked={selected}
+                    disabled={disabled}
+                    onClick={() => toggleRosterPlayer(player, index)}
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                      selected
+                        ? 'bg-[#ffce54]/10 text-white'
+                        : 'text-[#c3c3d8] hover:bg-white/5'
+                    } disabled:cursor-not-allowed disabled:opacity-35`}
+                  >
+                    <span
+                      className={`grid size-5 shrink-0 place-items-center rounded border ${
+                        selected
+                          ? 'border-[#ffce54] bg-[#ffce54] text-[#17120a]'
+                          : 'border-white/20'
+                      }`}
+                    >
+                      {selected ? <Check className="size-3.5" /> : null}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                      {player[0]}
+                    </span>
+                    <span className="shrink-0 font-[Geist_Mono,monospace] text-xs text-[#9b9bb7]">
+                      {formatMoney(player[1])}
+                    </span>
+                  </button>
+                );
+              })
+            ) : (
+              <p className="py-8 text-center text-xs text-[#777795]">
+                No roster player matches “{search}”.
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={addCustomPlayer}
+            disabled={rows.length >= 8}
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-white/15 bg-white/[0.025] px-3 py-2.5 text-xs font-semibold text-[#b6b6cf] transition hover:border-[#ffce54]/40 hover:bg-[#ffce54]/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <UserPlus className="size-4" />
+            Add custom player
+          </button>
         </div>
       </div>
     </section>
@@ -587,40 +525,8 @@ function EvaluationCard({
 export function NbaTradeMachine() {
   const [teamACode, setTeamACode] = useState('LAL');
   const [teamBCode, setTeamBCode] = useState('GSW');
-  const [rowsA, setRowsA] = useState<ContractRow[]>([createRow()]);
-  const [rowsB, setRowsB] = useState<ContractRow[]>([createRow()]);
-  const [contracts, setContracts] = useState<NbaPlayerContract[]>([]);
-  const [contractsStatus, setContractsStatus] =
-    useState<ContractsStatus>('loading');
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadContracts() {
-      try {
-        const response = await fetch(NBA_PLAYER_CONTRACT_SNAPSHOT.csvUrl, {
-          signal: controller.signal,
-          cache: 'force-cache',
-        });
-
-        if (!response.ok) {
-          throw new Error(`Contract snapshot returned ${response.status}`);
-        }
-
-        const parsed = parseNbaPlayerContractsCsv(await response.text());
-        if (!parsed.length) throw new Error('Contract snapshot is empty');
-
-        setContracts(parsed);
-        setContractsStatus('ready');
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        setContractsStatus('error');
-      }
-    }
-
-    loadContracts();
-    return () => controller.abort();
-  }, []);
+  const [rowsA, setRowsA] = useState<ContractRow[]>([]);
+  const [rowsB, setRowsB] = useState<ContractRow[]>([]);
 
   const teamA =
     NBA_TRADE_TEAMS.find((team) => team.code === teamACode) ??
@@ -652,8 +558,18 @@ export function NbaTradeMachine() {
   const reset = () => {
     setTeamACode('LAL');
     setTeamBCode('GSW');
-    setRowsA([createRow()]);
-    setRowsB([createRow()]);
+    setRowsA([]);
+    setRowsB([]);
+  };
+
+  const changeTeamA = (code: string) => {
+    setTeamACode(code);
+    setRowsA([]);
+  };
+
+  const changeTeamB = (code: string) => {
+    setTeamBCode(code);
+    setRowsB([]);
   };
 
   return (
@@ -668,18 +584,18 @@ export function NbaTradeMachine() {
             <div>
               <div className="flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-[#ffce54] uppercase">
                 <Database className="size-4" />
-                2026-27 static snapshot
+                {NBA_TRADE_ROSTER_SNAPSHOT.season} roster snapshot
               </div>
               <h2
                 id="trade-checker-heading"
                 className="mt-2 font-[Barlow_Condensed,sans-serif] text-2xl font-extrabold tracking-wide text-white uppercase sm:text-3xl"
               >
-                Build a two-team salary trade
+                Select players and test the trade
               </h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-[#9999b8]">
-                Search a player to auto-fill the 2026-27 salary, then edit it if
-                needed. Payroll and player-contract snapshots are dated August
-                4, 2026.
+                Pick from {NBA_TRADE_ROSTER_SNAPSHOT.playerCount} published
+                contracts. Salaries and team payrolls were compiled August 4,
+                2026; custom entries remain available for edge cases.
               </p>
             </div>
             <div className="flex gap-2">
@@ -708,24 +624,14 @@ export function NbaTradeMachine() {
             team={teamA}
             otherTeamCode={teamB.code}
             rows={rowsA}
-            contracts={contracts}
-            contractsStatus={contractsStatus}
-            onTeamChange={(code) => {
-              setTeamACode(code);
-              setRowsA([createRow()]);
-            }}
+            onTeamChange={changeTeamA}
             onRowsChange={setRowsA}
           />
           <ContractEditor
             team={teamB}
             otherTeamCode={teamA.code}
             rows={rowsB}
-            contracts={contracts}
-            contractsStatus={contractsStatus}
-            onTeamChange={(code) => {
-              setTeamBCode(code);
-              setRowsB([createRow()]);
-            }}
+            onTeamChange={changeTeamB}
             onRowsChange={setRowsB}
           />
         </div>
@@ -742,7 +648,7 @@ export function NbaTradeMachine() {
           >
             <div className="font-[Barlow_Condensed,sans-serif] text-xl font-extrabold tracking-wide text-white uppercase">
               {!hasTrade
-                ? 'Select or enter at least one outgoing contract'
+                ? 'Select at least one outgoing player'
                 : tradePasses
                   ? 'Simplified salary match passes'
                   : 'Simplified salary match fails'}
@@ -770,20 +676,6 @@ export function NbaTradeMachine() {
             draft-pick ownership, or the Stepien rule. Published payroll is
             also not identical to official Apron Team Salary.
           </div>
-
-          <p className="mt-3 text-center text-[10px] leading-5 text-[#72728e]">
-            Player selector snapshot: August 4, 2026.{' '}
-            <a
-              href={NBA_PLAYER_CONTRACT_SNAPSHOT.sourcePage}
-              target="_blank"
-              rel="noreferrer"
-              className="underline underline-offset-4 transition hover:text-white"
-            >
-              View contract data source
-            </a>
-            . Auto-filled salaries remain editable and should be verified for
-            real transactions.
-          </p>
         </div>
       </div>
     </section>
