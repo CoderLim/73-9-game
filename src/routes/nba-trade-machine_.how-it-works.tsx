@@ -39,7 +39,7 @@ const LOGIC_SECTIONS = [
   {
     heading: 'What the calculation is designed to answer',
     paragraphs: [
-      'NBA Trade Machine Logic explains exactly how the calculator on 73-9.org turns two teams, their payroll tiers, and the salaries entered by the user into a pass or fail result. The page does not try to reproduce every clause in the collective bargaining agreement. Instead, it documents the simplified rule engine that powers the current two-team checker, including the assumptions that make the result useful and the limitations that prevent it from being treated as an official league approval.',
+      'NBA Trade Machine Logic explains exactly how the calculator on 73-9.org turns two teams, their payroll tiers, and the salary values selected or entered by the user into a pass or fail result. The page does not try to reproduce every clause in the collective bargaining agreement. Instead, it documents the simplified rule engine that powers the current two-team checker, including the assumptions that make the result useful and the limitations that prevent it from being treated as an official league approval.',
       'The calculator answers a narrow question: does the basic salary structure of this two-team proposal fit the current simplified model? It does not decide whether a deal is smart, fair, realistic, or likely to happen. A financially valid transaction can still be poor basketball business, while an attractive basketball proposal can still fail the salary test.',
     ],
   },
@@ -47,14 +47,15 @@ const LOGIC_SECTIONS = [
     heading: 'Season constants and dated payroll data',
     paragraphs: [
       'The current model starts with four official league thresholds for the 2026-27 season: the $164.961 million salary cap, the $200.428 million luxury-tax line, the $209.015 million first apron, and the $221.686 million second apron. Those figures became effective July 1, 2026. The season-adjusted fixed amount used by the expanded trade formula is approximately $9.096 million.',
-      'Team payroll values come from the dated August 4, 2026 snapshot stored with the application. Published payroll and official Apron Team Salary are not always identical because cap holds, bonuses, dead money, two-way contracts, trade bonuses, and other adjustments may change the league calculation. NBA Trade Machine Logic therefore labels every result as an estimate and keeps the snapshot date visible.',
+      'Team payroll values and the searchable player-contract list are presented as dated August 4, 2026 snapshots. Published payroll and official Apron Team Salary are not always identical because cap holds, bonuses, dead money, two-way contracts, trade bonuses, and other adjustments may change the league calculation. NBA Trade Machine Logic therefore labels every result as an estimate and keeps the snapshot date visible.',
     ],
   },
   {
-    heading: 'How user input becomes trade salary',
+    heading: 'How player selection becomes trade salary',
     paragraphs: [
-      'For each team, the calculator receives a published payroll, a list of outgoing contracts, and the total salary coming back from the other side. Each salary field is entered in millions, so 12.5 is converted to $12.5 million. Empty, negative, and invalid values count as zero. The outgoing total is the sum of all valid contracts entered for that team.',
-      'In a direct two-team trade, one team’s outgoing total becomes the other team’s incoming total. Player names are labels only in the current release. A name does not change the calculation, and the application does not automatically look up the contract. Users must enter the current 2026-27 cap hit rather than the total value of a multi-year contract.',
+      'For each team, the calculator receives a published payroll, a list of outgoing contracts, and the total salary coming back from the other side. After a team is selected, the player search is filtered to contracts associated with that team in the dated snapshot. Choosing a player fills the 2026-27 salary automatically and shows an available contract note, such as a player option, team option, or two-way designation.',
+      'The auto-filled salary remains editable, and a user can type a custom player and salary when a contract is missing or the snapshot cannot load. Every salary field is expressed in millions, so 12.5 is converted to $12.5 million. Empty, negative, and invalid values count as zero. The outgoing total is the sum of all positive salary values on that side.',
+      'In a direct two-team trade, one team’s outgoing total becomes the other team’s incoming total. Player names and contract notes help the user choose the correct salary, but they do not change the formula. The calculation engine receives the final editable number in the salary field, whether that number came from the selector or from manual input.',
     ],
   },
   {
@@ -110,7 +111,7 @@ const LOGIC_SECTIONS = [
     heading: 'Contract rules the current engine does not solve',
     paragraphs: [
       'Several contract rules can change the trade value of a player. Non-guaranteed salary may count differently from the headline number. A trade bonus may increase incoming salary. Base-year compensation and poison-pill treatment can assign different values to the same player for the sending and receiving teams. Sign-and-trade transactions can trigger a hard cap.',
-      'Recently signed players may not yet be trade eligible, and some one-year contracts require player consent. The current NBA salary matching formula does not automatically validate these restrictions. NBA Trade Machine Logic lists them so a green result is understood as a basic salary pass rather than a complete transaction approval.',
+      'The player selector may display a source note, but that note is not automatically converted into a special salary rule. Recently signed players may not yet be trade eligible, and some one-year contracts require player consent. The current NBA salary matching formula does not validate these restrictions. NBA Trade Machine Logic lists them so a green result is understood as a basic salary pass rather than a complete transaction approval.',
     ],
   },
   {
@@ -130,15 +131,15 @@ const LOGIC_SECTIONS = [
   {
     heading: 'How to verify a result before sharing it',
     paragraphs: [
-      'First confirm that every number is the player’s 2026-27 cap hit rather than the total contract value. Then confirm that the August 4, 2026 team payroll snapshot is still appropriate for the date of the proposal. Review whether any player has a trade kicker, partial guarantee, poison-pill extension, sign-and-trade status, recent-signing restriction, or consent right.',
-      'Finally, check for existing exceptions and apron transactions that are not represented by the two-team form. The best use case is an ordinary trade involving standard guaranteed contracts, no special exception, and teams not sitting within a tiny distance of an apron. In that situation, NBA Trade Machine Logic provides a fast and transparent first screen.',
+      'First confirm that each selected or entered number is the player’s current 2026-27 cap hit rather than the total contract value. Auto-fill reduces typing work, but it does not turn a public snapshot into an official live cap sheet. Confirm that the August 4, 2026 payroll and player-contract snapshots are still appropriate for the date of the proposal.',
+      'Review whether any player has a trade kicker, partial guarantee, poison-pill extension, sign-and-trade status, recent-signing restriction, or consent right. Then check for existing exceptions and apron transactions that are not represented by the two-team form. The best use case is an ordinary trade involving standard guaranteed contracts, no special exception, and teams not sitting within a tiny distance of an apron.',
     ],
   },
   {
     heading: 'Versioning and auditability',
     paragraphs: [
-      'The rules page and calculator share the same season assumptions. When cap or apron values change, a new dated snapshot should be created instead of silently changing an older result. That preserves the meaning of screenshots and calculations shared before a roster update.',
-      'NBA Trade Machine Logic is designed to be auditable. Every major branch in this explanation maps to a branch in the TypeScript calculation. The tool exposes the selected method, outgoing total, incoming total, estimated maximum, post-trade payroll, and reason for failure. Transparency is more useful than pretending a first release can replace a front-office cap system.',
+      'The rules page and calculator share the same season assumptions. The player selector points to a pinned contract snapshot rather than an undated live file. When payrolls, contracts, cap values, or apron values change, a new dated snapshot should be created instead of silently changing an older result. That preserves the meaning of screenshots and calculations shared before a roster update.',
+      'NBA Trade Machine Logic is designed to be auditable. Every major branch in this explanation maps to a branch in the TypeScript calculation. The tool exposes the selected method, outgoing total, incoming total, estimated maximum, post-trade payroll, and reason for failure. Transparency is more useful than pretending a public first release can replace a front-office cap system.',
     ],
   },
 ] as const;
@@ -148,6 +149,11 @@ const FAQS = [
     question: 'Does this logic reproduce the full NBA CBA?',
     answer:
       'No. NBA Trade Machine Logic documents the simplified two-team salary engine. It does not solve every exception, special contract value, eligibility restriction, or transaction sequence.',
+  },
+  {
+    question: 'Does selecting a player change the formula?',
+    answer:
+      'No. Player search fills a dated salary value and an optional contract note. The final editable salary number is what enters the calculation.',
   },
   {
     question: 'Why is published payroll used instead of Apron Team Salary?',
@@ -162,7 +168,7 @@ const FAQS = [
   {
     question: 'Where can I run the calculator?',
     answer:
-      'Open the NBA Trade Machine on 73-9.org, select two teams, and enter each player’s current-season salary in millions.',
+      'Open the NBA Trade Machine on 73-9.org, select two teams, search each team’s players, and verify or edit the auto-filled 2026-27 salaries.',
   },
 ] as const;
 
@@ -239,9 +245,10 @@ function NbaTradeMachineLogicPage() {
               </h1>
               <p className="mt-5 max-w-4xl text-base leading-8 text-[#a4a4c0] sm:text-lg">
                 NBA Trade Machine Logic documents every major branch used by
-                the current 2026-27 two-team checker: cap room, expanded salary
-                matching, the first-apron ceiling, the second-apron aggregation
-                warning, and the limits of the simplified result.
+                the current 2026-27 two-team checker: player salary input, cap
+                room, expanded salary matching, the first-apron ceiling, the
+                second-apron aggregation warning, and the limits of the
+                simplified result.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-3 text-xs text-[#9a9ab7]">
@@ -306,9 +313,10 @@ function NbaTradeMachineLogicPage() {
                   Test the formula with a trade
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[#b7b7cf]">
-                  Return to the calculator, choose two teams, enter each
-                  current-season salary, and compare the displayed method and
-                  limit with the branches documented above.
+                  Return to the calculator, choose two teams, search and select
+                  the outgoing players, verify the auto-filled salaries, and
+                  compare the displayed method and limit with the branches
+                  documented above.
                 </p>
                 <a
                   href="/nba-trade-machine"
@@ -351,6 +359,14 @@ function NbaTradeMachineLogicPage() {
                     className="text-[#ffce54] underline underline-offset-4"
                   >
                     NBA 2026-27 salary cap release
+                  </a>
+                  . The player selector uses a{' '}
+                  <a
+                    href="https://github.com/fantasyhoopsedge/hoopsedge-site/blob/b5406a4e1eac0bce584ee4ac973e36fc0aface66/data/nba-salaries/current.csv"
+                    rel="noreferrer"
+                    className="text-[#ffce54] underline underline-offset-4"
+                  >
+                    pinned August 4, 2026 contract snapshot
                   </a>
                   . The governing framework comes from the{' '}
                   <a
