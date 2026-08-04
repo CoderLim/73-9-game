@@ -11,7 +11,7 @@ import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
 import { getBlogPostsFn } from '@/content/posts/server';
 
-const HOME_TITLE = '73-9 Game: Beat the Warriors | Free NBA Draft Simulator';
+const HOME_TITLE = '73-9 Game:Can you beat the 2015-16 Warriors?';
 const HOME_DESCRIPTION =
   '73-9 game lets you draft five NBA player-seasons under a $100M cap, simulate 82 games, and see whether your lineup can beat the 2015-16 Warriors.';
 

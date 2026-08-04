@@ -79,9 +79,9 @@ export function GameSeoSection({
               </p>
             ) : null}
             {howSubtitle ? (
-              <h3 className="mt-2 font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#eaeaff] uppercase sm:text-xl">
+              <h2 className="mt-2 font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#eaeaff] uppercase sm:text-xl">
                 {howSubtitle}
-              </h3>
+              </h2>
             ) : null}
             <ol className="mt-6 space-y-5 sm:mt-7 sm:space-y-6">
               {steps.map((step, i) => (
@@ -109,9 +109,9 @@ export function GameSeoSection({
         <div className="mt-11 space-y-10 sm:mt-14 sm:space-y-12">
           {blocks.map((block) => (
             <article key={block.heading}>
-              <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase sm:text-xl">
+              <h2 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase sm:text-xl">
                 {block.heading}
-              </h3>
+              </h2>
               <div className="mt-3.5 space-y-3.5 font-sans text-[13px] leading-[1.85] text-[#9494b8] sm:mt-4 sm:space-y-4 sm:text-sm sm:leading-[1.9]">
                 {block.paragraphs.map((p) => (
                   <p key={p.slice(0, 48)}>{p}</p>
@@ -122,9 +122,9 @@ export function GameSeoSection({
         </div>
 
         <div className="mt-12 sm:mt-16">
-          <h3 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase sm:text-xl">
+          <h2 className="font-[Barlow_Condensed,sans-serif] text-lg font-semibold tracking-wide text-[#ffce54] uppercase sm:text-xl">
             {faqTitle}
-          </h3>
+          </h2>
           <div className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
             {faqs.map((faq) => (
               <details

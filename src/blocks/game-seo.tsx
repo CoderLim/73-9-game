@@ -2,8 +2,7 @@ import { m } from '@/paraglide/messages.js';
 import { getLocale } from '@/paraglide/runtime.js';
 import { GameSeoSection } from '@/components/game-seo-section';
 
-const ENGLISH_HOME_H1 =
-  '73-9 Game — Draft Your Five, Beat the 2015-16 Warriors';
+const ENGLISH_HOME_H1 = '73-9 Game:Can you beat the 2015-16 Warriors?';
 const ENGLISH_HOME_INTRO =
   'The 73-9 game is a free NBA draft simulator built around one question: can your five beat the 2015-16 Warriors? You start with $100 million, spin for five random team-seasons, and sign one player from each roster. Every choice changes the budget left for the next position. Finish the run to simulate an 82-game season, measure your lineup against that NBA 73-9 benchmark, and review the strongest legal five you could have drafted from the same markets.';
 

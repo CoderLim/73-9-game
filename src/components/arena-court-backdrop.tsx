@@ -36,6 +36,8 @@ export function ArenaCourtBackdrop({
         <img
           src="/images/arena-court.jpg"
           alt=""
+          width={1672}
+          height={941}
           decoding="async"
           fetchPriority={fetchPriority}
           className={cn(
