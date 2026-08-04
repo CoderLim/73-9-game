@@ -15,7 +15,7 @@ const SEO_SECTIONS = [
   {
     heading: 'How this NBA Trade Machine works',
     paragraphs: [
-      'The NBA Trade Machine starts with a two-team deal. Choose each franchise, enter the players being sent out, and type every 2026-27 salary in millions. The tool totals outgoing salary for both sides, treats the other team’s outgoing amount as incoming salary, and checks each franchise independently. A trade only passes when both teams satisfy the simplified salary-matching test.',
+      'The NBA Trade Machine starts with a two-team deal. Choose each franchise, search the selected team’s players, and select the contracts being sent out. The 2026-27 salary is filled automatically from the dated player-contract snapshot and remains editable. You can also type a custom player and salary when a contract is missing. The tool totals outgoing salary for both sides, treats the other team’s outgoing amount as incoming salary, and checks each franchise independently. A trade only passes when both teams satisfy the simplified salary-matching test.',
       'Unlike a fantasy trade grader, this NBA Trade Machine does not decide whether a deal is smart. It focuses on cap mechanics. The NBA Trade Machine shows outgoing salary, incoming salary, the estimated maximum incoming amount, and projected post-trade payroll. That makes it useful for testing the financial shape of a rumor before debating picks, fit, age, or on-court value.',
     ],
   },
@@ -41,10 +41,10 @@ const SEO_SECTIONS = [
     ],
   },
   {
-    heading: 'Why salaries are entered manually',
+    heading: 'Why auto-filled salaries stay editable',
     paragraphs: [
-      'This NBA Trade Machine uses a static team-payroll snapshot but asks you to enter player salaries manually. That choice is deliberate. Contract databases can change after a signing, waiver, option decision, renegotiation, or trade, and many public tables update on different schedules. Manual input lets the NBA Trade Machine remain useful without pretending that an incomplete roster feed is current to the minute.',
-      'Use the current-season cap hit rather than total contract value. If a player signed a four-year $100 million contract, do not enter 100. Enter only the salary that counts in 2026-27. The NBA Trade Machine accepts decimal values such as 12.5 for $12.5 million.',
+      'The NBA Trade Machine provides a searchable 2026-27 player-contract snapshot so users do not need to remember or retype every salary. After you choose a team, the player field shows that team’s contracts; selecting a player fills the current-season salary and displays any available option or two-way note. Manual entry remains available as a fallback if the player list cannot load or a contract is missing.',
+      'The salary field stays editable because public contract feeds can change after a signing, waiver, option decision, renegotiation, or trade. Use the current-season cap hit rather than total contract value. If a player signed a four-year $100 million contract, the calculator needs only the amount that counts in 2026-27.',
     ],
   },
   {
@@ -57,7 +57,7 @@ const SEO_SECTIONS = [
   {
     heading: 'How to check a rumored trade',
     paragraphs: [
-      'Start by selecting the two teams named in the rumor. Add every outgoing contract, including small salary used only for matching. Check the exact season salary from a reliable contract page, then enter it in the NBA Trade Machine. If one team fails, look at the displayed shortfall instead of randomly adding players.',
+      'Start by selecting the two teams named in the rumor. Search each selected team and add every outgoing contract, including small salary used only for matching. The NBA Trade Machine fills the snapshot salary automatically; compare it with a current contract page and edit the number when necessary. If one team fails, look at the displayed shortfall instead of randomly adding players.',
       'Next, review each team’s payroll tier. A deal that works for a team below the first apron may fail after another signing moves that team above the line. Finally, read the coverage note. A green NBA Trade Machine result means the basic two-team salary structure passes this model; it does not mean the NBA has approved the transaction.',
     ],
   },
@@ -65,13 +65,13 @@ const SEO_SECTIONS = [
     heading: 'How accurate is the NBA Trade Machine?',
     paragraphs: [
       'The NBA Trade Machine is most accurate for ordinary two-team trades involving guaranteed standard contracts and no special exception. It becomes less certain when a team is near an apron or when a player has unusual contract treatment. The result should be used as an educational screen, followed by a detailed review for any real transaction.',
-      'Accuracy also depends on the numbers entered. A typo of 3.5 instead of 35 changes the outcome dramatically. The NBA Trade Machine shows all totals so users can catch that type of error before sharing a result.',
+      'Accuracy also depends on the salary used. Auto-fill reduces typing errors, but a public snapshot can become stale after a transaction. The NBA Trade Machine shows every salary and total so users can verify or correct the input before sharing a result.',
     ],
   },
   {
     heading: 'Data sources and update policy',
     paragraphs: [
-      'The NBA Trade Machine salary-cap thresholds come from the NBA’s official 2026-27 release. Team payroll totals were compiled from Basketball-Reference contract pages for the snapshot dated August 4, 2026; Basketball-Reference states that its salary tables are updated monthly. The collective bargaining framework is based on the 2023 NBA-NBPA agreement and subsequent season values.',
+      'The NBA Trade Machine salary-cap thresholds come from the NBA’s official 2026-27 release. Team payroll totals were compiled from Basketball-Reference contract pages for the snapshot dated August 4, 2026; Basketball-Reference states that its salary tables are updated monthly. The searchable player selector uses a separate public 2026-27 contract snapshot fixed to the same date. The collective bargaining framework is based on the 2023 NBA-NBPA agreement and subsequent season values.',
       'Every future data refresh should create a new dated snapshot. The NBA Trade Machine will continue to display the compilation date instead of a vague “current” label. That makes old screenshots and shared calculations easier to interpret after rosters change.',
     ],
   },
@@ -93,7 +93,12 @@ const FAQS = [
   {
     question: 'What date is the NBA Trade Machine data from?',
     answer:
-      'The team-payroll snapshot was compiled August 4, 2026. The 2026-27 cap and apron thresholds became effective July 1, 2026.',
+      'The team-payroll and searchable player-contract snapshots are dated August 4, 2026. The 2026-27 cap and apron thresholds became effective July 1, 2026.',
+  },
+  {
+    question: 'Can I change an auto-filled player salary?',
+    answer:
+      'Yes. Selecting a player fills the dated 2026-27 salary, but the salary field remains editable so you can correct a changed contract or test a custom value.',
   },
   {
     question: 'Can the NBA Trade Machine check three-team trades?',
@@ -133,8 +138,9 @@ const STRUCTURED_DATA = [
       'Two-team NBA salary matching estimate',
       '2026-27 salary cap and apron thresholds',
       'Thirty-team payroll snapshot',
+      'Searchable team player contracts with salary autofill',
+      'Editable player salaries and custom contract entry',
       'First-apron and second-apron warnings',
-      'Contract-by-contract manual salary entry',
     ],
     creator: {
       '@type': 'Organization',
@@ -201,14 +207,14 @@ function NbaTradeMachinePage() {
                 <p className="mt-5 max-w-3xl text-base leading-8 text-[#a4a4c0] sm:text-lg">
                   Use the NBA Trade Machine to test a two-team salary exchange
                   against the 2026-27 salary cap, first apron, and second apron.
-                  Enter each current-season salary and see where either side
-                  needs more outgoing money.
+                  Search each team’s players to auto-fill salary, or enter a
+                  custom contract when needed.
                 </p>
 
                 <div className="mt-7 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                     <div className="text-xs tracking-[0.14em] text-[#777795] uppercase">
-                      Team payroll snapshot
+                      Payroll and player data
                     </div>
                     <div className="mt-1 font-[Geist_Mono,monospace] text-sm font-bold text-white">
                       August 4, 2026
@@ -236,10 +242,11 @@ function NbaTradeMachinePage() {
               <div className="mt-10 rounded-2xl border border-[#ffce54]/20 bg-[#ffce54]/5 p-5 text-sm leading-7 text-[#b7b7cf]">
                 <strong className="text-[#ffce54]">Data disclosure:</strong>{' '}
                 team payroll totals were compiled on August 4, 2026 from
-                Basketball-Reference contract pages. The official 2026-27 cap
-                thresholds took effect July 1, 2026. Player salaries in the
-                calculator are entered by the user and should be verified
-                against a current contract source.
+                Basketball-Reference contract pages. The searchable player
+                selector uses a separate public contract snapshot fixed to the
+                same date. The official 2026-27 cap thresholds took effect July
+                1, 2026. Auto-filled salaries remain editable and should be
+                verified against a current contract source.
               </div>
 
               <div className="mt-14 space-y-14">
@@ -311,6 +318,14 @@ function NbaTradeMachinePage() {
                     rel="noreferrer"
                   >
                     Basketball-Reference contract summary
+                  </a>
+                  , the{' '}
+                  <a
+                    className="text-[#ffce54] underline underline-offset-4"
+                    href="https://github.com/fantasyhoopsedge/hoopsedge-site/blob/b5406a4e1eac0bce584ee4ac973e36fc0aface66/data/nba-salaries/current.csv"
+                    rel="noreferrer"
+                  >
+                    dated player-contract selector snapshot
                   </a>
                   , and the{' '}
                   <a
