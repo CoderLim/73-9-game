@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Where to play the 73-9 game</title>
+  <desc id="desc">A comparison graphic showing that 73-9.org and HoopsMatic both offer a 100 million dollar, five-signing challenge against the 2015-16 Warriors.</desc>
+  <rect width="1200" height="630" fill="#070811"/>
+  <text x="70" y="92" fill="#ffce54" font-family="Arial, sans-serif" font-size="40" font-weight="700">WHERE TO PLAY THE 73-9 GAME</text>
+  <g font-family="Arial, sans-serif">
+    <g transform="translate(80 175)"><rect width="480" height="320" rx="26" fill="#111426" stroke="#ffce54"/><text x="45" y="65" fill="#fff" font-size="32" font-weight="700">73-9.org</text><text x="45" y="120" fill="#a7a7c2" font-size="22">• $100M bankroll</text><text x="45" y="160" fill="#a7a7c2" font-size="22">• five team-season draws</text><text x="45" y="200" fill="#a7a7c2" font-size="22">• 82-game simulation</text><text x="45" y="240" fill="#a7a7c2" font-size="22">• best legal lineup comparison</text><text x="45" y="280" fill="#a7a7c2" font-size="22">• free, no account</text></g>
+    <g transform="translate(640 175)"><rect width="480" height="320" rx="26" fill="#111426" stroke="#fd6a00"/><text x="45" y="65" fill="#fff" font-size="32" font-weight="700">HoopsMatic</text><text x="45" y="120" fill="#a7a7c2" font-size="22">• $100M bankroll</text><text x="45" y="160" fill="#a7a7c2" font-size="22">• five signings</text><text x="45" y="200" fill="#a7a7c2" font-size="22">• $10M re-spin</text><text x="45" y="240" fill="#a7a7c2" font-size="22">• 82-game simulation</text><text x="45" y="280" fill="#a7a7c2" font-size="22">• 2015-16 Warriors target</text></g>
+  </g>
+  <text x="70" y="565" fill="#777795" font-family="Arial, sans-serif" font-size="18">Sources: current public rules on 73-9.org and hoopsmatic.com/73-9-game.</text>
+</svg>
