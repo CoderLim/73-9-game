@@ -240,13 +240,13 @@ function NbaTradeMachineLogicPage() {
                 Formula and assumptions
               </div>
 
-              <h1 className="mt-5 font-[Barlow_Condensed,sans-serif] text-4xl font-extrabold leading-[0.98] tracking-tight text-white uppercase sm:text-6xl lg:text-7xl">
+              <h1 className="mt-5 font-[Barlow_Condensed,sans-serif] text-4xl leading-[0.98] font-extrabold tracking-tight text-white uppercase sm:text-6xl lg:text-7xl">
                 NBA Trade Machine Logic – How the Salary Check Works
               </h1>
               <p className="mt-5 max-w-4xl text-base leading-8 text-[#a4a4c0] sm:text-lg">
-                NBA Trade Machine Logic documents every major branch used by
-                the current 2026-27 two-team checker: player salary input, cap
-                room, expanded salary matching, the first-apron ceiling, the
+                NBA Trade Machine Logic documents every major branch used by the
+                current 2026-27 two-team checker: player salary input, cap room,
+                expanded salary matching, the first-apron ceiling, the
                 second-apron aggregation warning, and the limits of the
                 simplified result.
               </p>
@@ -390,7 +390,7 @@ function NbaTradeMachineLogicPage() {
   );
 }
 
-export const Route = createFileRoute('/nba-trade-machine/how-it-works')({
+export const Route = createFileRoute('/nba-trade-machine_/how-it-works')({
   head: () => ({
     meta: [
       { title: PAGE_TITLE },

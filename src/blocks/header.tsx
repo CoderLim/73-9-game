@@ -37,11 +37,6 @@ export function Header() {
       navLinks={[
         { href: '/', label: m['game.nav.play'](), active: onHome },
         {
-          href: '/nba-trade-machine',
-          label: 'Trade Machine',
-          active: onTradeMachine,
-        },
-        {
           href: '/leaderboard',
           label: m['game.nav.leaderboard'](),
           active: onLeaderboard,
@@ -70,6 +65,11 @@ export function Header() {
           href: '/about',
           label: m['game.nav.about'](),
           active: onAbout,
+        },
+        {
+          href: '/nba-trade-machine',
+          label: 'Trade Machine',
+          active: onTradeMachine,
         },
       ]}
       auth={{
