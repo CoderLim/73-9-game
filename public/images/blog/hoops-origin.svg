@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">73-9 game origin timeline</title>
+  <desc id="desc">A timeline showing the viral 82-0 game in June 2026, HoopsHype introducing its 73-9 challenge on July 13, and HoopsHype reporting one million plays in 18 hours on July 14.</desc>
+  <rect width="1200" height="630" fill="#070811"/>
+  <text x="70" y="92" fill="#ffce54" font-family="Arial, sans-serif" font-size="40" font-weight="700">FROM 82-0 TO THE 73-9 CHALLENGE</text>
+  <line x1="150" y1="320" x2="1050" y2="320" stroke="#fd6a00" stroke-width="6"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <circle cx="200" cy="320" r="22" fill="#ffce54"/><text x="200" y="245" fill="#fff" font-size="25" font-weight="700">June 2026</text><text x="200" y="385" fill="#a7a7c2" font-size="21">82-0 goes viral</text><text x="200" y="416" fill="#777795" font-size="18">Five-round NBA lineup game</text>
+    <circle cx="600" cy="320" r="22" fill="#ffce54"/><text x="600" y="225" fill="#fff" font-size="25" font-weight="700">July 13, 2026</text><text x="600" y="260" fill="#a7a7c2" font-size="20">HoopsHype: “Inspired by 82-0”</text><text x="600" y="385" fill="#a7a7c2" font-size="21">73-9 · $100M budget</text><text x="600" y="416" fill="#777795" font-size="18">Beat the 2015-16 Warriors</text>
+    <circle cx="1000" cy="320" r="22" fill="#ffce54"/><text x="1000" y="225" fill="#fff" font-size="25" font-weight="700">July 14, 2026</text><text x="1000" y="260" fill="#a7a7c2" font-size="20">HoopsHype report</text><text x="1000" y="385" fill="#ffce54" font-size="28" font-weight="800">1,000,000 plays</text><text x="1000" y="416" fill="#777795" font-size="18">in 18 hours</text>
+  </g>
+  <text x="70" y="565" fill="#777795" font-family="Arial, sans-serif" font-size="18">Sources: HoopsHype reports syndicated by Yahoo Sports; Yahoo Sports and The Verge coverage of 82-0.</text>
+</svg>
