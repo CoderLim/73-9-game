@@ -78,9 +78,13 @@ export const getBlogPostFn = createServerFn()
     return {
       slug: data.slug,
       title: meta.title,
+      seoTitle: meta.seo_title,
       description: meta.description,
       image: meta.image,
       createdAt: new Date(meta.created_at).toISOString(),
+      modifiedAt: meta.modified_at
+        ? new Date(meta.modified_at).toISOString()
+        : undefined,
       authorName: meta.author_name,
       authorImage: meta.author_image,
       source: 'local',

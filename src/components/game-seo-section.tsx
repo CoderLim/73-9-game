@@ -15,12 +15,18 @@ export interface SeoStep {
   body: string;
 }
 
+export interface SeoRelatedLink {
+  href: string;
+  label: string;
+}
+
 export function GameSeoSection({
   id = 'about',
   eyebrow,
   title,
   intro,
   relatedLink,
+  relatedLinks,
   howTitle,
   howSubtitle,
   steps,
@@ -33,7 +39,8 @@ export function GameSeoSection({
   eyebrow: string;
   title: string;
   intro: string;
-  relatedLink?: { href: string; label: string };
+  relatedLink?: SeoRelatedLink;
+  relatedLinks?: SeoRelatedLink[];
   howTitle?: string;
   howSubtitle?: string;
   steps?: SeoStep[];
@@ -42,6 +49,8 @@ export function GameSeoSection({
   faqs: SeoFaqItem[];
   className?: string;
 }) {
+  const links = relatedLinks ?? (relatedLink ? [relatedLink] : []);
+
   return (
     <section
       id={id}
@@ -60,14 +69,23 @@ export function GameSeoSection({
         <p className="mt-5 max-w-2xl font-sans text-[13px] leading-[1.85] text-[#a0a0c0] sm:text-sm sm:leading-[1.9]">
           {intro}
         </p>
-        {relatedLink ? (
-          <p className="mt-4 font-sans text-[13px] leading-[1.85] sm:text-sm">
-            <a
-              href={relatedLink.href}
-              className="font-medium text-[#ffce54] underline decoration-[#fd6a00]/60 underline-offset-4 transition hover:text-[#ffe29a]"
-            >
-              {relatedLink.label}
-            </a>
+        {links.length > 0 ? (
+          <p className="mt-4 flex flex-wrap gap-x-2 gap-y-1 font-sans text-[13px] leading-[1.85] sm:text-sm">
+            {links.map((link, index) => (
+              <span key={link.href}>
+                <a
+                  href={link.href}
+                  className="font-medium text-[#ffce54] underline decoration-[#fd6a00]/60 underline-offset-4 transition hover:text-[#ffe29a]"
+                >
+                  {link.label}
+                </a>
+                {index < links.length - 1 ? (
+                  <span className="ml-2 text-[#676780]" aria-hidden>
+                    ·
+                  </span>
+                ) : null}
+              </span>
+            ))}
           </p>
         ) : null}
 

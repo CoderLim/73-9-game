@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">73-9 game budget and lineup slots</title>
+  <desc id="desc">A budget diagram showing a 100 million dollar bankroll, a 20 million dollar equal-share baseline across five positions, and a 10 million dollar re-spin cost.</desc>
+  <rect width="1200" height="630" fill="#070811"/>
+  <text x="70" y="92" fill="#ffce54" font-family="Arial, sans-serif" font-size="40" font-weight="700">$100M BUDGET · FIVE LINEUP SLOTS</text>
+  <text x="70" y="140" fill="#a7a7c2" font-family="Arial, sans-serif" font-size="23">$20M per slot is only the equal-share baseline — not a guaranteed optimal spend.</text>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <g transform="translate(70 220)"><rect width="180" height="150" rx="20" fill="#111426" stroke="#fd6a00"/><text x="90" y="60" fill="#fff" font-size="30" font-weight="700">PG</text><text x="90" y="104" fill="#fd6a00" font-size="25">$20M</text></g>
+    <g transform="translate(280 220)"><rect width="180" height="150" rx="20" fill="#111426" stroke="#fd6a00"/><text x="90" y="60" fill="#fff" font-size="30" font-weight="700">SG</text><text x="90" y="104" fill="#fd6a00" font-size="25">$20M</text></g>
+    <g transform="translate(490 220)"><rect width="180" height="150" rx="20" fill="#111426" stroke="#fd6a00"/><text x="90" y="60" fill="#fff" font-size="30" font-weight="700">SF</text><text x="90" y="104" fill="#fd6a00" font-size="25">$20M</text></g>
+    <g transform="translate(700 220)"><rect width="180" height="150" rx="20" fill="#111426" stroke="#fd6a00"/><text x="90" y="60" fill="#fff" font-size="30" font-weight="700">PF</text><text x="90" y="104" fill="#fd6a00" font-size="25">$20M</text></g>
+    <g transform="translate(910 220)"><rect width="180" height="150" rx="20" fill="#111426" stroke="#fd6a00"/><text x="90" y="60" fill="#fff" font-size="30" font-weight="700">C</text><text x="90" y="104" fill="#fd6a00" font-size="25">$20M</text></g>
+  </g>
+  <rect x="350" y="425" width="500" height="90" rx="45" fill="#15101f" stroke="#ffce54"/>
+  <text x="600" y="481" fill="#ffce54" font-family="Arial, sans-serif" text-anchor="middle" font-size="30" font-weight="700">RE-SPIN COST: $10M</text>
+  <text x="70" y="580" fill="#777795" font-family="Arial, sans-serif" font-size="18">Sources: 73-9.org; HoopsMatic 73-9 Game. $20M is arithmetic from $100M ÷ 5.</text>
+</svg>

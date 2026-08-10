@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Nine teams that beat the 2015-16 Warriors</title>
+  <desc id="desc">A list of the nine different teams that handed Golden State its nine regular-season losses in 2015-16.</desc>
+  <rect width="1200" height="630" fill="#070811"/>
+  <text x="70" y="85" fill="#ffce54" font-family="Arial, sans-serif" font-size="40" font-weight="700">THE NINE REGULAR-SEASON LOSSES</text>
+  <text x="70" y="130" fill="#a7a7c2" font-family="Arial, sans-serif" font-size="22">Each loss came against a different opponent.</text>
+  <g font-family="Arial, sans-serif" font-size="22">
+    <text x="80" y="205" fill="#fff">Dec 12 · Bucks · 95-108</text>
+    <text x="80" y="255" fill="#fff">Dec 30 · Mavericks · 91-114</text>
+    <text x="80" y="305" fill="#fff">Jan 13 · Nuggets · 110-112</text>
+    <text x="80" y="355" fill="#fff">Jan 16 · Pistons · 95-113</text>
+    <text x="80" y="405" fill="#fff">Feb 19 · Trail Blazers · 105-137</text>
+    <text x="650" y="205" fill="#fff">Mar 6 · Lakers · 95-112</text>
+    <text x="650" y="255" fill="#fff">Mar 19 · Spurs · 79-87</text>
+    <text x="650" y="305" fill="#fff">Apr 1 · Celtics · 106-109</text>
+    <text x="650" y="355" fill="#fff">Apr 5 · Timberwolves · 117-124 (OT)</text>
+  </g>
+  <text x="80" y="480" fill="#fd6a00" font-family="Arial, sans-serif" font-size="25" font-weight="700">7 road losses · 2 home losses</text>
+  <text x="70" y="565" fill="#777795" font-family="Arial, sans-serif" font-size="18">Source: Basketball-Reference 2015-16 Golden State Warriors schedule and results.</text>
+</svg>

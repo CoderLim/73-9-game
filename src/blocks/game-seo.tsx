@@ -15,12 +15,22 @@ export function GameSeo() {
       eyebrow={m['game.seo.eyebrow']()}
       title={isEnglish ? ENGLISH_HOME_H1 : m['game.seo.title']()}
       intro={isEnglish ? ENGLISH_HOME_INTRO : m['game.seo.intro']()}
-      relatedLink={
+      relatedLinks={
         isEnglish
-          ? {
-              href: '/blog/what-is-73-9-warriors-historic-season',
-              label: 'What is 73-9? Read the Warriors historic season guide.',
-            }
+          ? [
+              {
+                href: '/blog/73-9-game-strategy/',
+                label: '73-9 game strategy guide: master the draft →',
+              },
+              {
+                href: '/blog/73-9-game-hoops/',
+                label: '73-9 game on Hoops: how it went viral →',
+              },
+              {
+                href: '/blog/what-is-73-9-warriors-historic-season/',
+                label: 'What is 73-9? Read the Warriors history →',
+              },
+            ]
           : undefined
       }
       howTitle={m['game.seo.how.kicker']()}

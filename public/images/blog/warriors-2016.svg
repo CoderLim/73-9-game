@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">2015-16 Warriors record and most-used starting five</title>
+  <desc id="desc">An information graphic showing the Warriors' 73-9 record and their most-used regular-season starting lineup: Stephen Curry, Klay Thompson, Harrison Barnes, Draymond Green, and Andrew Bogut.</desc>
+  <rect width="1200" height="630" fill="#070811"/>
+  <text x="70" y="95" fill="#ffce54" font-family="Arial, sans-serif" font-size="42" font-weight="700">2015-16 GOLDEN STATE WARRIORS</text>
+  <text x="70" y="165" fill="#fff" font-family="Arial, sans-serif" font-size="58" font-weight="800">73-9</text>
+  <text x="270" y="160" fill="#a7a7c2" font-family="Arial, sans-serif" font-size="25">NBA regular-season wins record</text>
+  <text x="70" y="235" fill="#fd6a00" font-family="Arial, sans-serif" font-size="25" font-weight="700">MOST-USED STARTING FIVE · 43 GAMES · 38-5</text>
+  <g font-family="Arial, sans-serif" font-size="23" fill="#eaeaff">
+    <text x="95" y="310">PG · Stephen Curry</text>
+    <text x="95" y="365">SG · Klay Thompson</text>
+    <text x="95" y="420">SF · Harrison Barnes</text>
+    <text x="620" y="310">PF · Draymond Green</text>
+    <text x="620" y="365">C · Andrew Bogut</text>
+    <text x="620" y="420" fill="#a7a7c2">Andre Iguodala: 65 games, 1 regular-season start</text>
+  </g>
+  <rect x="70" y="485" width="1060" height="62" rx="20" fill="#111426"/>
+  <text x="600" y="525" fill="#ffce54" font-family="Arial, sans-serif" text-anchor="middle" font-size="25" font-weight="700">Nine regular-season losses · nine different opponents</text>
+  <text x="70" y="590" fill="#777795" font-family="Arial, sans-serif" font-size="18">Sources: NBA 2015-16 season review; Basketball-Reference roster, stats, schedule and starting lineups.</text>
+</svg>
