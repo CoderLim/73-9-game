@@ -12,6 +12,8 @@ import { baseLocale } from '@/paraglide/runtime.js';
  * local posts via the pure helpers below.
  */
 export const BLOG_POST_SLUGS = [
+  '73-9-game-strategy',
+  '73-9-game-hoops',
   'what-is-73-9-warriors-historic-season',
   'nba-draft-simulator-build-your-dream-team',
   'how-the-73-9-warriors-changed-basketball-forever',
@@ -24,8 +26,10 @@ export const BLOG_POST_SLUGS = [
 
 export type BlogPostMeta = {
   title: string;
+  seo_title?: string;
   description: string;
   created_at: string;
+  modified_at?: string;
   author_name?: string;
   author_image?: string;
   image?: string;
@@ -39,10 +43,12 @@ type PostModule = {
 export type BlogPost = {
   slug: string;
   title: string;
+  seoTitle?: string;
   description: string;
   image?: string;
   /** ISO date string — serializable across loader/server-fn boundaries */
   createdAt: string;
+  modifiedAt?: string;
   authorName?: string;
   authorImage?: string;
   source: 'local' | 'db';
@@ -74,9 +80,13 @@ function localPostToItem(slug: string, meta: BlogPostMeta): BlogPost {
   return {
     slug,
     title: meta.title,
+    seoTitle: meta.seo_title,
     description: meta.description,
     image: meta.image,
     createdAt: new Date(meta.created_at).toISOString(),
+    modifiedAt: meta.modified_at
+      ? new Date(meta.modified_at).toISOString()
+      : undefined,
     authorName: meta.author_name,
     authorImage: meta.author_image,
     source: 'local',
