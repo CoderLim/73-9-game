@@ -17,7 +17,6 @@ export function Header() {
   }, []);
 
   const authStatus = isPending ? 'loading' : session?.user ? 'user' : 'guest';
-  const onHome = pathname === '/';
   const onLeaderboard = pathname === '/leaderboard';
   const onTradeMachine = pathname.startsWith('/nba-trade-machine');
   const onHistory = pathname === '/history';
@@ -35,7 +34,6 @@ export function Header() {
       brand={m['game.brand']()}
       languageLabel={m['game.nav.language']()}
       navLinks={[
-        { href: '/', label: m['game.nav.play'](), active: onHome },
         {
           href: '/leaderboard',
           label: m['game.nav.leaderboard'](),
