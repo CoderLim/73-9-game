@@ -2,7 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft, Calculator, ShieldCheck } from 'lucide-react';
 
 import { envConfigs } from '@/config';
-import { locales, localizeUrl } from '@/paraglide/runtime.js';
+import {
+  baseLocale,
+  getLocale,
+  locales,
+  localizeUrl,
+} from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 
@@ -391,39 +396,52 @@ function NbaTradeMachineLogicPage() {
 }
 
 export const Route = createFileRoute('/nba-trade-machine_/how-it-works')({
-  head: () => ({
-    meta: [
-      { title: PAGE_TITLE },
-      { name: 'description', content: PAGE_DESCRIPTION },
-      { property: 'og:type', content: 'article' },
-      { property: 'og:site_name', content: '73-9 Game' },
-      { property: 'og:title', content: PAGE_TITLE },
-      { property: 'og:description', content: PAGE_DESCRIPTION },
-      { property: 'og:url', content: PAGE_URL },
+  head: () => {
+    const locale = getLocale();
+    const canonical = localizeUrl(
+      `${envConfigs.app_url}/nba-trade-machine/how-it-works`,
       {
-        property: 'og:image',
-        content: 'https://73-9.org/73-9-game/og-73-9.jpg',
-      },
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: PAGE_TITLE },
-      { name: 'twitter:description', content: PAGE_DESCRIPTION },
-      {
-        name: 'twitter:image',
-        content: 'https://73-9.org/73-9-game/og-73-9.jpg',
-      },
-    ],
-    links: [
-      { rel: 'canonical', href: PAGE_URL },
-      ...locales.map((locale) => ({
-        rel: 'alternate',
-        hrefLang: locale,
-        href: localizeUrl(
-          `${envConfigs.app_url}/nba-trade-machine/how-it-works`,
-          { locale }
-        ).href,
-      })),
-      { rel: 'alternate', hrefLang: 'x-default', href: PAGE_URL },
-    ],
-  }),
+        locale,
+      }
+    ).href;
+    const xDefault = localizeUrl(
+      `${envConfigs.app_url}/nba-trade-machine/how-it-works`,
+      { locale: baseLocale }
+    ).href;
+    return {
+      meta: [
+        { title: PAGE_TITLE },
+        { name: 'description', content: PAGE_DESCRIPTION },
+        { property: 'og:type', content: 'article' },
+        { property: 'og:site_name', content: '73-9 Game' },
+        { property: 'og:title', content: PAGE_TITLE },
+        { property: 'og:description', content: PAGE_DESCRIPTION },
+        { property: 'og:url', content: canonical },
+        {
+          property: 'og:image',
+          content: 'https://73-9.org/73-9-game/og-73-9.jpg',
+        },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: PAGE_TITLE },
+        { name: 'twitter:description', content: PAGE_DESCRIPTION },
+        {
+          name: 'twitter:image',
+          content: 'https://73-9.org/73-9-game/og-73-9.jpg',
+        },
+      ],
+      links: [
+        { rel: 'canonical', href: canonical },
+        ...locales.map((locale) => ({
+          rel: 'alternate',
+          hrefLang: locale,
+          href: localizeUrl(
+            `${envConfigs.app_url}/nba-trade-machine/how-it-works`,
+            { locale }
+          ).href,
+        })),
+        { rel: 'alternate', hrefLang: 'x-default', href: xDefault },
+      ],
+    };
+  },
   component: NbaTradeMachineLogicPage,
 });

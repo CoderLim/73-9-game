@@ -17,9 +17,10 @@ import BlogIndexContent from '@/content/blog-index.en.mdx';
 import { formatPostDate } from '@/content/posts';
 import { getBlogPostsFn } from '@/content/posts/server';
 
-const ENGLISH_BLOG_TITLE = '73-9 Game Blog: Strategy, History, and NBA Guides';
+const ENGLISH_BLOG_TITLE =
+  '73-9 Game Strategy, Guides, and NBA Draft Simulator Tips';
 const ENGLISH_BLOG_DESCRIPTION =
-  '73-9 game blog with draft strategy, simulation guides, Warriors history, NBA lineup tools, and transparent notes about how the free browser game works.';
+  'Read 73-9 Game strategy guides, NBA draft simulator tips, lineup advice, and Warriors history to build a better team under $100M.';
 
 export const Route = createFileRoute('/blog/')({
   loader: async () => {

@@ -1,7 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
-import { locales, localizeUrl } from '@/paraglide/runtime.js';
+import {
+  baseLocale,
+  getLocale,
+  locales,
+  localizeUrl,
+} from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { NbaTradeMachine } from '@/components/nba-trade-machine';
@@ -201,7 +206,7 @@ function NbaTradeMachinePage() {
                 <div className="inline-flex items-center rounded-full border border-[#ffce54]/25 bg-[#ffce54]/8 px-3 py-1.5 text-xs font-semibold tracking-[0.14em] text-[#ffce54] uppercase">
                   2026-27 salary checker
                 </div>
-                <h2 className="mt-5 font-[Barlow_Condensed,sans-serif] text-3xl font-extrabold leading-tight tracking-tight text-white uppercase sm:text-5xl">
+                <h2 className="mt-5 font-[Barlow_Condensed,sans-serif] text-3xl leading-tight font-extrabold tracking-tight text-white uppercase sm:text-5xl">
                   NBA Trade Machine – Build and Check NBA Trades
                 </h2>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-[#a4a4c0] sm:text-lg">
@@ -259,7 +264,8 @@ function NbaTradeMachinePage() {
                       {section.paragraphs.map((paragraph) => (
                         <p key={paragraph.slice(0, 64)}>{paragraph}</p>
                       ))}
-                      {section.heading === 'How this NBA Trade Machine works' ? (
+                      {section.heading ===
+                      'How this NBA Trade Machine works' ? (
                         <p>
                           For the exact branch order, formulas, apron ceiling,
                           and unsupported edge cases, read the{' '}
@@ -349,42 +355,51 @@ function NbaTradeMachinePage() {
 }
 
 export const Route = createFileRoute('/nba-trade-machine')({
-  head: () => ({
-    meta: [
-      { title: PAGE_TITLE },
-      { name: 'description', content: PAGE_DESCRIPTION },
-      { property: 'og:type', content: 'website' },
-      { property: 'og:site_name', content: '73-9 Game' },
-      { property: 'og:title', content: PAGE_TITLE },
-      { property: 'og:description', content: PAGE_DESCRIPTION },
-      { property: 'og:url', content: PAGE_URL },
-      {
-        property: 'og:image',
-        content: 'https://73-9.org/73-9-game/og-73-9.jpg',
-      },
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: PAGE_TITLE },
-      { name: 'twitter:description', content: PAGE_DESCRIPTION },
-      {
-        name: 'twitter:image',
-        content: 'https://73-9.org/73-9-game/og-73-9.jpg',
-      },
-    ],
-    links: [
-      { rel: 'canonical', href: PAGE_URL },
-      ...locales.map((locale) => ({
-        rel: 'alternate',
-        hrefLang: locale,
-        href: localizeUrl(`${envConfigs.app_url}/nba-trade-machine`, {
-          locale,
-        }).href,
-      })),
-      {
-        rel: 'alternate',
-        hrefLang: 'x-default',
-        href: PAGE_URL,
-      },
-    ],
-  }),
+  head: () => {
+    const locale = getLocale();
+    const canonical = localizeUrl(`${envConfigs.app_url}/nba-trade-machine`, {
+      locale,
+    }).href;
+    const xDefault = localizeUrl(`${envConfigs.app_url}/nba-trade-machine`, {
+      locale: baseLocale,
+    }).href;
+    return {
+      meta: [
+        { title: PAGE_TITLE },
+        { name: 'description', content: PAGE_DESCRIPTION },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: '73-9 Game' },
+        { property: 'og:title', content: PAGE_TITLE },
+        { property: 'og:description', content: PAGE_DESCRIPTION },
+        { property: 'og:url', content: canonical },
+        {
+          property: 'og:image',
+          content: 'https://73-9.org/73-9-game/og-73-9.jpg',
+        },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: PAGE_TITLE },
+        { name: 'twitter:description', content: PAGE_DESCRIPTION },
+        {
+          name: 'twitter:image',
+          content: 'https://73-9.org/73-9-game/og-73-9.jpg',
+        },
+      ],
+      links: [
+        { rel: 'canonical', href: canonical },
+        ...locales.map((locale) => ({
+          rel: 'alternate',
+          hrefLang: locale,
+          href: localizeUrl(`${envConfigs.app_url}/nba-trade-machine`, {
+            locale,
+          }).href,
+        })),
+        {
+          rel: 'alternate',
+          hrefLang: 'x-default',
+          href: xDefault,
+        },
+      ],
+    };
+  },
   component: NbaTradeMachinePage,
 });

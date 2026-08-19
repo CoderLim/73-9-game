@@ -11,9 +11,9 @@ import { ArenaCourtBackdrop } from '@/components/arena-court-backdrop';
 import { MainGame } from '@/components/main-game';
 import { getBlogPostsFn } from '@/content/posts/server';
 
-const HOME_TITLE = '73-9 Game:Can you beat the 2015-16 Warriors?';
+const HOME_TITLE = '73-9 Game: NBA Draft Simulator vs. the 2015-16 Warriors';
 const HOME_DESCRIPTION =
-  '73-9 game lets you draft five NBA player-seasons under a $100M cap, simulate 82 games, and see whether your lineup can beat the 2015-16 Warriors.';
+  'Build a five-man NBA team under a $100M cap, simulate 82 games, and see if your lineup can beat the 2015-16 Warriors.';
 
 const WEB_APPLICATION_JSON_LD = {
   '@context': 'https://schema.org',
@@ -128,7 +128,7 @@ export const Route = createFileRoute('/')({
           property: 'og:description',
           content: HOME_DESCRIPTION,
         },
-        { property: 'og:url', content: 'https://73-9.org' },
+        { property: 'og:url', content: urlFor(locale) },
         {
           property: 'og:image',
           content: 'https://73-9.org/73-9-game/og-73-9.jpg',
