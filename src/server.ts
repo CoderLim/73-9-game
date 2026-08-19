@@ -24,14 +24,6 @@ function ensureCloudflareEnv(): Promise<void> {
   return cfEnvPromise;
 }
 
-function isNoindexTradeMachinePage(pathname: string): boolean {
-  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-  return (
-    normalizedPath === '/nba-trade-machine' ||
-    /^\/[^/]+\/nba-trade-machine$/.test(normalizedPath)
-  );
-}
-
 // Custom server entry — wraps every request in Paraglide's middleware so
 // getLocale() resolves per-request (AsyncLocalStorage) during SSR.
 export default {
@@ -40,10 +32,6 @@ export default {
 
     const response = await paraglideMiddleware(req, () => handler.fetch(req));
     const requestUrl = new URL(req.url);
-
-    if (isNoindexTradeMachinePage(requestUrl.pathname)) {
-      response.headers.set('X-Robots-Tag', 'noindex, follow');
-    }
 
     const utmSource = requestUrl.searchParams.get('utm_source');
     const existing = getCookieFromHeader(
