@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import { localeHeadLinks } from '@/lib/seo/locale-head';
 import { m } from '@/paraglide/messages.js';
 import { getLocale, localizeUrl } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
@@ -35,9 +36,7 @@ export const Route = createFileRoute('/blog/$slug')({
     }).href;
     const title = post.seoTitle || `${post.title} | ${envConfigs.app_name}`;
     const description = post.description || '';
-    const ogImage = absoluteUrl(
-      post.image || '/73-9-game/og-73-9.jpg'
-    );
+    const ogImage = absoluteUrl(post.image || '/73-9-game/og-73-9.jpg');
     return {
       meta: [
         { title },
@@ -53,7 +52,7 @@ export const Route = createFileRoute('/blog/$slug')({
         { name: 'twitter:description', content: description },
         { name: 'twitter:image', content: ogImage },
       ],
-      links: [{ rel: 'canonical', href: canonical }],
+      links: localeHeadLinks(`/blog/${post.slug}`, locale),
     };
   },
   component: BlogPostPage,
@@ -64,9 +63,7 @@ function BlogPostPage() {
   const canonical = localizeUrl(`${envConfigs.app_url}/blog/${post.slug}`, {
     locale: locale as any,
   }).href;
-  const articleImage = absoluteUrl(
-    post.image || '/73-9-game/og-73-9.jpg'
-  );
+  const articleImage = absoluteUrl(post.image || '/73-9-game/og-73-9.jpg');
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',

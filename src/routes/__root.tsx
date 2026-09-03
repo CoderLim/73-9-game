@@ -14,7 +14,7 @@ import { ThemeProvider } from 'next-themes';
 
 import { envConfigs } from '@/config';
 import { getQueryClient } from '@/lib/query-client';
-import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { Ads } from '@/components/analytics/ads';
 import { GoogleAnalytics } from '@/components/analytics/google-analytics';
 import { Plausible } from '@/components/analytics/plausible';
@@ -74,40 +74,24 @@ const getAnalyticsConfigs = createServerFn().handler(async () => {
 
 export const Route = createRootRoute({
   loader: () => getAnalyticsConfigs(),
-  head: () => {
-    // head() runs on the SSR server AND again on the client during hydration.
-    // On the client, app_url falls back to the localhost dev default when
-    // VITE_APP_URL wasn't inlined into the client bundle at build — which would
-    // emit a second, localhost set of hreflang links. Prefer the live origin
-    // on the client so it always matches; the server uses the configured URL.
-    const appUrl =
-      (typeof window !== 'undefined' && window.location?.origin) ||
-      envConfigs.app_url ||
-      '';
-    return {
-      meta: [
-        { charSet: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { title: envConfigs.app_name },
-        { name: 'description', content: envConfigs.app_description },
-      ],
-      links: [
-        { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
-        {
-          rel: 'icon',
-          href: '/favicon.png',
-          type: 'image/png',
-          sizes: '32x32',
-        },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon' },
-        ...locales.map((loc) => ({
-          rel: 'alternate',
-          hrefLang: loc,
-          href: localizeUrl(`${appUrl}/`, { locale: loc }).href,
-        })),
-      ],
-    };
-  },
+  head: () => ({
+    meta: [
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { title: envConfigs.app_name },
+      { name: 'description', content: envConfigs.app_description },
+    ],
+    links: [
+      { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
+      {
+        rel: 'icon',
+        href: '/favicon.png',
+        type: 'image/png',
+        sizes: '32x32',
+      },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon' },
+    ],
+  }),
   component: RootComponent,
   shellComponent: RootDocument,
   notFoundComponent: NotFound,
